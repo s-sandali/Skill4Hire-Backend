@@ -1,8 +1,6 @@
 package com.se.skill4hire.dto.auth;
 
-public class CandidateRegisterRequest {
-    private String email;
-    private String password;
+public class CandidateRegisterRequest extends RegisterRequest {
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -10,18 +8,11 @@ public class CandidateRegisterRequest {
     public CandidateRegisterRequest() {}
 
     public CandidateRegisterRequest(String email, String password, String firstName, String lastName, String phoneNumber) {
-        this.email = email;
-        this.password = password;
+        super(email, password); // initialize base class fields
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
     }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
