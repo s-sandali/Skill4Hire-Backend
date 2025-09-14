@@ -14,11 +14,10 @@ public class Candidate extends User {
         this.name = name;
     }
 
-    // Getter and setter
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public void setRole(String role) {
+        super.setRole(role); // store role in User
     }
 }
