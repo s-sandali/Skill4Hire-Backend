@@ -1,8 +1,10 @@
-package com.se.skill4hire.service.auth  ;
+package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.CandidateRegRequest;
-import com.se.skill4hire.dto.auth.*;
+import com.se.skill4hire.dto.auth.CandidateLoginRequest;
+import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.dto.auth.RegisterRequest;
+import com.se.skill4hire.dto.auth.LoginRequest;
 import com.se.skill4hire.entity.Candidate;
 import com.se.skill4hire.repository.CandidateRepository;
 
@@ -33,15 +35,25 @@ public class CandidateAuthService implements BaseAuthService {
         if (existing != null) {
             return new AuthResponse("Email already registered", false);
         }
+        String fullName = regRequest.getFirstName() + " " + regRequest.getLastName();
 
+
+        // Create new candidate and set role dynamically
         Candidate candidate = new Candidate(
                 regRequest.getEmail(),
                 regRequest.getPassword(),
-                regRequest.getName()
+                fullName
         );
+        candidate.setRole(regRequest.getRole());
 
         candidateRepository.save(candidate);
-        return new AuthResponse("Candidate registered successfully", true);
+
+        return new AuthResponse(
+                "Candidate registered successfully",
+                true,
+                candidate.getId(),
+                candidate.getRole()
+        );
     }
 
     @Override
@@ -57,9 +69,16 @@ public class CandidateAuthService implements BaseAuthService {
             return new AuthResponse("Invalid email or password", false);
         }
 
-        // Store candidate ID in session
-        session.setAttribute("candidateId", candidate.getId());
-        return new AuthResponse("Login successful", true);
+        // Store userId and role in session for role-based access
+        session.setAttribute("userId", candidate.getId());
+        session.setAttribute("role", candidate.getRole());
+
+        return new AuthResponse(
+                "Login successful",
+                true,
+                candidate.getId(),
+                candidate.getRole()
+        );
     }
 
     @Override
