@@ -1,4 +1,4 @@
 package com.se.skill4hire.controller;
 
-public class EmployeeController {
+public class EmployeeAuthController {
 }
