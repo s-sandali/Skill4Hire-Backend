@@ -1,8 +1,14 @@
 package com.se.skill4hire.entity;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "candidates")
+@AttributeOverride(name = "id", column = @Column(name = "id"))
+
 public class Candidate extends User {
 
     private String name;
@@ -15,8 +21,10 @@ public class Candidate extends User {
     }
 
     public String getName() { return name; }
+
     public void setName(String name) { this.name = name; }
 
+    @Override
     public void setRole(String role) {
         super.setRole(role); // store role in User
     }
