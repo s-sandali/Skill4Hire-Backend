@@ -29,11 +29,6 @@ public class CandidateAuthService implements BaseAuthService {
 
         CandidateRegRequest regRequest = (CandidateRegRequest) request;
 
-        // Validate role
-        if (!isValidCandidateRole(regRequest.getRole())) {
-            return new AuthResponse("Invalid role for candidate registration", false);
-        }
-
         // Check if email exists
         if (candidateRepository.findByEmail(regRequest.getEmail()) != null) {
             return new AuthResponse("Email already registered", false);
@@ -45,13 +40,13 @@ public class CandidateAuthService implements BaseAuthService {
         // Full name
         String fullName = regRequest.getFirstName() + " " + regRequest.getLastName();
 
-        // Create candidate
+        // Create candidate - AUTO-SET ROLE TO "CANDIDATE"
         Candidate candidate = new Candidate(
                 regRequest.getEmail(),
                 hashedPassword,
                 fullName
         );
-        candidate.setRole(regRequest.getRole().toUpperCase()); // Store role in uppercase
+        candidate.setRole("CANDIDATE"); // Force set to CANDIDATE
 
         candidateRepository.save(candidate);
 
@@ -63,6 +58,13 @@ public class CandidateAuthService implements BaseAuthService {
         );
     }
 
+    // Remove or modify the role validation
+    private boolean isValidCandidateRole(String role) {
+        // Allow null/empty roles since we auto-set them
+        return role == null || role.isEmpty() ||
+                "CANDIDATE".equalsIgnoreCase(role) ||
+                "ADMIN".equalsIgnoreCase(role);
+    }
     @Override
     public AuthResponse login(LoginRequest request, HttpSession session) {
         if (!(request instanceof CandidateLoginRequest)) {
@@ -94,7 +96,5 @@ public class CandidateAuthService implements BaseAuthService {
         return new AuthResponse("Logged out successfully", true);
     }
 
-    private boolean isValidCandidateRole(String role) {
-        return "CANDIDATE".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role);
-    }
+
 }
