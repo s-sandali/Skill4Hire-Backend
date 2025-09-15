@@ -13,7 +13,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // Disable CSRF for H2 console and selected public endpoints
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/admins/register", "/api/admins/login", "/api/candidates/**/cv"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        "/h2-console/**",
+                        "/api/admins/register",
+                        "/api/admins/login",
+                        "/api/candidates/{candidateId}/cv",
+                        "/api/candidates/{candidateId}/preferences",
+                        "/api/candidates/{candidateId}/preferences/**"
+                ))
 
                 // Allow H2 console in frames
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
@@ -25,7 +32,9 @@ public class SecurityConfig {
                                 "/api/candidate/skills",
                                 "/api/candidate/cv",
                                 "/api/candidate/company",
-                                "/api/candidates/**/cv"
+                                "/api/candidates/{candidateId}/cv",
+                                "/api/candidates/{candidateId}/preferences",
+                                "/api/candidates/{candidateId}/preferences/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
