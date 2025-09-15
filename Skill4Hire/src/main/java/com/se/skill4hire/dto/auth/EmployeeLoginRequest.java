@@ -1,4 +1,17 @@
-package com.se.skill4hire.dto.auth;
+package com.se.skill4hire.dto;
 
-public class EmployeeLoginRequest extends LoginRequest {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public class EmployeeLoginRequest {
+    @Email @NotBlank
+    private String email;
+
+    @NotBlank
+    private String password;
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
