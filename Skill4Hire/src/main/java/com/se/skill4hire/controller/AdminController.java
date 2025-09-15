@@ -4,6 +4,9 @@ package com.se.skill4hire.controller;
 import com.se.skill4hire.dto.profile.AdminProfileDTO;
 import com.se.skill4hire.entity.AdminProfile;
 import com.se.skill4hire.service.profile.AdminProfileService;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +19,15 @@ public class AdminController {
     private AdminProfileService adminProfileService;
 
     // Register endpoint
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AdminProfileDTO dto) {
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> register(@RequestBody Map<String,String>dto) {
+       // System.out.println("hello");
         try {
-            AdminProfile savedAdmin = adminProfileService.registerAdmin(dto);
+            AdminProfileDTO adminDto = new AdminProfileDTO();
+            adminDto.setUsername(dto.get("username"));
+            adminDto.setEmail(dto.get("email"));
+            adminDto.setPassword(dto.get("password"));
+            AdminProfile savedAdmin = adminProfileService.registerAdmin(adminDto);
             return ResponseEntity.ok("Admin registered successfully with ID: " + savedAdmin.getId());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Registration failed: " + e.getMessage());
