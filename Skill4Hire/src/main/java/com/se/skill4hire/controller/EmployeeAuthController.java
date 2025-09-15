@@ -1,9 +1,11 @@
 package com.se.skill4hire.controller;
 
+import com.se.skill4hire.dto.auth.EmployeeRegisterRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.dto.auth.EmployeeLoginRequest;
 import com.se.skill4hire.dto.auth.EmployeeRegisterRequest;
 import com.se.skill4hire.service.auth.EmployeeAuthService;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +38,12 @@ public class EmployeeAuthController {
         return ResponseEntity.ok(response);
     }
 
-    // Example protected endpoint
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> getCurrentEmployee(HttpSession session) {
-        Object employeeId = session.getAttribute("userId"); // EmployeeAuthService stores "userId"
-        if (employeeId == null) {
+        Object userId = session.getAttribute("userId");
+        if (userId == null) {
             return ResponseEntity.status(401).body(new AuthResponse("Not logged in", false));
         }
-        return ResponseEntity.ok(new AuthResponse("You are logged in as employee ID: " + employeeId, true));
+        return ResponseEntity.ok(new AuthResponse("You are logged in as employee ID: " + userId, true));
     }
 }

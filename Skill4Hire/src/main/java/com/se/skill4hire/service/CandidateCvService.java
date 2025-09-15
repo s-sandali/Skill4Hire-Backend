@@ -1,6 +1,6 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.model.CandidateCv;
+import com.se.skill4hire.entity.User;
 import com.se.skill4hire.exception.NotFoundException;
 import com.se.skill4hire.repository.CandidateCvRepository;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ public class CandidateCvService {
     }
 
     @Transactional
-    public CandidateCv upload(Long candidateId, MultipartFile file) throws IOException {
-        CandidateCv entity = repository.findByCandidateId(candidateId).orElse(new CandidateCv());
+    public User.CandidateCv upload(Long candidateId, MultipartFile file) throws IOException {
+        User.CandidateCv entity = repository.findByCandidateId(candidateId).orElse(new User.CandidateCv());
         entity.setCandidateId(candidateId);
         entity.setFilename(file.getOriginalFilename() != null ? file.getOriginalFilename() : "cv");
         entity.setContentType(file.getContentType() != null ? file.getContentType() : "application/octet-stream");
@@ -28,8 +28,8 @@ public class CandidateCvService {
     }
 
     @Transactional(readOnly = true)
-    public CandidateCv getByCandidateId(Long candidateId) {
-        CandidateCv cv = repository.findByCandidateId(candidateId)
+    public User.CandidateCv getByCandidateId(Long candidateId) {
+        User.CandidateCv cv = repository.findByCandidateId(candidateId)
                 .orElseThrow(() -> new NotFoundException("CV not found for candidate " + candidateId));
         byte[] data = cv.getData();
         if (data != null) {

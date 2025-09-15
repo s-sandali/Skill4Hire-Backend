@@ -1,6 +1,6 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.model.CandidateCv;
+import com.se.skill4hire.entity.User;
 import com.se.skill4hire.repository.CandidateCvRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,12 +33,12 @@ class CandidateCvServiceTest {
                 content
         );
 
-        CandidateCv saved = service.upload(candidateId, file);
+        User.CandidateCv saved = service.upload(candidateId, file);
         Assertions.assertNotNull(saved.getId());
         Assertions.assertEquals(candidateId, saved.getCandidateId());
         Assertions.assertEquals("cv.txt", saved.getFilename());
 
-        CandidateCv fetched = service.getByCandidateId(candidateId);
+        User.CandidateCv fetched = service.getByCandidateId(candidateId);
         Assertions.assertEquals("text/plain", fetched.getContentType());
         Assertions.assertArrayEquals(content, fetched.getData());
 

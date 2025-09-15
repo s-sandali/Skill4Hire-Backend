@@ -5,16 +5,20 @@ import com.se.skill4hire.entity.Employee;
 import com.se.skill4hire.repository.EmployeeRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeAuthService implements BaseAuthService {
 
     private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public EmployeeAuthService(EmployeeRepository employeeRepository) {
+    public EmployeeAuthService(EmployeeRepository employeeRepository,
+                               PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -26,17 +30,21 @@ public class EmployeeAuthService implements BaseAuthService {
         EmployeeRegisterRequest regRequest = (EmployeeRegisterRequest) request;
 
         // Check if email exists
-        Employee existing = employeeRepository.findByEmail(regRequest.getEmail());
-        if (existing != null) {
+        if (employeeRepository.findByEmail(regRequest.getEmail()) != null) {
             return new AuthResponse("Email already registered", false);
         }
 
-        // Create new employee
-        Employee employee = new Employee();
-        employee.setEmail(regRequest.getEmail());
-        employee.setPassword(regRequest.getPassword()); // You may hash password if needed
-        employee.setCompanyName(regRequest.getCompanyName());
-        employee.setRole("EMPLOYEE"); // default role
+        // Hash password
+        String hashedPassword = passwordEncoder.encode(regRequest.getPassword());
+
+        // Create employee - AUTO-SET ROLE TO "EMPLOYEE"
+        Employee employee = new Employee(
+                regRequest.getEmail(),
+                hashedPassword,
+                regRequest.getName(),
+                regRequest.getDepartment()
+        );
+        employee.setRole("EMPLOYEE"); // Force set to EMPLOYEE
 
         employeeRepository.save(employee);
 
@@ -57,7 +65,7 @@ public class EmployeeAuthService implements BaseAuthService {
         EmployeeLoginRequest loginRequest = (EmployeeLoginRequest) request;
 
         Employee employee = employeeRepository.findByEmail(loginRequest.getEmail());
-        if (employee == null || !employee.getPassword().equals(loginRequest.getPassword())) {
+        if (employee == null || !passwordEncoder.matches(loginRequest.getPassword(), employee.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }
 
