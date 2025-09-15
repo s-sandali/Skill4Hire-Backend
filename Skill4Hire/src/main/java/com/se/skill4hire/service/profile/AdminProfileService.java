@@ -23,6 +23,10 @@ public class AdminProfileService {
         admin.setUsername(dto.getUsername());
         admin.setEmail(dto.getEmail());
         admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        //System.out.println(dto.getEmail());
+        //System.out.println(dto.getUsername());
+        //System.out.println(dto.getPassword());
+
         return adminRepository.save(admin);
     }
 
