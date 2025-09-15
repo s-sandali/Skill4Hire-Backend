@@ -101,7 +101,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 // Temporarily disable custom filter to test
-                // .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // ENABLE the session authentication filter (remove the comment)
+                .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         .frameOptions().sameOrigin()
                 )
