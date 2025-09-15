@@ -7,8 +7,8 @@ public class EmployeeRegisterRequest extends RegisterRequest {
         super();
     }
 
-    public EmployeeRegisterRequest(String email, String password, String companyName) {
-        super(email, password);
+    public EmployeeRegisterRequest(String email, String password, String role, String companyName) {
+        super(email, password, role);
         this.companyName = companyName;
     }
 
