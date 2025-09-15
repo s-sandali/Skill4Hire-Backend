@@ -11,7 +11,9 @@ public abstract class User {
 
     private String email;
     private String password;
-    private String role; // new
+
+    @Column(nullable = false)
+    private String role; // CANDIDATE, COMPANY, EMPLOYEE, ADMIN
 
     public User() {}
 
@@ -30,5 +32,20 @@ public abstract class User {
     public void setPassword(String password) { this.password = password; }
 
     public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public void setRole(String role) {
+        // Validate role
+        if (isValidRole(role)) {
+            this.role = role.toUpperCase();
+        } else {
+            throw new IllegalArgumentException("Invalid role: " + role);
+        }
+    }
+
+    private boolean isValidRole(String role) {
+        return role != null &&
+                (role.equalsIgnoreCase("CANDIDATE") ||
+                        role.equalsIgnoreCase("COMPANY") ||
+                        role.equalsIgnoreCase("EMPLOYEE") ||
+                        role.equalsIgnoreCase("ADMIN"));
+    }
 }

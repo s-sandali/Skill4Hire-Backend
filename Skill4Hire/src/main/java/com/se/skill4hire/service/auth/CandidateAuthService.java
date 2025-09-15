@@ -1,25 +1,24 @@
 package com.se.skill4hire.service.auth;
 
-import com.se.skill4hire.dto.auth.CandidateRegRequest;
-import com.se.skill4hire.dto.auth.CandidateLoginRequest;
-import com.se.skill4hire.dto.auth.AuthResponse;
-import com.se.skill4hire.dto.auth.RegisterRequest;
-import com.se.skill4hire.dto.auth.LoginRequest;
+import com.se.skill4hire.dto.auth.*;
 import com.se.skill4hire.entity.Candidate;
 import com.se.skill4hire.repository.CandidateRepository;
-
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CandidateAuthService implements BaseAuthService {
 
     private final CandidateRepository candidateRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CandidateAuthService(CandidateRepository candidateRepository) {
+    public CandidateAuthService(CandidateRepository candidateRepository,
+                                PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,21 +29,29 @@ public class CandidateAuthService implements BaseAuthService {
 
         CandidateRegRequest regRequest = (CandidateRegRequest) request;
 
+        // Validate role
+        if (!isValidCandidateRole(regRequest.getRole())) {
+            return new AuthResponse("Invalid role for candidate registration", false);
+        }
+
         // Check if email exists
-        Candidate existing = candidateRepository.findByEmail(regRequest.getEmail());
-        if (existing != null) {
+        if (candidateRepository.findByEmail(regRequest.getEmail()) != null) {
             return new AuthResponse("Email already registered", false);
         }
+
+        // Hash password
+        String hashedPassword = passwordEncoder.encode(regRequest.getPassword());
+
+        // Full name
         String fullName = regRequest.getFirstName() + " " + regRequest.getLastName();
 
-
-        // Create new candidate and set role dynamically
+        // Create candidate
         Candidate candidate = new Candidate(
                 regRequest.getEmail(),
-                regRequest.getPassword(),
+                hashedPassword,
                 fullName
         );
-        candidate.setRole(regRequest.getRole());
+        candidate.setRole(regRequest.getRole().toUpperCase()); // Store role in uppercase
 
         candidateRepository.save(candidate);
 
@@ -65,11 +72,11 @@ public class CandidateAuthService implements BaseAuthService {
         CandidateLoginRequest loginRequest = (CandidateLoginRequest) request;
 
         Candidate candidate = candidateRepository.findByEmail(loginRequest.getEmail());
-        if (candidate == null || !candidate.getPassword().equals(loginRequest.getPassword())) {
+        if (candidate == null || !passwordEncoder.matches(loginRequest.getPassword(), candidate.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }
 
-        // Store userId and role in session for role-based access
+        // Store userId and role in session
         session.setAttribute("userId", candidate.getId());
         session.setAttribute("role", candidate.getRole());
 
@@ -85,5 +92,9 @@ public class CandidateAuthService implements BaseAuthService {
     public AuthResponse logout(HttpSession session) {
         session.invalidate();
         return new AuthResponse("Logged out successfully", true);
+    }
+
+    private boolean isValidCandidateRole(String role) {
+        return "CANDIDATE".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role);
     }
 }

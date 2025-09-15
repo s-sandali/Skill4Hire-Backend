@@ -4,7 +4,7 @@ public class AuthResponse {
     private String message;
     private boolean success;
     private Long id;
-    private String role;  
+    private String role;
 
     public AuthResponse() {}
 
