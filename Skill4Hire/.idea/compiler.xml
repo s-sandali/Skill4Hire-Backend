@@ -10,6 +10,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
         <module name="skill4hire" />
+        <module name="Skill4Hire" />
       </profile>
     </annotationProcessing>
   </component>
