@@ -4,11 +4,12 @@ import com.se.skill4hire.dto.auth.UnifiedLoginRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.entity.Candidate;
 // import com.se.skill4hire.entity.Company;
-// import com.se.skill4hire.entity.Employee;
-// import com.se.skill4hire.entity.AdminProfile;
+import com.se.skill4hire.entity.Employee;
+import com.se.skill4hire.entity.AdminProfile;
+import com.se.skill4hire.repository.AdminRepository;
 import com.se.skill4hire.repository.CandidateRepository;
 // import com.se.skill4hire.repository.CompanyRepository;
-// import com.se.skill4hire.repository.EmployeeRepository;
+import com.se.skill4hire.repository.EmployeeRepository;
 // import com.se.skill4hire.repository.AdminRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -20,19 +21,19 @@ public class UnifiedAuthService {
 
     private final CandidateRepository candidateRepository;
     // private final CompanyRepository companyRepository;
-    // private final EmployeeRepository employeeRepository;
-    // private final AdminRepository adminRepository;
+    private final EmployeeRepository employeeRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UnifiedAuthService(CandidateRepository candidateRepository,
                               // CompanyRepository companyRepository,
-                              // EmployeeRepository employeeRepository,
-                              // AdminRepository adminRepository,
+                              EmployeeRepository employeeRepository,
+                              AdminRepository adminRepository,
                               PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;
         // this.companyRepository = companyRepository;
-        // this.employeeRepository = employeeRepository;
-        // this.adminRepository = adminRepository;
+        this.employeeRepository = employeeRepository;
+        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -56,24 +57,24 @@ public class UnifiedAuthService {
         */
 
         // Check employees - COMMENTED OUT DUE TO INCOMPLETE IMPLEMENTATION
-        /*
+
         Employee employee = employeeRepository.findByEmail(request.getEmail());
         if (employee != null && passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
             session.setAttribute("userId", employee.getId());
             session.setAttribute("role", employee.getRole());
             return new AuthResponse("Login successful", true, employee.getId(), employee.getRole());
         }
-        */
+
 
         // Check admins - COMMENTED OUT DUE TO INCOMPLETE IMPLEMENTATION
-        /*
+
         AdminProfile admin = adminRepository.findByEmail(request.getEmail());
         if (admin != null && passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
             session.setAttribute("userId", admin.getId());
             session.setAttribute("role", admin.getRole());
             return new AuthResponse("Login successful", true, admin.getId(), admin.getRole());
         }
-        */
+
 
         return new AuthResponse("Invalid credentials", false);
     }

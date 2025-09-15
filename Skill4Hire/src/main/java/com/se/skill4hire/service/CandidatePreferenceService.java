@@ -1,13 +1,12 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.model.CandidatePreferredCompany;
-import com.se.skill4hire.model.CandidatePreferredJobRole;
+import com.se.skill4hire.entity.Notification;
+import com.se.skill4hire.entity.User;
 import com.se.skill4hire.repository.CandidatePreferredCompanyRepository;
 import com.se.skill4hire.repository.CandidatePreferredJobRoleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class CandidatePreferenceService {
     @Transactional(readOnly = true)
     public List<String> getPreferredCompanies(Long candidateId) {
         return companyRepo.findByCandidateId(candidateId)
-                .stream().map(CandidatePreferredCompany::getCompanyName).toList();
+                .stream().map(User.CandidatePreferredCompany::getCompanyName).toList();
     }
 
     @Transactional
@@ -47,7 +46,7 @@ public class CandidatePreferenceService {
             String key = trimmed.toLowerCase();
             if (!unique.add(key)) continue;
             if (companyRepo.existsByCandidateIdAndCompanyNameIgnoreCase(candidateId, trimmed)) continue;
-            CandidatePreferredCompany entity = new CandidatePreferredCompany();
+            User.CandidatePreferredCompany entity = new User.CandidatePreferredCompany();
             entity.setCandidateId(candidateId);
             entity.setCompanyName(trimmed);
             companyRepo.save(entity);
@@ -63,7 +62,7 @@ public class CandidatePreferenceService {
     @Transactional(readOnly = true)
     public List<String> getPreferredJobRoles(Long candidateId) {
         return roleRepo.findByCandidateId(candidateId)
-                .stream().map(CandidatePreferredJobRole::getJobRole).toList();
+                .stream().map(Notification.CandidatePreferredJobRole::getJobRole).toList();
     }
 
     @Transactional
@@ -83,7 +82,7 @@ public class CandidatePreferenceService {
             String key = trimmed.toLowerCase();
             if (!unique.add(key)) continue;
             if (roleRepo.existsByCandidateIdAndJobRoleIgnoreCase(candidateId, trimmed)) continue;
-            CandidatePreferredJobRole entity = new CandidatePreferredJobRole();
+            Notification.CandidatePreferredJobRole entity = new Notification.CandidatePreferredJobRole();
             entity.setCandidateId(candidateId);
             entity.setJobRole(trimmed);
             roleRepo.save(entity);

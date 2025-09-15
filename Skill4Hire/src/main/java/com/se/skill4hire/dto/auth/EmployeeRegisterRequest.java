@@ -1,22 +1,21 @@
 package com.se.skill4hire.dto.auth;
 
 public class EmployeeRegisterRequest extends RegisterRequest {
-    private String companyName;
+    private String name;
+    private String department;
 
-    public EmployeeRegisterRequest() {
-        super();
-    }
+    public EmployeeRegisterRequest() {}
 
-    public EmployeeRegisterRequest(String email, String password, String role, String companyName) {
+    public EmployeeRegisterRequest(String email, String password, String role, String name, String department) {
         super(email, password, role);
-        this.companyName = companyName;
+        this.name = name;
+        this.department = department;
     }
 
-    public String getCompanyName() {
-        return companyName;
-    }
+    // Getters and setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
 }
