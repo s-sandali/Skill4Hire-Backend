@@ -1,4 +1,4 @@
-package com.se.skill4hire.controller;
+package com.se.skill4hire.controller.auth;
 
 import com.se.skill4hire.dto.auth.UnifiedLoginRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
