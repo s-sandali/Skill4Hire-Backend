@@ -5,7 +5,6 @@ import com.se.skill4hire.dto.auth.AdminRegRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.service.auth.AdminAuthService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/auth")
 public class AdminController {
 
-    @Autowired
-    private AdminAuthService adminAuthService;
+    private final AdminAuthService adminAuthService;
+
+    public AdminController(AdminAuthService adminAuthService) {
+        this.adminAuthService = adminAuthService;
+    }
 
     // Register endpoint
     @PostMapping("/register")

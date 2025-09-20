@@ -59,11 +59,35 @@ public class CandidateCvController {
         return ResponseEntity.noContent().build();
     }
 
+    /** Get only the CV status (no file bytes). */
+    @GetMapping("/status")
+    public ResponseEntity<CvStatusResponse> getStatus(@PathVariable Long candidateId) {
+        User.CandidateCv cv = service.getByCandidateId(candidateId);
+        return ResponseEntity.ok(new CvStatusResponse(cv.getStatus().name()));
+    }
+
+    /** Update CV status. Accepts JSON: { "status": "UNDER_REVIEW" } */
+    @PatchMapping(path = "/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CandidateCvResponse> updateStatus(@PathVariable Long candidateId,
+                                                            @RequestBody UpdateStatusRequest request) {
+        try {
+            User.CandidateCv.CvStatus status = User.CandidateCv.CvStatus.valueOf(request.status().toUpperCase());
+            User.CandidateCv updated = service.updateStatus(candidateId, status);
+            return ResponseEntity.ok(CandidateCvResponse.from(updated));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     // Lightweight DTO to avoid exposing byte[] in JSON responses
     public record CandidateCvResponse(Long id, Long candidateId, String filename, String contentType) {
         public static CandidateCvResponse from(User.CandidateCv cv) {
             return new CandidateCvResponse(cv.getId(), cv.getCandidateId(), cv.getFilename(), cv.getContentType());
         }
     }
+
+    public record UpdateStatusRequest(String status) {}
+
+    public record CvStatusResponse(String status) {}
 }
 

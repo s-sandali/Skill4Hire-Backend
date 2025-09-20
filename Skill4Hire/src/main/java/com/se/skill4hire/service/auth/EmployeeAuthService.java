@@ -14,7 +14,6 @@ public class EmployeeAuthService implements BaseAuthService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public EmployeeAuthService(EmployeeRepository employeeRepository,
                                PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;

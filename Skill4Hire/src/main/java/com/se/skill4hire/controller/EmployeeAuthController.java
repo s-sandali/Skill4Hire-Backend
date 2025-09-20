@@ -3,7 +3,6 @@ package com.se.skill4hire.controller;
 import com.se.skill4hire.dto.auth.EmployeeRegisterRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.dto.auth.EmployeeLoginRequest;
-import com.se.skill4hire.dto.auth.EmployeeRegisterRequest;
 import com.se.skill4hire.service.auth.EmployeeAuthService;
 
 import jakarta.servlet.http.HttpSession;
