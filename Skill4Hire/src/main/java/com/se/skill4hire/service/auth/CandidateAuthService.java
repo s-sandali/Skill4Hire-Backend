@@ -14,7 +14,6 @@ public class CandidateAuthService implements BaseAuthService {
     private final CandidateRepository candidateRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public CandidateAuthService(CandidateRepository candidateRepository,
                                 PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;

@@ -14,7 +14,6 @@ public class AdminAuthService implements BaseAuthService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     public AdminAuthService(AdminRepository adminRepository,
                             PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
