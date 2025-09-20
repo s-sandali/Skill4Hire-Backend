@@ -54,6 +54,13 @@
             <artifactId>h2</artifactId>
         </dependency>
 
+        <!-- H2 in-memory database for CV storage -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
 
 
 
