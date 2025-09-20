@@ -1,8 +1,8 @@
 package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.*;
-import com.se.skill4hire.entity.Candidate;
-import com.se.skill4hire.repository.CandidateRepository;
+import com.se.skill4hire.entity.auth.Candidate;
+import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CandidateAuthService implements BaseAuthService {
 
-    private final CandidateRepository candidateRepository;
+    private final CandidateAuthRepository candidateAuthRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CandidateAuthService(CandidateRepository candidateRepository,
+    public CandidateAuthService(CandidateAuthRepository candidateAuthRepository,
                                 PasswordEncoder passwordEncoder) {
-        this.candidateRepository = candidateRepository;
+        this.candidateAuthRepository = candidateAuthRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -30,7 +30,7 @@ public class CandidateAuthService implements BaseAuthService {
         CandidateRegRequest regRequest = (CandidateRegRequest) request;
 
         // Check if email exists
-        if (candidateRepository.findByEmail(regRequest.getEmail()) != null) {
+        if (candidateAuthRepository.findByEmail(regRequest.getEmail()) != null) {
             return new AuthResponse("Email already registered", false);
         }
 
@@ -48,7 +48,7 @@ public class CandidateAuthService implements BaseAuthService {
         );
         candidate.setRole("CANDIDATE"); // Force set to CANDIDATE
 
-        candidateRepository.save(candidate);
+        candidateAuthRepository.save(candidate);
 
         return new AuthResponse(
                 "Candidate registered successfully",
@@ -73,7 +73,7 @@ public class CandidateAuthService implements BaseAuthService {
 
         CandidateLoginRequest loginRequest = (CandidateLoginRequest) request;
 
-        Candidate candidate = candidateRepository.findByEmail(loginRequest.getEmail());
+        Candidate candidate = candidateAuthRepository.findByEmail(loginRequest.getEmail());
         if (candidate == null || !passwordEncoder.matches(loginRequest.getPassword(), candidate.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }

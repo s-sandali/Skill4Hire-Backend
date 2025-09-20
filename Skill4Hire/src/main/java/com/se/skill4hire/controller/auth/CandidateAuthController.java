@@ -37,13 +37,21 @@ public class CandidateAuthController {
         return ResponseEntity.ok(response);
     }
 
-    // Example protected endpoint
+    // Fixed protected endpoint
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> getCurrentCandidate(HttpSession session) {
-        Object candidateId = session.getAttribute("candidateId");
-        if (candidateId == null) {
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
+        if (userId == null || role == null) {
             return ResponseEntity.status(401).body(new AuthResponse("Not logged in", false));
         }
-        return ResponseEntity.ok(new AuthResponse("You are logged in as candidate ID: " + candidateId, true));
+
+        // Verify the user has CANDIDATE role
+        if (!"CANDIDATE".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).body(new AuthResponse("Access denied - not a candidate", false));
+        }
+
+        return ResponseEntity.ok(new AuthResponse("You are logged in as candidate ID: " + userId, true, userId, role));
     }
 }

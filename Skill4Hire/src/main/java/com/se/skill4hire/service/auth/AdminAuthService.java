@@ -1,7 +1,7 @@
 package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.*;
-import com.se.skill4hire.entity.AdminProfile;
+import com.se.skill4hire.entity.auth.Admin;
 import com.se.skill4hire.repository.AdminRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class AdminAuthService implements BaseAuthService {
         String hashedPassword = passwordEncoder.encode(regRequest.getPassword());
 
         // Create admin - AUTO-SET ROLE TO "ADMIN"
-        AdminProfile admin = new AdminProfile(
+        Admin admin = new Admin(
                 regRequest.getEmail(),
                 hashedPassword,
                 regRequest.getFullName()
@@ -63,7 +63,7 @@ public class AdminAuthService implements BaseAuthService {
 
         AdminLoginRequest loginRequest = (AdminLoginRequest) request;
 
-        AdminProfile admin = adminRepository.findByEmail(loginRequest.getEmail());
+        Admin admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin == null || !passwordEncoder.matches(loginRequest.getPassword(), admin.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }

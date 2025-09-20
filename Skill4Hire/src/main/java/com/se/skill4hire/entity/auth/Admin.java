@@ -1,4 +1,4 @@
-package com.se.skill4hire.entity;
+package com.se.skill4hire.entity.auth;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -8,13 +8,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "admins")
 @AttributeOverride(name = "id", column = @Column(name = "id"))
-public class AdminProfile extends User {
+public class Admin extends User {
 
     private String fullName;
 
-    public AdminProfile() {}
+    public Admin() {}
 
-    public AdminProfile(String email, String password, String fullName) {
+    public Admin(String email, String password, String fullName) {
         super(email, password);
         this.fullName = fullName;
     }

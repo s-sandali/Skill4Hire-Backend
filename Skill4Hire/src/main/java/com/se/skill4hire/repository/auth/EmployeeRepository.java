@@ -1,6 +1,6 @@
-package com.se.skill4hire.repository;
+package com.se.skill4hire.repository.auth;
 
-import com.se.skill4hire.entity.Employee;
+import com.se.skill4hire.entity.auth.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -35,6 +35,7 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             "/error"
     );
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -62,7 +63,8 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         userId.toString(),
                         null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                        Collections.singletonList(new SimpleGrantedAuthority(role.toUpperCase()))
+
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -82,4 +84,5 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             return requestURI.equals(endpoint);
         });
     }
+
 }
