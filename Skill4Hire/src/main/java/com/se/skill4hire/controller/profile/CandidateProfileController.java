@@ -11,7 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/candidates")
@@ -48,28 +52,38 @@ public class CandidateProfileController {
 
     @PostMapping("/upload/resume")
     @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
-    public ResponseEntity<String> uploadResume(
+    public ResponseEntity<Map<String, String>> uploadResume(
             @RequestParam("resume") MultipartFile file,
             HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         String fileName = candidateService.uploadResume(candidateId, file);
-        return ResponseEntity.ok("Resume uploaded successfully: " + fileName);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Resume uploaded successfully");
+        response.put("fileName", fileName);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/upload/profile-picture")
     @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
-    public ResponseEntity<String> uploadProfilePicture(
+    public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         String fileName = candidateService.uploadProfilePicture(candidateId, file);
-        return ResponseEntity.ok("Profile picture uploaded successfully: " + fileName);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Profile picture uploaded successfully");
+        response.put("fileName", fileName);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/skills")
     @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
     public ResponseEntity<List<String>> addSkill(
-            @RequestParam String skill,
+            @RequestParam("skill") String skill,  // Fixed parameter name
             HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         List<String> updatedSkills = candidateService.addSkill(candidateId, skill);
@@ -82,7 +96,11 @@ public class CandidateProfileController {
             @PathVariable String skill,
             HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
-        List<String> updatedSkills = candidateService.removeSkill(candidateId, skill);
+
+        // URL decode the skill parameter
+        String decodedSkill = URLDecoder.decode(skill, StandardCharsets.UTF_8);
+
+        List<String> updatedSkills = candidateService.removeSkill(candidateId, decodedSkill);
         return ResponseEntity.ok(updatedSkills);
     }
 }

@@ -131,11 +131,25 @@ public class CandidateServiceImpl implements CandidateService {
         if (candidate.getEmail() != null && !candidate.getEmail().isEmpty()) completedFields++;
         if (candidate.getTitle() != null && !candidate.getTitle().isEmpty()) completedFields++;
         if (candidate.getSkills() != null && !candidate.getSkills().isEmpty()) completedFields++;
-        if (candidate.getEducation() != null && candidate.getEducation().getDegree() != null) completedFields++;
-        if (candidate.getExperience() != null && candidate.getExperience().getRole() != null) completedFields++;
+
+        // Fix education check
+        if (candidate.getEducation() != null &&
+                candidate.getEducation().getDegree() != null &&
+                !candidate.getEducation().getDegree().isEmpty()) completedFields++;
+
+        // Fix experience check
+        if (candidate.getExperience() != null &&
+                candidate.getExperience().getRole() != null &&
+                !candidate.getExperience().getRole().isEmpty()) completedFields++;
+
         if (candidate.getResumePath() != null && !candidate.getResumePath().isEmpty()) completedFields++;
         if (candidate.getLocation() != null && !candidate.getLocation().isEmpty()) completedFields++;
-        if (candidate.getJobPreferences() != null && candidate.getJobPreferences().getJobType() != null) completedFields++;
+
+        // Fix job preferences check
+        if (candidate.getJobPreferences() != null &&
+                candidate.getJobPreferences().getJobType() != null &&
+                !candidate.getJobPreferences().getJobType().isEmpty()) completedFields++;
+
         if (candidate.getProfilePicturePath() != null && !candidate.getProfilePicturePath().isEmpty()) completedFields++;
 
         return (double) completedFields / totalFields * 100;

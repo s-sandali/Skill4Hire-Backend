@@ -32,7 +32,8 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             "/h2-console",
             "/h2-console/",
             "/h2-console/**",
-            "/error"
+            "/error",
+            "/uploads/**"
     );
 
 

@@ -35,7 +35,7 @@ public class CandidateProfile {
     @Column(unique = true)
     private String email;
 
-    @Size(max = 15, message = "Phone number must be less than 100 characters")
+    @Size(max = 15, message = "Phone number must be less than 15 characters")
     private String phoneNumber;
 
     @Size(max = 100, message = "Location must be less than 100 characters")
