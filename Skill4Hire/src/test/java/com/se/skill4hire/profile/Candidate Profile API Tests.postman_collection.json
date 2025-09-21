@@ -1,0 +1,316 @@
+{
+	"info": {
+		"_postman_id": "2a37bf89-eb1a-4478-aaa5-07a963a326a0",
+		"name": "Candidate Profile API Tests",
+		"description": "Collection for testing Candidate Profile endpoints with session-based authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44478037"
+	},
+	"item": [
+		{
+			"name": "Setup - Login First",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Store session cookie for subsequent requests",
+							"var cookies = pm.response.headers.get('Set-Cookie');",
+							"if (cookies) {",
+							"    pm.collectionVariables.set('sessionCookie', cookies);",
+							"    console.log('Session cookie stored:', cookies);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"candidate@example.com\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/candidates/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Login to get session cookie - CHANGE EMAIL/PASSWORD AS NEEDED"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Candidate Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}",
+						"description": "Session cookie from login"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/candidates/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"profile"
+					]
+				},
+				"description": "Get candidate profile details"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Candidate Profile",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"location\": \"New York, USA\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"title\": \"Senior Software Engineer\",\n  \"headline\": \"Experienced Java developer with 5+ years in enterprise applications\",\n  \"skills\": [\"Java\", \"Spring Boot\", \"Hibernate\", \"MySQL\"],\n  \"education\": {\n    \"degree\": \"Bachelor of Computer Science\",\n    \"institution\": \"Tech University\",\n    \"graduationYear\": 2015\n  },\n  \"experience\": {\n    \"isExperienced\": true,\n    \"role\": \"Senior Developer\",\n    \"company\": \"Tech Corp\",\n    \"yearsOfExperience\": 5\n  },\n  \"jobPreferences\": {\n    \"jobType\": \"Full-time\",\n    \"expectedSalary\": \"$80,000 - $100,000\",\n    \"willingToRelocate\": true\n  },\n  \"notificationPreferences\": {\n    \"emailAlerts\": true,\n    \"inAppNotifications\": true\n  }\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/candidates/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"profile"
+					]
+				},
+				"description": "Update candidate profile information"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Profile Completeness",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/candidates/profile/completeness",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"profile",
+						"completeness"
+					]
+				},
+				"description": "Get profile completeness percentage and message"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Skill",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/candidates/skills?skill=React",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"skills"
+					],
+					"query": [
+						{
+							"key": "skill",
+							"value": "React"
+						}
+					]
+				},
+				"description": "Add a new skill to candidate's profile"
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Skill",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/candidates/skills/Java",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"skills",
+						"Java"
+					]
+				},
+				"description": "Remove a skill from candidate's profile"
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Resume",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "resume",
+							"description": "Select a PDF or DOC file to upload as resume",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/candidates/upload/resume",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"upload",
+						"resume"
+					]
+				},
+				"description": "Upload a resume file"
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Profile Picture",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{sessionCookie}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "profilePicture",
+							"description": "Select an image file (JPG, PNG, etc.) for profile picture",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/api/candidates/upload/profile-picture",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"upload",
+						"profile-picture"
+					]
+				},
+				"description": "Upload a profile picture"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"console.log('Base URL:', pm.collectionVariables.get('base_url'));"
+				],
+				"type": "text/javascript"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "sessionCookie",
+			"value": "",
+			"type": "string",
+			"description": {
+				"content": "Will be automatically set after login",
+				"type": "text/plain"
+			}
+		}
+	]
+}

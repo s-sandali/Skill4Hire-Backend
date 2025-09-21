@@ -1,8 +1,8 @@
 package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.*;
-import com.se.skill4hire.entity.Employee;
-import com.se.skill4hire.repository.EmployeeRepository;
+import com.se.skill4hire.entity.auth.Employee;
+import com.se.skill4hire.repository.auth.EmployeeRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

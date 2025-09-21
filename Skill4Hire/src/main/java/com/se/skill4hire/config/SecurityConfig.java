@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5179"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5174"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -62,6 +62,8 @@ public class SecurityConfig {
                                 "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
+                                // File upload endpoints (add these)
+                                "/uploads/**",
                                 // Without /api prefix (in case it's being stripped somewhere)
                                 "/candidates/auth/register",
                                 "/candidates/auth/login",
@@ -93,10 +95,10 @@ public class SecurityConfig {
                         ).authenticated()
 
                         // Role-specific endpoints (broader patterns come last)
-                        .requestMatchers("/api/candidates/**").hasAnyRole("CANDIDATE", "ADMIN")
-                        .requestMatchers("/api/companies/**").hasAnyRole("COMPANY", "ADMIN")
-                        .requestMatchers("/api/employees/**").hasAnyRole("EMPLOYEE", "ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ADMIN")
+                        .requestMatchers("/api/companies/**").hasAnyAuthority("COMPANY", "ADMIN")
+                        .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
 
                         .anyRequest().authenticated()
                 )
