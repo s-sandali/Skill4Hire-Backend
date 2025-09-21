@@ -62,6 +62,8 @@ public class SecurityConfig {
                                 "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
+                                "/api/jobposts/**",
+                                "/api/jobs/**",
                                 // Without /api prefix (in case it's being stripped somewhere)
                                 "/candidates/auth/register",
                                 "/candidates/auth/login",
