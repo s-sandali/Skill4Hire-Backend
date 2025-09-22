@@ -2,7 +2,7 @@ package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.*;
 import com.se.skill4hire.entity.auth.Admin;
-import com.se.skill4hire.repository.AdminRepository;
+import com.se.skill4hire.repository.auth.AdminRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +41,7 @@ public class AdminAuthService implements BaseAuthService {
         Admin admin = new Admin(
                 regRequest.getEmail(),
                 hashedPassword,
-                regRequest.getFullName()
+                regRequest.getAdminName()
         );
         admin.setRole("ADMIN"); // Force set to ADMIN
 
