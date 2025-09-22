@@ -6,7 +6,7 @@ import com.se.skill4hire.entity.auth.Candidate;
 // import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.entity.auth.Employee;
 import com.se.skill4hire.entity.auth.Admin;
-import com.se.skill4hire.repository.AdminRepository;
+import com.se.skill4hire.repository.auth.AdminRepository;
 import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 // import com.se.skill4hire.repository.CompanyRepository;
 import com.se.skill4hire.repository.auth.EmployeeRepository;

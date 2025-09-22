@@ -1,26 +1,23 @@
 package com.se.skill4hire.entity.auth;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "admins")
-@AttributeOverride(name = "id", column = @Column(name = "id"))
 public class Admin extends User {
 
-    private String fullName;
+    private String adminName;
 
     public Admin() {}
 
-    public Admin(String email, String password, String fullName) {
+    public Admin(String email, String password, String adminName) {
         super(email, password);
-        this.fullName = fullName;
+        this.adminName = adminName;
     }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getAdminName() { return adminName; }
+    public void setAdminName(String adminName) { this.adminName = adminName; }
 
     @Override
     public void setRole(String role) {
