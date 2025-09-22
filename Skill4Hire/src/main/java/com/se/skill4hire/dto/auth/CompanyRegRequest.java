@@ -1,6 +1,7 @@
-package com.se.skill4hire.dto.profile;
+package com.se.skill4hire.dto.auth;
 
-public class CompanyProfileDTO {
+public class CompanyRegRequest extends RegisterRequest {
+
     private String name;
     private String description;
     private String phone;
@@ -9,7 +10,23 @@ public class CompanyProfileDTO {
     private String facebook;
     private String linkedin;
     private String twitter;
-    private String logo;
+
+    public CompanyRegRequest() {}
+
+    public CompanyRegRequest(String email, String password, String role,
+                                  String name, String description,
+                                  String phone, String website, String address,
+                                  String facebook, String linkedin, String twitter) {
+        super(email, password, role);
+        this.name = name;
+        this.description = description;
+        this.phone = phone;
+        this.website = website;
+        this.address = address;
+        this.facebook = facebook;
+        this.linkedin = linkedin;
+        this.twitter = twitter;
+    }
 
     public String getName() {
         return name;
@@ -73,14 +90,6 @@ public class CompanyProfileDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     // Getters and Setters...
