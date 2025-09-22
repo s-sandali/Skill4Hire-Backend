@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/auth/CompanyRegRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/CompanyAuthRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CompanyAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CompanyAuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CompanyProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CompanyProfileController.java" afterDir="false" />
