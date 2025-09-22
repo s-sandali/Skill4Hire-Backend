@@ -1,4 +1,4 @@
-package com.se.skill4hire.controller;
+package com.se.skill4hire.controller.auth;
 
 import com.se.skill4hire.dto.auth.AdminLoginRequest;
 import com.se.skill4hire.dto.auth.AdminRegRequest;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/auth")
-public class AdminController {
+public class AdminAuthController {
 
     @Autowired
     private AdminAuthService adminAuthService;

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
+    List<Application> findByCandidateId(Long candidateId);
+
     List<Application> findByCandidateIdAndStatus(Long candidateId, Application.ApplicationStatus status);
 
     @Query("select distinct a.companyId from Application a where a.candidateId = :candidateId and a.status = :status")

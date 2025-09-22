@@ -1,8 +1,8 @@
 package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.*;
-import com.se.skill4hire.entity.Candidate;
-import com.se.skill4hire.repository.CandidateRepository;
+import com.se.skill4hire.entity.auth.Candidate;
+import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CandidateAuthService implements BaseAuthService {
 
-    private final CandidateRepository candidateRepository;
+    private final CandidateAuthRepository candidateRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public CandidateAuthService(CandidateRepository candidateRepository,
+    public CandidateAuthService(CandidateAuthRepository candidateRepository,
                                 PasswordEncoder passwordEncoder) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
