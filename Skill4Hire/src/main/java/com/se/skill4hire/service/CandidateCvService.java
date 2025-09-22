@@ -24,9 +24,6 @@ public class CandidateCvService {
         entity.setFilename(file.getOriginalFilename() != null ? file.getOriginalFilename() : "cv");
         entity.setContentType(file.getContentType() != null ? file.getContentType() : "application/octet-stream");
         entity.setData(file.getBytes());
-        if (entity.getStatus() == null) {
-            entity.setStatus(User.CandidateCv.CvStatus.UPLOADED);
-        }
         return repository.save(entity);
     }
 
@@ -47,13 +44,5 @@ public class CandidateCvService {
             throw new NotFoundException("CV not found for candidate " + candidateId);
         }
         repository.deleteByCandidateId(candidateId);
-    }
-
-    @Transactional
-    public User.CandidateCv updateStatus(Long candidateId, User.CandidateCv.CvStatus status) {
-        User.CandidateCv cv = repository.findByCandidateId(candidateId)
-                .orElseThrow(() -> new NotFoundException("CV not found for candidate " + candidateId));
-        cv.setStatus(status);
-        return repository.save(cv);
     }
 }
