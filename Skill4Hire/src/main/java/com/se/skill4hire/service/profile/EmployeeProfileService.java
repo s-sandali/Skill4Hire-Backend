@@ -44,7 +44,7 @@ public class EmployeeProfileService {
         return responseDTO;
     }
 
-    // Get Employee Profile by ID
+    // Get Employee Profile By ID
     public EmployeeProfileDTO getEmployeeProfileById(Long id) {
         Optional<EmployeeProfile> employeeProfile = EmployeeProfileRepository .findById(id);
         if (employeeProfile.isPresent()) {
