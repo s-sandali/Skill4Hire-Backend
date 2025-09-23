@@ -113,7 +113,7 @@
       <option name="presentableId" value="Default" />
       <updated>1757915169376</updated>
       <workItem from="1758488905044" duration="1175000" />
-      <workItem from="1758597285455" duration="19074000" />
+      <workItem from="1758597285455" duration="19486000" />
     </task>
     <task id="LOCAL-00001" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <option name="closed" value="true" />
