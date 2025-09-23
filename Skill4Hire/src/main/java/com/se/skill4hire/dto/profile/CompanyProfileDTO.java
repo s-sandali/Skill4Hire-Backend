@@ -1,14 +1,33 @@
 package com.se.skill4hire.dto.profile;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CompanyProfileDTO {
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("description")
     private String description;
+
+    @JsonProperty("phone")
     private String phone;
+
+    @JsonProperty("website")
     private String website;
+
+    @JsonProperty("address")
     private String address;
+
+    @JsonProperty("facebook")
     private String facebook;
+
+    @JsonProperty("linkedin")
     private String linkedin;
+
+    @JsonProperty("twitter")
     private String twitter;
+
+    @JsonProperty("logo")
     private String logo;
 
     public String getName() {
