@@ -52,5 +52,5 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     List<EmployeeProfile> findByCreatedAtAfter(java.time.LocalDateTime date);
 
     // Find employees created before a specific date
-    List<EmployeeProfile> findByCreatedAtBefore(java.time.LocalDateTime date);
+    List<EmployeeProfile> findByCreatedatBefore(java.time.LocalDateTime date);
 }

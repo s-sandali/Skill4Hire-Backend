@@ -65,7 +65,7 @@ public class EmployeeProfile {
         this.position = position;
     }
 
-    // Getters and Setters
+    // Getters and Setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
