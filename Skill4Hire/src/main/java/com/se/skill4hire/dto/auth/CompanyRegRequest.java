@@ -1,34 +1,32 @@
-package com.se.skill4hire.dto.profile;
+package com.se.skill4hire.dto.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class CompanyRegRequest extends RegisterRequest {
 
-public class CompanyProfileDTO {
-    @JsonProperty("name")
     private String name;
-
-    @JsonProperty("description")
     private String description;
-
-    @JsonProperty("phone")
     private String phone;
-
-    @JsonProperty("website")
     private String website;
-
-    @JsonProperty("address")
     private String address;
-
-    @JsonProperty("facebook")
     private String facebook;
-
-    @JsonProperty("linkedin")
     private String linkedin;
-
-    @JsonProperty("twitter")
     private String twitter;
 
-    @JsonProperty("logo")
-    private String logo;
+    public CompanyRegRequest() {}
+
+    public CompanyRegRequest(String email, String password, String role,
+                                  String name, String description,
+                                  String phone, String website, String address,
+                                  String facebook, String linkedin, String twitter) {
+        super(email, password, role);
+        this.name = name;
+        this.description = description;
+        this.phone = phone;
+        this.website = website;
+        this.address = address;
+        this.facebook = facebook;
+        this.linkedin = linkedin;
+        this.twitter = twitter;
+    }
 
     public String getName() {
         return name;
@@ -92,14 +90,6 @@ public class CompanyProfileDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
     }
 
     // Getters and Setters...
