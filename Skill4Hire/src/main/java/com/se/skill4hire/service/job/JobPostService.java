@@ -2,6 +2,8 @@ package com.se.skill4hire.service.job;
 
 import com.se.skill4hire.entity.JobPost;
 import com.se.skill4hire.repository.JobPostRepository;
+import com.se.skill4hire.service.exception.JobNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -41,7 +43,7 @@ public class JobPostService {
                     jobPost.setDeadline(updatedJobPost.getDeadline());
                     return jobPostRepository.save(jobPost);
                 })
-                .orElseThrow(() -> new RuntimeException("Job post not found with id: " + id));
+                 .orElseThrow(() -> new JobNotFoundException("Job post not found with id: " + id));
     }
 
     // Delete job post
@@ -49,7 +51,7 @@ public class JobPostService {
         if (jobPostRepository.existsById(id)) {
             jobPostRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Job post not found with id: " + id);
+            throw new JobNotFoundException("Job post not found with id: " + id);
         }
     }
 

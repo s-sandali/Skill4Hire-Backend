@@ -1,9 +1,5 @@
 package com.se.skill4hire.entity;
 
-<<<<<<< Updated upstream
-public class JobPost {
-}
-=======
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
@@ -26,10 +22,12 @@ public class JobPost {
 
     @NotBlank(message = "Job type is required")
     private String type; // e.g., "Full-time", "Part-time", "Contract", "Internship"
-
+ 
     @NotBlank(message = "Location is required")
     private String location;
 
+
+    @NotNull(message = "Salary is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be greater than 0")
     private Double salary;
 
@@ -106,4 +104,3 @@ public class JobPost {
     public LocalDate getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDate updatedAt) { this.updatedAt = updatedAt; }
 }
->>>>>>> Stashed changes

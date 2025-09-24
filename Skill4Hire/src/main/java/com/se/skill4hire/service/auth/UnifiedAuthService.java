@@ -2,14 +2,14 @@ package com.se.skill4hire.service.auth;
 
 import com.se.skill4hire.dto.auth.UnifiedLoginRequest;
 import com.se.skill4hire.dto.auth.AuthResponse;
-import com.se.skill4hire.entity.Candidate;
-// import com.se.skill4hire.entity.Company;
-import com.se.skill4hire.entity.Employee;
-import com.se.skill4hire.entity.AdminProfile;
-import com.se.skill4hire.repository.AdminRepository;
-import com.se.skill4hire.repository.CandidateRepository;
+import com.se.skill4hire.entity.auth.Candidate;
+// import com.se.skill4hire.entity.auth.Company;
+import com.se.skill4hire.entity.auth.Employee;
+import com.se.skill4hire.entity.auth.Admin;
+import com.se.skill4hire.repository.auth.AdminRepository;
+import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 // import com.se.skill4hire.repository.CompanyRepository;
-import com.se.skill4hire.repository.EmployeeRepository;
+import com.se.skill4hire.repository.auth.EmployeeRepository;
 // import com.se.skill4hire.repository.AdminRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -19,18 +19,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class UnifiedAuthService {
 
-    private final CandidateRepository candidateRepository;
+    private final CandidateAuthRepository candidateAuthRepository;
     // private final CompanyRepository companyRepository;
     private final EmployeeRepository employeeRepository;
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UnifiedAuthService(CandidateRepository candidateRepository,
+    public UnifiedAuthService(CandidateAuthRepository candidateAuthRepository,
                               // CompanyRepository companyRepository,
                               EmployeeRepository employeeRepository,
                               AdminRepository adminRepository,
                               PasswordEncoder passwordEncoder) {
-        this.candidateRepository = candidateRepository;
+        this.candidateAuthRepository = candidateAuthRepository;
         // this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
         this.adminRepository = adminRepository;
@@ -39,7 +39,7 @@ public class UnifiedAuthService {
 
     public AuthResponse unifiedLogin(UnifiedLoginRequest request, HttpSession session) {
         // Check candidates
-        Candidate candidate = candidateRepository.findByEmail(request.getEmail());
+        Candidate candidate = candidateAuthRepository.findByEmail(request.getEmail());
         if (candidate != null && passwordEncoder.matches(request.getPassword(), candidate.getPassword())) {
             session.setAttribute("userId", candidate.getId());
             session.setAttribute("role", candidate.getRole());
@@ -68,7 +68,7 @@ public class UnifiedAuthService {
 
         // Check admins - COMMENTED OUT DUE TO INCOMPLETE IMPLEMENTATION
 
-        AdminProfile admin = adminRepository.findByEmail(request.getEmail());
+        Admin admin = adminRepository.findByEmail(request.getEmail());
         if (admin != null && passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
             session.setAttribute("userId", admin.getId());
             session.setAttribute("role", admin.getRole());
