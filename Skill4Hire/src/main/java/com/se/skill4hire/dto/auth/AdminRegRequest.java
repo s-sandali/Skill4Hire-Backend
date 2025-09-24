@@ -1,16 +1,15 @@
 package com.se.skill4hire.dto.auth;
 
 public class AdminRegRequest extends RegisterRequest {
-    private String fullName;
+    private String adminName;
 
     public AdminRegRequest() {}
 
-    public AdminRegRequest(String email, String password, String role, String fullName) {
+    public AdminRegRequest(String email, String password, String role, String adminName) {
         super(email, password, role);
-        this.fullName = fullName;
+        this.adminName = adminName;
     }
 
-    // Getters and setters
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getAdminName() { return adminName; }
+    public void setAdminName(String adminName) { this.adminName = adminName; }
 }
