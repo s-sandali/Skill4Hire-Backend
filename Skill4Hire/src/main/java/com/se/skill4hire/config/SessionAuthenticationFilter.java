@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.lang.NonNull;
+
 public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
     // List of public endpoints that don't require authentication
@@ -38,9 +40,9 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();

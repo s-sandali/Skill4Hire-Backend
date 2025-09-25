@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class CandidateAuthService implements BaseAuthService {
 
-    private final CandidateAuthRepository candidateAuthRepository;
+    private final CandidateAuthRepository candidateRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public CandidateAuthService(CandidateAuthRepository candidateAuthRepository,
+    public CandidateAuthService(CandidateAuthRepository candidateRepository,
                                 PasswordEncoder passwordEncoder) {
-        this.candidateAuthRepository = candidateAuthRepository;
+        this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -30,7 +29,7 @@ public class CandidateAuthService implements BaseAuthService {
         CandidateRegRequest regRequest = (CandidateRegRequest) request;
 
         // Check if email exists
-        if (candidateAuthRepository.findByEmail(regRequest.getEmail()) != null) {
+        if (candidateRepository.findByEmail(regRequest.getEmail()) != null) {
             return new AuthResponse("Email already registered", false);
         }
 
@@ -48,7 +47,7 @@ public class CandidateAuthService implements BaseAuthService {
         );
         candidate.setRole("CANDIDATE"); // Force set to CANDIDATE
 
-        candidateAuthRepository.save(candidate);
+        candidateRepository.save(candidate);
 
         return new AuthResponse(
                 "Candidate registered successfully",
@@ -73,7 +72,7 @@ public class CandidateAuthService implements BaseAuthService {
 
         CandidateLoginRequest loginRequest = (CandidateLoginRequest) request;
 
-        Candidate candidate = candidateAuthRepository.findByEmail(loginRequest.getEmail());
+        Candidate candidate = candidateRepository.findByEmail(loginRequest.getEmail());
         if (candidate == null || !passwordEncoder.matches(loginRequest.getPassword(), candidate.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }
