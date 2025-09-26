@@ -54,7 +54,9 @@ public class JobPost {
         updatedAt = LocalDateTime.now();
     }
 
+
     public enum JobStatus {
         ACTIVE, INACTIVE, FILLED, EXPIRED
     }
+
 }
