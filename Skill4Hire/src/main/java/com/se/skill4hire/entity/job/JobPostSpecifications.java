@@ -2,6 +2,8 @@ package com.se.skill4hire.entity.job;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
+
 public class JobPostSpecifications {
     public static Specification<JobPost> isActive() {
         return (root, query, cb) -> cb.equal(root.get("status"), JobPost.JobStatus.ACTIVE);
@@ -28,5 +30,8 @@ public class JobPostSpecifications {
 
     public static Specification<JobPost> experienceAtMost(Integer maxExperience) {
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("experience"), maxExperience);
+    }
+    public static Specification<JobPost> deadlineNotPassed() {
+        return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("deadline"), LocalDate.now());
     }
 }

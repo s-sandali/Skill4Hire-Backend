@@ -78,6 +78,8 @@ public class SecurityConfig {
                                 "/api/jobposts/search",  // Add this
                                 "/api/jobposts",         // Already exists but ensure it's public
                                  "/api/jobposts/**",
+                               // This allows all jobpost endpoints publicly
+                                "/api/jobs/**",
                                 "/h2-console/**",
                                 "/h2-console",
                                 "/error/**",
