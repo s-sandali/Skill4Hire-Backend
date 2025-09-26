@@ -2,8 +2,6 @@ package com.se.skill4hire.entity.profile;
 
 import com.se.skill4hire.entity.auth.Candidate;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "candidates")
+@Table(name = "candidate_profiles")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,14 +24,9 @@ public class CandidateProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is required")
-    @Size(max = 100, message = "Name must be less than 100 characters")
-    private String name;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    @Column(unique = true)
-    private String email;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Candidate user;
 
     @Size(max = 15, message = "Phone number must be less than 15 characters")
     private String phoneNumber;
@@ -50,7 +43,7 @@ public class CandidateProfile {
     private String headline;
 
     @ElementCollection
-    @CollectionTable(name = "candidate_skills", joinColumns = @JoinColumn(name = "candidate_id"))
+    @CollectionTable(name = "candidate_skills", joinColumns = @JoinColumn(name = "candidate_profile_id"))
     @Column(name = "skill")
     private List<String> skills = new ArrayList<>();
 
@@ -67,9 +60,7 @@ public class CandidateProfile {
     private NotificationPreferences notificationPreferences;
 
     private String resumePath;
-
     private String profilePicturePath;
-
     private Double profileCompleteness = 0.0;
 
     @Column(name = "created_at")
@@ -77,10 +68,6 @@ public class CandidateProfile {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private Candidate user;
 
     @PrePersist
     protected void onCreate() {

@@ -1,4 +1,3 @@
-// Experience.java
 package com.se.skill4hire.entity.profile;
 
 import jakarta.persistence.Embeddable;
