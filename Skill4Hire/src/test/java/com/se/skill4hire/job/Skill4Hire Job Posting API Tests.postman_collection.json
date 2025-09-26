@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "63ca3c06-eece-4cdd-944b-f29db398609e",
+		"name": "Skill4Hire Job Posting API Tests",
+		"description": "Postman collection for testing Job Posting APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44478037"
+	},
+	"item": [
+		{
+			"name": "Authentication - Company Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has success message\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.be.true;",
+							"});",
+							"",
+							"// Store the session token if available",
+							"var cookies = pm.response.headers.get('Set-Cookie');",
+							"if (cookies) {",
+							"    pm.collectionVariables.set('companyAuthToken', cookies);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"company@example.com\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/companies/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"companies",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication - Candidate Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"candidate@example.com\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/candidates/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"candidates",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Job Post (Company Only)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{companyAuthToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Senior Java Developer\",\n  \"description\": \"We are looking for an experienced Java developer to join our team. Must have Spring Boot experience.\",\n  \"type\": \"FULL_TIME\",\n  \"location\": \"Remote\",\n  \"salary\": 85000.0,\n  \"experience\": 5,\n  \"deadline\": \"2024-12-31\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Active Job Posts (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Company's Job Posts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{companyAuthToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/my-jobs",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"my-jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Post by ID (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Jobs with Skill Matching (Candidate)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{candidateAuthToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/search/with-matching?keyword=Java&type=FULL_TIME&location=Remote&minSalary=50000&maxExperience=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"search",
+						"with-matching"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "Java"
+						},
+						{
+							"key": "type",
+							"value": "FULL_TIME"
+						},
+						{
+							"key": "location",
+							"value": "Remote"
+						},
+						{
+							"key": "minSalary",
+							"value": "50000"
+						},
+						{
+							"key": "maxExperience",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Featured Jobs (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/featured",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"featured"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Filter Options (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/filter-options",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"filter-options"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Job Post (Company Only)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "{{companyAuthToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Senior Java Developer (Updated)\",\n  \"description\": \"Updated description with more details about the position.\",\n  \"type\": \"FULL_TIME\",\n  \"location\": \"Hybrid\",\n  \"salary\": 90000.0,\n  \"experience\": 5,\n  \"deadline\": \"2024-12-31\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Jobs (Public - Basic)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/search?keyword=Developer&type=FULL_TIME&location=Remote",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"search"
+					],
+					"query": [
+						{
+							"key": "keyword",
+							"value": "Developer"
+						},
+						{
+							"key": "type",
+							"value": "FULL_TIME"
+						},
+						{
+							"key": "location",
+							"value": "Remote"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Jobs by Type (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/type/FULL_TIME",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"type",
+						"FULL_TIME"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Jobs by Location (Public)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/location/Remote",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"location",
+						"Remote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Job Post (Company Only)",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "{{companyAuthToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/jobposts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"jobposts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "companyAuthToken",
+			"value": "company-session-token-here",
+			"type": "string"
+		},
+		{
+			"key": "candidateAuthToken",
+			"value": "candidate-session-token-here",
+			"type": "string"
+		}
+	]
+}

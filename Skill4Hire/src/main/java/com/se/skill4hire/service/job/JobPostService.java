@@ -1,5 +1,6 @@
 package com.se.skill4hire.service.job;
 
+import com.se.skill4hire.dto.job.JobPostDTO;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.entity.job.JobPostSpecifications;
@@ -24,14 +25,24 @@ public class JobPostService {
     @Autowired
     private CompanyAuthRepository companyAuthRepository;
 
-    // Create a new job post for a specific company
-    public JobPost createJobPost(JobPost jobPost, Long companyId) {
+    // Create method using DTO
+    public JobPost createJobPost(JobPostDTO jobPostDTO, Long companyId) {
         Company company = companyAuthRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        // Convert DTO to Entity
+        JobPost jobPost = new JobPost();
+        jobPost.setTitle(jobPostDTO.getTitle());
+        jobPost.setDescription(jobPostDTO.getDescription());
+        jobPost.setType(jobPostDTO.getType());
+        jobPost.setLocation(jobPostDTO.getLocation());
+        jobPost.setSalary(jobPostDTO.getSalary());
+        jobPost.setExperience(jobPostDTO.getExperience());
+        jobPost.setDeadline(jobPostDTO.getDeadline());
         jobPost.setCompany(company);
+
         return jobPostRepository.save(jobPost);
     }
-
     // Get all job posts for a specific company
     public List<JobPost> getJobPostsByCompany(Long companyId) {
         Company company = companyAuthRepository.findById(companyId)
@@ -44,26 +55,24 @@ public class JobPostService {
         return jobPostRepository.findByStatus(JobPost.JobStatus.ACTIVE);
     }
 
-    // Update job post (only if belongs to company)
-    public JobPost updateJobPost(Long id, JobPost updatedJobPost, Long companyId) {
+    // Update method using DTO
+    public JobPost updateJobPost(Long id, JobPostDTO jobPostDTO, Long companyId) {
         Company company = companyAuthRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
         return jobPostRepository.findByIdAndCompany(id, company)
                 .map(jobPost -> {
-                    jobPost.setTitle(updatedJobPost.getTitle());
-                    jobPost.setDescription(updatedJobPost.getDescription());
-                    jobPost.setType(updatedJobPost.getType());
-                    jobPost.setLocation(updatedJobPost.getLocation());
-                    jobPost.setSalary(updatedJobPost.getSalary());
-                    jobPost.setExperience(updatedJobPost.getExperience());
-                    jobPost.setDeadline(updatedJobPost.getDeadline());
-                    jobPost.setStatus(updatedJobPost.getStatus());
+                    jobPost.setTitle(jobPostDTO.getTitle());
+                    jobPost.setDescription(jobPostDTO.getDescription());
+                    jobPost.setType(jobPostDTO.getType());
+                    jobPost.setLocation(jobPostDTO.getLocation());
+                    jobPost.setSalary(jobPostDTO.getSalary());
+                    jobPost.setExperience(jobPostDTO.getExperience());
+                    jobPost.setDeadline(jobPostDTO.getDeadline());
                     return jobPostRepository.save(jobPost);
                 })
                 .orElseThrow(() -> new JobNotFoundException("Job post not found with id: " + id + " for company: " + companyId));
     }
-
     // Delete job post (only if belongs to company)
     public void deleteJobPost(Long id, Long companyId) {
         Company company = companyAuthRepository.findById(companyId)

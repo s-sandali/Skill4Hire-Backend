@@ -1,5 +1,6 @@
 package com.se.skill4hire.controller.job;
 
+import com.se.skill4hire.dto.job.JobPostDTO;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.se.skill4hire.dto.job.JobPostResponseDTO;
+import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,19 +30,25 @@ public class JobPostController {
     @Autowired
     private JobSearchService jobSearchService;
 
-    // CREATE - Only for companies
+
+
+    // CREATE - Using DTO instead of Entity
     @PostMapping
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<JobPost> createJobPost(@Valid @RequestBody JobPost jobPost, HttpSession session) {
+    public ResponseEntity<JobPostResponseDTO> createJobPost(@Valid @RequestBody JobPostDTO jobPostDTO, HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
-        JobPost createdJobPost = jobPostService.createJobPost(jobPost, companyId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdJobPost);
+        JobPost createdJobPost = jobPostService.createJobPost(jobPostDTO, companyId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new JobPostResponseDTO(createdJobPost));
     }
+
 
     // GET ALL ACTIVE JOBS (for candidates - public)
     @GetMapping
-    public ResponseEntity<List<JobPost>> getAllActiveJobPosts() {
-        List<JobPost> jobPosts = jobPostService.getActiveJobPosts();
+    public ResponseEntity<List<JobPostResponseDTO>> getAllActiveJobPosts() {
+        List<JobPostResponseDTO> jobPosts = jobPostService.getActiveJobPosts()
+                .stream()
+                .map(JobPostResponseDTO::new)
+                .collect(Collectors.toList());
         if (jobPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -49,18 +58,20 @@ public class JobPostController {
     // GET COMPANY'S JOBS (for company dashboard)
     @GetMapping("/my-jobs")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<List<JobPost>> getMyJobPosts(HttpSession session) {
+    public ResponseEntity<List<JobPostResponseDTO>> getMyJobPosts(HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
-        List<JobPost> jobPosts = jobPostService.getJobPostsByCompany(companyId);
+        List<JobPostResponseDTO> jobPosts = jobPostService.getJobPostsByCompany(companyId)
+                .stream()
+                .map(JobPostResponseDTO::new)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(jobPosts);
     }
-
     // GET JOB BY ID (public)
     @GetMapping("/{id}")
-    public ResponseEntity<JobPost> getJobPostById(@PathVariable Long id) {
+    public ResponseEntity<JobPostResponseDTO> getJobPostById(@PathVariable Long id) {
         JobPost jobPost = jobPostService.getJobPostById(id)
                 .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + id));
-        return ResponseEntity.ok(jobPost);
+        return ResponseEntity.ok(new JobPostResponseDTO(jobPost));
     }
 
     // ENHANCED SEARCH WITH SKILL MATCHING
@@ -108,14 +119,14 @@ public class JobPostController {
         return ResponseEntity.ok(filterOptions);
     }
 
-    // UPDATE - Only for job owner company
+    // UPDATE - Using DTO instead of Entity
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
     public ResponseEntity<JobPost> updateJobPost(@PathVariable Long id,
-                                                 @Valid @RequestBody JobPost jobPost,
+                                                 @Valid @RequestBody JobPostDTO jobPostDTO,
                                                  HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
-        JobPost updatedJobPost = jobPostService.updateJobPost(id, jobPost, companyId);
+        JobPost updatedJobPost = jobPostService.updateJobPost(id, jobPostDTO, companyId);
         return ResponseEntity.ok(updatedJobPost);
     }
 

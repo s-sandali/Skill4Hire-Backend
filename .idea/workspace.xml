@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostResponseDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +64,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.Skill4HireApplication.executor": "Run",
-    "git-widget-placeholder": "SCRUM-91-backend-implement-job-search-api-by-keyword-type-location-salary-experience",
+    "git-widget-placeholder": "SCRUM-93-backend-implement-job-apply-api-link-candidate-→-job-application",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/User/Skill4Hire-Backend",

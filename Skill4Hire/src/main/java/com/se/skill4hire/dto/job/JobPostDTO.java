@@ -1,45 +1,30 @@
 package com.se.skill4hire.dto.job;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 
 public class JobPostDTO {
     private Long id;
+
+    @NotBlank(message = "Title is required")
     private String title;
+
+    @NotBlank(message = "Description is required")
     private String description;
+
     private String type;
     private String location;
+
+    @PositiveOrZero(message = "Salary must be positive or zero")
     private Double salary;
+
+    @PositiveOrZero(message = "Experience must be positive or zero")
     private Integer experience;
+
+    @NotNull(message = "Deadline is required")
     private LocalDate deadline;
-
-    // Default constructor
-    public JobPostDTO() {}
-
-    // Constructor for creating new job posts (without ID)
-    public JobPostDTO(String title, String description, String type, String location, 
-                     Double salary, Integer experience, LocalDate deadline) {
-        this.title = title;
-        this.description = description;
-        this.type = type;
-        this.location = location;
-        this.salary = salary;
-        this.experience = experience;
-        this.deadline = deadline;
-    }
-
-    // Full constructor
-    public JobPostDTO(Long id, String title, String description, String type, String location, 
-                     Double salary, Integer experience, LocalDate deadline) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.type = type;
-        this.location = location;
-        this.salary = salary;
-        this.experience = experience;
-        this.deadline = deadline;
-    }
-
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

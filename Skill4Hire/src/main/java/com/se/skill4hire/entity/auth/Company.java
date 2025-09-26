@@ -11,7 +11,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Company extends User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    private String email;
+    private String password;
     private String name;
     private String description;
     private String phone;
