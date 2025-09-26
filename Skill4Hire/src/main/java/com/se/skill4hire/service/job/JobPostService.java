@@ -128,4 +128,12 @@ public class JobPostService {
 
         return jobPostRepository.findAll(spec);
     }
+
+    public List<String> getDistinctJobTypes() {
+        return jobPostRepository.findDistinctTypes();
+    }
+
+    public List<String> getDistinctLocations() {
+        return jobPostRepository.findDistinctLocations();
+    }
 }

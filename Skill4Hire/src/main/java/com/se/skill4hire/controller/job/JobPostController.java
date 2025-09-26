@@ -1,7 +1,6 @@
 package com.se.skill4hire.controller.job;
 
 import com.se.skill4hire.entity.job.JobPost;
-import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
 import com.se.skill4hire.service.job.JobSearchService;
@@ -83,14 +82,6 @@ public class JobPostController {
                 candidateId, keyword, type, location, minSalary, maxExperience);
 
         return ResponseEntity.ok(jobs);
-    }
-    public List<String> getDistinctJobTypes() {
-        JobPostRepository jobPostRepository;
-        return jobPostRepository.findDistinctTypes();
-    }
-
-    public List<String> getDistinctLocations() {
-        return jobPostRepository.findDistinctLocations();
     }
 
     // GET FEATURED JOBS (active jobs with recent deadline)
