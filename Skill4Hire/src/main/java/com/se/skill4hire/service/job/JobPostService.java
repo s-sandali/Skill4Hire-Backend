@@ -1,8 +1,8 @@
 package com.se.skill4hire.service.job;
 
-import com.se.skill4hire.entity.JobPost;
+import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.auth.Company;
-import com.se.skill4hire.repository.JobPostRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import jakarta.transaction.Transactional;
@@ -103,5 +103,27 @@ public class JobPostService {
                 .stream()
                 .filter(job -> job.getCompany().getId().equals(companyId))
                 .toList();
+    }
+    // Add to JobPostService
+    public List<JobPost> searchJobs(String keyword, String type, String location, Double minSalary, Integer maxExperience) {
+        Specification<JobPost> spec = Specification.where(JobPostSpecifications.isActive());
+
+        if (keyword != null && !keyword.isEmpty()) {
+            spec = spec.and(JobPostSpecifications.titleOrDescriptionContains(keyword));
+        }
+        if (type != null) {
+            spec = spec.and(JobPostSpecifications.typeEquals(type));
+        }
+        if (location != null) {
+            spec = spec.and(JobPostSpecifications.locationEquals(location));
+        }
+        if (minSalary != null) {
+            spec = spec.and(JobPostSpecifications.salaryAtLeast(minSalary));
+        }
+        if (maxExperience != null) {
+            spec = spec.and(JobPostSpecifications.experienceAtMost(maxExperience));
+        }
+
+        return jobPostRepository.findAll(spec);
     }
 }

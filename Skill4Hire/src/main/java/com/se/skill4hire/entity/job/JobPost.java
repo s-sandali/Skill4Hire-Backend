@@ -1,4 +1,4 @@
-package com.se.skill4hire.entity;
+package com.se.skill4hire.entity.job;
 
 import com.se.skill4hire.entity.auth.Company;
 import jakarta.persistence.*;

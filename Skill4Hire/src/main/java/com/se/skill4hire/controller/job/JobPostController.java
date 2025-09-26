@@ -1,6 +1,6 @@
-package com.se.skill4hire.controller;
+package com.se.skill4hire.controller.job;
 
-import com.se.skill4hire.entity.JobPost;
+import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
 import jakarta.servlet.http.HttpSession;
@@ -93,5 +93,16 @@ public class JobPostController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(jobPosts);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<JobPost>> searchJobs(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "minSalary", required = false) Double minSalary,
+            @RequestParam(value = "maxExperience", required = false) Integer maxExperience) {
+
+        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxExperience);
+        return ResponseEntity.ok(jobs);
     }
 }
