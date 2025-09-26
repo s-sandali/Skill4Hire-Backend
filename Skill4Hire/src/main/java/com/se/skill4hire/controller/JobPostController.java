@@ -29,7 +29,7 @@ public class JobPostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJobPost);
     }
 
-    // GET ALL ACTIVE JOBS (for candidates - public)
+    // GET ALL ACTIVE JOBS (for candidates - public) - UPDATED
     @GetMapping
     public ResponseEntity<List<JobPost>> getAllActiveJobPosts() {
         List<JobPost> jobPosts = jobPostService.getActiveJobPosts();
@@ -76,7 +76,7 @@ public class JobPostController {
         return ResponseEntity.ok("Job deleted successfully with id: " + id);
     }
 
-    // EXISTING FILTER ENDPOINTS (public)
+    // EXISTING FILTER ENDPOINTS (public) - FIXED
     @GetMapping("/type/{type}")
     public ResponseEntity<List<JobPost>> getJobPostsByType(@PathVariable String type) {
         List<JobPost> jobPosts = jobPostService.getJobPostsByType(type);
