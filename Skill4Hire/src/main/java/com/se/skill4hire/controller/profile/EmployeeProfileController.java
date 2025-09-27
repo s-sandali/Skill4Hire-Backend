@@ -1,53 +1,64 @@
 package com.se.skill4hire.controller.profile;
 
 import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
+import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import com.se.skill4hire.service.profile.EmployeeProfileService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employees")
+@RequiredArgsConstructor
 public class EmployeeProfileController {
 
-    private final EmployeeProfileService service;
+    private final EmployeeProfileService employeeProfileService;
 
-    public EmployeeProfileController(EmployeeProfileService service) {
-        this.service = service;
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<EmployeeProfileDTO> getProfile(HttpSession session) {
+        Long employeeId = (Long) session.getAttribute("userId");
+        EmployeeProfileDTO profile = employeeProfileService.getProfile(employeeId);
+        return ResponseEntity.ok(profile);
     }
 
-    // Create profile
-    // POST /api/employees/profile
-    @PostMapping("/profile")
-    public ResponseEntity<EmployeeProfileDTO> createProfile(@Valid @RequestBody EmployeeProfileDTO dto,
-                                                            UriComponentsBuilder uriBuilder) {
-        EmployeeProfileDTO created = service.create(dto);
-        return ResponseEntity
-                .created(uriBuilder.path("/api/employees/profile/{id}").build(created.getId()))
-                .body(created); // 201 Created
+    @PutMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<EmployeeProfileDTO> updateProfile(
+            @Valid @RequestBody EmployeeProfileDTO profileDTO,
+            HttpSession session) {
+        Long employeeId = (Long) session.getAttribute("userId");
+        EmployeeProfileDTO updatedProfile = employeeProfileService.updateProfile(employeeId, profileDTO);
+        return ResponseEntity.ok(updatedProfile);
     }
 
-    // Get profile by id
-    // GET /api/employees/profile/{id}
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<EmployeeProfileDTO> getProfile(@PathVariable Long id) {
-        return ResponseEntity.ok(service.get(id)); // 200 OK
+    @GetMapping("/profile/completeness")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<ProfileCompletenessDTO> getProfileCompleteness(HttpSession session) {
+        Long employeeId = (Long) session.getAttribute("userId");
+        ProfileCompletenessDTO completeness = employeeProfileService.getProfileCompleteness(employeeId);
+        return ResponseEntity.ok(completeness);
     }
 
-    // Update profile
-    // PUT /api/employees/profile/{id}
-    @PutMapping("/profile/{id}")
-    public ResponseEntity<EmployeeProfileDTO> updateProfile(@PathVariable Long id,
-                                                            @Valid @RequestBody EmployeeProfileDTO dto) {
-        return ResponseEntity.ok(service.update(id, dto)); // 200 OK
-    }
+    @PostMapping("/upload/profile-picture")
+    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    public ResponseEntity<Map<String, String>> uploadProfilePicture(
+            @RequestParam("profilePicture") MultipartFile file,
+            HttpSession session) {
+        Long employeeId = (Long) session.getAttribute("userId");
+        String fileName = employeeProfileService.uploadProfilePicture(employeeId, file);
 
-    // Deactivate (soft delete)
-    // DELETE /api/employees/profile/{id}
-    @DeleteMapping("/profile/{id}")
-    public ResponseEntity<Void> deleteOrDeactivate(@PathVariable Long id) {
-        service.deactivate(id);
-        return ResponseEntity.ok().build(); // 200 OK (or 204 No Content)
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Profile picture uploaded successfully");
+        response.put("fileName", fileName);
+
+        return ResponseEntity.ok(response);
     }
 }
