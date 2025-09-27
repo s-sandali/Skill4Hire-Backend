@@ -15,6 +15,6 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     @Query("SELECT ep FROM EmployeeProfile ep WHERE ep.user.id = :userId")
     Optional<EmployeeProfile> findByUserId(@Param("userId") Long userId);
 
-    // Check if profile exists for user
+    // Check if Profile exists for user
     boolean existsByUser_Id(Long userId);
 }
