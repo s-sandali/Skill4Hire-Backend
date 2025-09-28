@@ -1,5 +1,6 @@
 package com.se.skill4hire.controller.job;
 
+import com.se.skill4hire.dto.job.JobPostDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.entity.auth.User;
 import com.se.skill4hire.entity.job.JobPost;
@@ -30,15 +31,40 @@ public class JobPostController {
     @Autowired
     private JobSearchService jobSearchService;
 
-    // CREATE - Only for companies
-    @PostMapping
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<JobPost> createJobPost(@Valid @RequestBody JobPost jobPost, HttpSession session) {
+   // Just the CREATE method - add this to your existing controller
+
+@PostMapping
+@PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest, HttpSession session) {
+    try {
         Long companyId = (Long) session.getAttribute("userId");
+        if (companyId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "User not authenticated"));
+        }
+        
+        System.out.println("📦 Creating job for company ID: " + companyId);
+        System.out.println("📦 Job data received: " + jobRequest);
+        
+        // Convert DTO to entity
+        JobPost jobPost = new JobPost();
+        jobPost.setTitle(jobRequest.getTitle());
+        jobPost.setDescription(jobRequest.getDescription());
+        jobPost.setType(jobRequest.getType());
+        jobPost.setLocation(jobRequest.getLocation());
+        jobPost.setSalary(jobRequest.getSalary());
+        jobPost.setExperience(jobRequest.getExperience());
+        jobPost.setDeadline(jobRequest.getDeadline());
+        
         JobPost createdJobPost = jobPostService.createJobPost(jobPost, companyId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJobPost);
+    } catch (Exception e) {
+        System.err.println("❌ Error creating job post: " + e.getMessage());
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(Map.of("message", "Failed to create job post: " + e.getMessage()));
     }
-
+}
     // GET ALL ACTIVE JOBS (for candidates - public)
     @GetMapping
     public ResponseEntity<List<JobPost>> getAllActiveJobPosts() {
@@ -52,18 +78,40 @@ public class JobPostController {
     // GET COMPANY'S JOBS (for company dashboard)
     @GetMapping("/my-jobs")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<List<JobPost>> getMyJobPosts(HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
-        List<JobPost> jobPosts = jobPostService.getJobPostsByCompany(companyId);
-        return ResponseEntity.ok(jobPosts);
+    public ResponseEntity<?> getMyJobPosts(HttpSession session) {
+        try {
+            Long companyId = (Long) session.getAttribute("userId");
+            if (companyId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "User not authenticated"));
+            }
+            
+            System.out.println("📦 Fetching jobs for company ID: " + companyId);
+            List<JobPost> jobPosts = jobPostService.getJobPostsByCompany(companyId);
+            System.out.println("📦 Found " + jobPosts.size() + " jobs");
+            return ResponseEntity.ok(jobPosts);
+        } catch (Exception e) {
+            System.err.println("❌ Error fetching company jobs: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Failed to fetch jobs: " + e.getMessage()));
+        }
     }
 
     // GET JOB BY ID (public)
     @GetMapping("/{id}")
-    public ResponseEntity<JobPost> getJobPostById(@PathVariable Long id) {
-        JobPost jobPost = jobPostService.getJobPostById(id)
-                .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + id));
-        return ResponseEntity.ok(jobPost);
+    public ResponseEntity<?> getJobPostById(@PathVariable Long id) {
+        try {
+            JobPost jobPost = jobPostService.getJobPostById(id)
+                    .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + id));
+            return ResponseEntity.ok(jobPost);
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Failed to fetch job: " + e.getMessage()));
+        }
     }
 
     // ENHANCED SEARCH WITH SKILL MATCHING
@@ -120,21 +168,54 @@ public class JobPostController {
     // UPDATE - Only for job owner company
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<JobPost> updateJobPost(@PathVariable Long id,
-                                                 @Valid @RequestBody JobPost jobPost,
-                                                 HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
-        JobPost updatedJobPost = jobPostService.updateJobPost(id, jobPost, companyId);
-        return ResponseEntity.ok(updatedJobPost);
+    public ResponseEntity<?> updateJobPost(@PathVariable Long id,
+                                         @Valid @RequestBody JobPost jobPost,
+                                         HttpSession session) {
+        try {
+            Long companyId = (Long) session.getAttribute("userId");
+            if (companyId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "User not authenticated"));
+            }
+            
+            System.out.println("📦 Updating job ID: " + id + " for company ID: " + companyId);
+            System.out.println("📦 Job data received: " + jobPost);
+            
+            JobPost updatedJobPost = jobPostService.updateJobPost(id, jobPost, companyId);
+            return ResponseEntity.ok(updatedJobPost);
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            System.err.println("❌ Error updating job post: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", "Failed to update job post: " + e.getMessage()));
+        }
     }
 
     // DELETE - Only for job owner company
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
-    public ResponseEntity<String> deleteJobPost(@PathVariable Long id, HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
-        jobPostService.deleteJobPost(id, companyId);
-        return ResponseEntity.ok("Job deleted successfully with id: " + id);
+    public ResponseEntity<?> deleteJobPost(@PathVariable Long id, HttpSession session) {
+        try {
+            Long companyId = (Long) session.getAttribute("userId");
+            if (companyId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "User not authenticated"));
+            }
+            
+            System.out.println("📦 Deleting job ID: " + id + " for company ID: " + companyId);
+            jobPostService.deleteJobPost(id, companyId);
+            return ResponseEntity.ok(Map.of("message", "Job deleted successfully with id: " + id));
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            System.err.println("❌ Error deleting job post: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Failed to delete job: " + e.getMessage()));
+        }
     }
 
     // EXISTING FILTER ENDPOINTS (public)
