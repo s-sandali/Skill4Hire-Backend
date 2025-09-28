@@ -76,9 +76,20 @@ public class ApplicationService {
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
-        dto.setRejectionReason(a.getRejectionReason());
-        dto.setDecisionAt(a.getDecisionAt());
-        dto.setDecidedBy(a.getDecidedBy());
+        
+        // Job details
+        if (a.getJobPost() != null) {
+            dto.setJobPostId(a.getJobPost().getId());
+            dto.setJobTitle(a.getJobPost().getTitle());
+            dto.setJobDescription(a.getJobPost().getDescription());
+            dto.setJobType(a.getJobPost().getType());
+            dto.setJobLocation(a.getJobPost().getLocation());
+            dto.setSalary(a.getJobPost().getSalary());
+            dto.setExperienceRequired(a.getJobPost().getExperience());
+            dto.setJobDeadline(a.getJobPost().getDeadline() != null ? 
+                a.getJobPost().getDeadline().atStartOfDay() : null);
+        }
+        
         return dto;
     }
 

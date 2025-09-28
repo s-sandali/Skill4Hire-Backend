@@ -4,16 +4,12 @@ import com.se.skill4hire.entity.auth.Company;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "job_posts")
-@Getter
-@Setter
 public class JobPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,5 +54,14 @@ public class JobPost {
     public enum JobStatus {
         ACTIVE, INACTIVE, FILLED, EXPIRED
     }
-
+    
+    // Explicit getters to ensure compilation
+    public Long getId() { return id; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public String getType() { return type; }
+    public String getLocation() { return location; }
+    public Double getSalary() { return salary; }
+    public Integer getExperience() { return experience; }
+    public LocalDate getDeadline() { return deadline; }
 }
