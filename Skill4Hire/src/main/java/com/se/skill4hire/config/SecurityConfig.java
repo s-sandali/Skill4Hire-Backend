@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,9 +33,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5175"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5714"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -62,8 +63,8 @@ public class SecurityConfig {
                                 "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
-                                // File upload endpoints (add these)
-                                "/uploads/**",
+                                "/api/jobposts/**",
+                                "/api/jobs/**",
                                 // Without /api prefix (in case it's being stripped somewhere)
                                 "/candidates/auth/register",
                                 "/candidates/auth/login",
@@ -75,7 +76,11 @@ public class SecurityConfig {
                                 "/admin/auth/login",
                                 "/auth/login",
                                 "/auth/logout",
-                                // Other public endpoints
+                                "/api/jobposts/search",  // Add this
+                                "/api/jobposts",         // Already exists but ensure it's public
+                                 "/api/jobposts/**",
+                               // This allows all jobpost endpoints publicly
+                                "/api/jobs/**",
                                 "/h2-console/**",
                                 "/h2-console",
                                 "/error/**",

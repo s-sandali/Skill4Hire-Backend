@@ -1,15 +1,19 @@
 package com.se.skill4hire.service.profile;
 
-import com.se.skill4hire.dto.profile.CandidateProfileDTO;
-import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
-import com.se.skill4hire.entity.profile.CandidateProfile;
+import com.se.skill4hire.dto.profile.CandidateProfileDTO; // ADD THIS IMPORT
+import com.se.skill4hire.dto.profile.ProfileCompletenessDTO; // ADD THIS IMPORT
+import com.se.skill4hire.entity.auth.Candidate;
+import com.se.skill4hire.entity.profile.*;
+import com.se.skill4hire.dto.profile.EducationDTO;
+import com.se.skill4hire.dto.profile.ExperienceDTO;
+import com.se.skill4hire.dto.profile.JobPreferencesDTO;
+import com.se.skill4hire.dto.profile.NotificationPreferencesDTO;
+import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import com.se.skill4hire.repository.profile.CandidateProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,50 +26,100 @@ import java.util.UUID;
 public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateProfileRepository candidateProfileRepository;
+    private final CandidateAuthRepository candidateAuthRepository;
     private static final String UPLOAD_DIR = "uploads/";
 
     @Override
     public CandidateProfileDTO getProfile(Long candidateId) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
-        return convertToDTO(candidate);
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
+        return convertToDTO(profile);
     }
 
     @Override
     public CandidateProfileDTO updateProfile(Long candidateId, CandidateProfileDTO profileDTO) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseGet(() -> createNewProfile(candidateId));
 
-        // Update fields from DTO
-        BeanUtils.copyProperties(profileDTO, candidate, "id", "user", "resumePath", "profilePicturePath");
+        // Update profile fields from DTO
+        profile.setPhoneNumber(profileDTO.getPhoneNumber());
+        profile.setLocation(profileDTO.getLocation());
+        profile.setDateOfBirth(profileDTO.getDateOfBirth());
+        profile.setTitle(profileDTO.getTitle());
+        profile.setHeadline(profileDTO.getHeadline());
+        profile.setSkills(profileDTO.getSkills());
 
-        // Calculate profile completeness
-        candidate.setProfileCompleteness(calculateCompleteness(candidate));
+        // Update embedded objects
+        if (profileDTO.getEducation() != null) {
+            if (profile.getEducation() == null) {
+                profile.setEducation(new Education());
+            }
+            profile.getEducation().setDegree(profileDTO.getEducation().getDegree());
+            profile.getEducation().setInstitution(profileDTO.getEducation().getInstitution());
+            profile.getEducation().setGraduationYear(profileDTO.getEducation().getGraduationYear());
+        }
 
-        CandidateProfile updatedCandidate = candidateProfileRepository.save(candidate);
-        return convertToDTO(updatedCandidate);
+        if (profileDTO.getExperience() != null) {
+            if (profile.getExperience() == null) {
+                profile.setExperience(new Experience());
+            }
+            profile.getExperience().setIsExperienced(profileDTO.getExperience().getIsExperienced());
+            profile.getExperience().setRole(profileDTO.getExperience().getRole());
+            profile.getExperience().setCompany(profileDTO.getExperience().getCompany());
+            profile.getExperience().setYearsOfExperience(profileDTO.getExperience().getYearsOfExperience());
+        }
+
+        if (profileDTO.getJobPreferences() != null) {
+            if (profile.getJobPreferences() == null) {
+                profile.setJobPreferences(new JobPreferences());
+            }
+            profile.getJobPreferences().setJobType(profileDTO.getJobPreferences().getJobType());
+            profile.getJobPreferences().setExpectedSalary(profileDTO.getJobPreferences().getExpectedSalary());
+            profile.getJobPreferences().setWillingToRelocate(profileDTO.getJobPreferences().getWillingToRelocate());
+        }
+
+        if (profileDTO.getNotificationPreferences() != null) {
+            if (profile.getNotificationPreferences() == null) {
+                profile.setNotificationPreferences(new NotificationPreferences());
+            }
+            profile.getNotificationPreferences().setEmailAlerts(profileDTO.getNotificationPreferences().getEmailAlerts());
+            profile.getNotificationPreferences().setInAppNotifications(profileDTO.getNotificationPreferences().getInAppNotifications());
+        }
+
+        profile.setProfileCompleteness(calculateCompleteness(profile));
+        CandidateProfile updatedProfile = candidateProfileRepository.save(profile);
+        return convertToDTO(updatedProfile);
+    }
+
+    private CandidateProfile createNewProfile(Long candidateId) {
+        Candidate authCandidate = candidateAuthRepository.findById(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Auth candidate not found with id: " + candidateId));
+
+        CandidateProfile newProfile = new CandidateProfile();
+        newProfile.setUser(authCandidate);
+        return candidateProfileRepository.save(newProfile);
     }
 
     @Override
     public ProfileCompletenessDTO getProfileCompleteness(Long candidateId) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
 
-        double completeness = calculateCompleteness(candidate);
+        double completeness = calculateCompleteness(profile);
         String message = getCompletenessMessage(completeness);
-
-        return new ProfileCompletenessDTO(completeness, message);
+        return new ProfileCompletenessDTO(completeness, message); // This now matches the constructor
     }
 
     @Override
     public String uploadResume(Long candidateId, MultipartFile file) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseGet(() -> createNewProfile(candidateId));
 
         try {
             String fileName = saveFile(file, "resumes");
-            candidate.setResumePath(fileName);
-            candidateProfileRepository.save(candidate);
+            profile.setResumePath(fileName);
+            profile.setProfileCompleteness(calculateCompleteness(profile));
+            candidateProfileRepository.save(profile);
             return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload resume", e);
@@ -74,13 +128,14 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public String uploadProfilePicture(Long candidateId, MultipartFile file) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseGet(() -> createNewProfile(candidateId));
 
         try {
             String fileName = saveFile(file, "profile-pictures");
-            candidate.setProfilePicturePath(fileName);
-            candidateProfileRepository.save(candidate);
+            profile.setProfilePicturePath(fileName);
+            profile.setProfileCompleteness(calculateCompleteness(profile));
+            candidateProfileRepository.save(profile);
             return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload profile picture", e);
@@ -89,68 +144,122 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<String> addSkill(Long candidateId, String skill) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseGet(() -> createNewProfile(candidateId));
 
-        if (!candidate.getSkills().contains(skill)) {
-            candidate.getSkills().add(skill);
-            candidateProfileRepository.save(candidate);
+        if (!profile.getSkills().contains(skill)) {
+            profile.getSkills().add(skill);
+            profile.setProfileCompleteness(calculateCompleteness(profile));
+            candidateProfileRepository.save(profile);
         }
 
-        return candidate.getSkills();
+        return profile.getSkills();
     }
 
     @Override
     public List<String> removeSkill(Long candidateId, String skill) {
-        CandidateProfile candidate = candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
 
-        candidate.getSkills().remove(skill);
-        candidateProfileRepository.save(candidate);
+        profile.getSkills().remove(skill);
+        profile.setProfileCompleteness(calculateCompleteness(profile));
+        candidateProfileRepository.save(profile);
 
-        return candidate.getSkills();
+        return profile.getSkills();
     }
 
     @Override
     public CandidateProfile getCandidateEntity(Long candidateId) {
-        return candidateProfileRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate not found with id: " + candidateId));
+        return candidateProfileRepository.findByUserId(candidateId)
+                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
     }
 
-    private CandidateProfileDTO convertToDTO(CandidateProfile candidate) {
+    private CandidateProfileDTO convertToDTO(CandidateProfile profile) {
         CandidateProfileDTO dto = new CandidateProfileDTO();
-        BeanUtils.copyProperties(candidate, dto);
+
+        // Get basic info from auth user
+        if (profile.getUser() != null) {
+            dto.setName(profile.getUser().getName());
+            dto.setEmail(profile.getUser().getEmail());
+        }
+
+        // Copy profile-specific fields
+        dto.setId(profile.getId());
+        dto.setPhoneNumber(profile.getPhoneNumber());
+        dto.setLocation(profile.getLocation());
+        dto.setDateOfBirth(profile.getDateOfBirth());
+        dto.setTitle(profile.getTitle());
+        dto.setHeadline(profile.getHeadline());
+        dto.setSkills(profile.getSkills());
+        dto.setResumePath(profile.getResumePath());
+        dto.setProfilePicturePath(profile.getProfilePicturePath());
+        dto.setProfileCompleteness(profile.getProfileCompleteness());
+        dto.setCreatedAt(profile.getCreatedAt());
+        dto.setUpdatedAt(profile.getUpdatedAt());
+
+        // Convert embedded objects to DTOs
+        if (profile.getEducation() != null) {
+            EducationDTO educationDTO = new EducationDTO();
+            educationDTO.setDegree(profile.getEducation().getDegree());
+            educationDTO.setInstitution(profile.getEducation().getInstitution());
+            educationDTO.setGraduationYear(profile.getEducation().getGraduationYear());
+            dto.setEducation(educationDTO);
+        }
+
+        if (profile.getExperience() != null) {
+            ExperienceDTO experienceDTO = new ExperienceDTO();
+            experienceDTO.setIsExperienced(profile.getExperience().getIsExperienced());
+            experienceDTO.setRole(profile.getExperience().getRole());
+            experienceDTO.setCompany(profile.getExperience().getCompany());
+            experienceDTO.setYearsOfExperience(profile.getExperience().getYearsOfExperience());
+            dto.setExperience(experienceDTO);
+        }
+
+        if (profile.getJobPreferences() != null) {
+            JobPreferencesDTO jobPrefDTO = new JobPreferencesDTO();
+            jobPrefDTO.setJobType(profile.getJobPreferences().getJobType());
+            jobPrefDTO.setExpectedSalary(profile.getJobPreferences().getExpectedSalary());
+            jobPrefDTO.setWillingToRelocate(profile.getJobPreferences().getWillingToRelocate());
+            dto.setJobPreferences(jobPrefDTO);
+        }
+
+        if (profile.getNotificationPreferences() != null) {
+            NotificationPreferencesDTO notifPrefDTO = new NotificationPreferencesDTO();
+            notifPrefDTO.setEmailAlerts(profile.getNotificationPreferences().getEmailAlerts());
+            notifPrefDTO.setInAppNotifications(profile.getNotificationPreferences().getInAppNotifications());
+            dto.setNotificationPreferences(notifPrefDTO);
+        }
+
         return dto;
     }
 
-    private double calculateCompleteness(CandidateProfile candidate) {
+    private double calculateCompleteness(CandidateProfile profile) {
         int totalFields = 10;
         int completedFields = 0;
 
-        if (candidate.getName() != null && !candidate.getName().isEmpty()) completedFields++;
-        if (candidate.getEmail() != null && !candidate.getEmail().isEmpty()) completedFields++;
-        if (candidate.getTitle() != null && !candidate.getTitle().isEmpty()) completedFields++;
-        if (candidate.getSkills() != null && !candidate.getSkills().isEmpty()) completedFields++;
+        // Check auth user fields
+        if (profile.getUser() != null) {
+            if (profile.getUser().getName() != null && !profile.getUser().getName().isEmpty()) completedFields++;
+            if (profile.getUser().getEmail() != null && !profile.getUser().getEmail().isEmpty()) completedFields++;
+        }
 
-        // Fix education check
-        if (candidate.getEducation() != null &&
-                candidate.getEducation().getDegree() != null &&
-                !candidate.getEducation().getDegree().isEmpty()) completedFields++;
+        // Check profile fields
+        if (profile.getTitle() != null && !profile.getTitle().isEmpty()) completedFields++;
+        if (profile.getSkills() != null && !profile.getSkills().isEmpty()) completedFields++;
 
-        // Fix experience check
-        if (candidate.getExperience() != null &&
-                candidate.getExperience().getRole() != null &&
-                !candidate.getExperience().getRole().isEmpty()) completedFields++;
+        if (profile.getEducation() != null && profile.getEducation().getDegree() != null &&
+                !profile.getEducation().getDegree().isEmpty()) completedFields++;
 
-        if (candidate.getResumePath() != null && !candidate.getResumePath().isEmpty()) completedFields++;
-        if (candidate.getLocation() != null && !candidate.getLocation().isEmpty()) completedFields++;
+        if (profile.getExperience() != null && profile.getExperience().getRole() != null &&
+                !profile.getExperience().getRole().isEmpty()) completedFields++;
 
-        // Fix job preferences check
-        if (candidate.getJobPreferences() != null &&
-                candidate.getJobPreferences().getJobType() != null &&
-                !candidate.getJobPreferences().getJobType().isEmpty()) completedFields++;
+        if (profile.getResumePath() != null && !profile.getResumePath().isEmpty()) completedFields++;
+        if (profile.getLocation() != null && !profile.getLocation().isEmpty()) completedFields++;
 
-        if (candidate.getProfilePicturePath() != null && !candidate.getProfilePicturePath().isEmpty()) completedFields++;
+        if (profile.getJobPreferences() != null && profile.getJobPreferences().getJobType() != null &&
+                !profile.getJobPreferences().getJobType().isEmpty()) completedFields++;
+
+        if (profile.getProfilePicturePath() != null && !profile.getProfilePicturePath().isEmpty()) completedFields++;
 
         return (double) completedFields / totalFields * 100;
     }

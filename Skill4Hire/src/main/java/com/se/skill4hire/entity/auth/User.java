@@ -79,9 +79,23 @@ public abstract class User {
         @Column(nullable = false)
         private Instant updatedAt;
 
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        private CvStatus status; // UPLOADED, UNDER_REVIEW, APPROVED, REJECTED
+
+        public enum CvStatus {
+            UPLOADED,
+            UNDER_REVIEW,
+            APPROVED,
+            REJECTED
+        }
+
         @PrePersist
         void onCreate() {
             this.createdAt = this.updatedAt = Instant.now();
+            if (this.status == null) {
+                this.status = CvStatus.UPLOADED;
+            }
         }
 
         @PreUpdate
@@ -107,6 +121,9 @@ public abstract class User {
 
         public Instant getCreatedAt() { return createdAt; }
         public Instant getUpdatedAt() { return updatedAt; }
+
+        public CvStatus getStatus() { return status; }
+        public void setStatus(CvStatus status) { this.status = status; }
     }
 
     @Entity
