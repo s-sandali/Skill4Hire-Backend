@@ -9,7 +9,12 @@ public class FileStorageConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Serve files from uploads directory
         registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
+
+        // Also add the API endpoint pattern that your frontend is using
+        registry.addResourceHandler("/api/uploads/**")
                 .addResourceLocations("file:uploads/");
     }
 }
