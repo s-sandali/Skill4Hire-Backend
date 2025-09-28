@@ -1,18 +1,34 @@
-// NotificationPreferences.java
 package com.se.skill4hire.entity.profile;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Embeddable
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class NotificationPreferences {
     private Boolean emailAlerts = true;
     private Boolean inAppNotifications = true;
+
+    public NotificationPreferences() {
+        // Default constructor
+    }
+
+    public NotificationPreferences(Boolean emailAlerts, Boolean inAppNotifications) {
+        this.emailAlerts = emailAlerts;
+        this.inAppNotifications = inAppNotifications;
+    }
+
+    public Boolean getEmailAlerts() {
+        return emailAlerts;
+    }
+
+    public void setEmailAlerts(Boolean emailAlerts) {
+        this.emailAlerts = emailAlerts;
+    }
+
+    public Boolean getInAppNotifications() {
+        return inAppNotifications;
+    }
+
+    public void setInAppNotifications(Boolean inAppNotifications) {
+        this.inAppNotifications = inAppNotifications;
+    }
 }

@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/candidates/{candidateId}/applications/companies")
-public class CandidateApplicationController {
+public class CandidateApplicationCompanyController {
 
     private final ApplicationService service;
 
-    public CandidateApplicationController(ApplicationService service) {
+    public CandidateApplicationCompanyController(ApplicationService service) {
         this.service = service;
     }
 

@@ -3,7 +3,6 @@ package com.se.skill4hire.controller.profile;
 import com.se.skill4hire.dto.profile.CompanyProfileDTO;
 import com.se.skill4hire.service.profile.CompanyProfileService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +14,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/companies") // updated path
-@RequiredArgsConstructor
 public class CompanyProfileController {
 
     private final CompanyProfileService companyService; // consistent service naming
+
+    public CompanyProfileController(CompanyProfileService companyService) {
+        this.companyService = companyService;
+    }
 
     @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")

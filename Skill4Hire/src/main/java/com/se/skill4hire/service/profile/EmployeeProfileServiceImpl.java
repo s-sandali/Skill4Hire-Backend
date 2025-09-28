@@ -7,7 +7,6 @@ import com.se.skill4hire.entity.EmployeeProfile;
 import com.se.skill4hire.repository.auth.EmployeeRepository;
 import com.se.skill4hire.repository.profile.EmployeeProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,12 +17,17 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
 
     private final EmployeeProfileRepository employeeProfileRepository;
     private final EmployeeRepository employeeRepository;
     private static final String UPLOAD_DIR = "uploads/";
+
+    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeProfileRepository,
+                                     EmployeeRepository employeeRepository) {
+        this.employeeProfileRepository = employeeProfileRepository;
+        this.employeeRepository = employeeRepository;
+    }
 
     @Override
     public EmployeeProfileDTO getProfile(Long employeeId) {
