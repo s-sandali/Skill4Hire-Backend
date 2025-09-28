@@ -22,4 +22,6 @@ public abstract class RegisterRequest {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public abstract String getLogo();
 }
