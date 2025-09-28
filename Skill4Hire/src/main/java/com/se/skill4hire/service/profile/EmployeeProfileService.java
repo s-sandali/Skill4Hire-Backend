@@ -1,9 +1,5 @@
 package com.se.skill4hire.service.profile;
 
-public class EmployeeProfileService {
-}
-package com.se.skill4hire.service.profile;
-
 import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
 import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import org.springframework.web.multipart.MultipartFile;
