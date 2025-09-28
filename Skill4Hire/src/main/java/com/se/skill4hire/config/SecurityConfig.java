@@ -34,7 +34,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5714"));
+
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5175"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -66,9 +68,11 @@ public class SecurityConfig {
                                 "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
-                                // File upload endpoints (add these)
+
+                                // File upload endpoints
                                 "/uploads/**",
-                                // Without /api prefix (in case it's being stripped somewhere)
+
+                                // Without /api prefix
                                 "/candidates/auth/register",
                                 "/candidates/auth/login",
                                 "/companies/auth/register",
@@ -79,6 +83,7 @@ public class SecurityConfig {
                                 "/admin/auth/login",
                                 "/auth/login",
                                 "/auth/logout",
+
                                 // Other public endpoints
                                 "/h2-console/**",
                                 "/h2-console",
@@ -98,7 +103,7 @@ public class SecurityConfig {
                                 "/api/admin/auth/me"
                         ).authenticated()
 
-                        // Role-specific endpoints (broader patterns come last)
+                        // Role-specific endpoints
                         .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ADMIN")
                         .requestMatchers("/api/companies/**").hasAnyAuthority("COMPANY", "ADMIN")
                         .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
@@ -106,33 +111,27 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                // Temporarily disable custom filter to test
-                // ENABLE the session authentication filter (remove the comment)
-                .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\\\"status\\\":401,\\\"error\\\":\\\"Unauthorized\\\"}");
-                        })
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\\\"status\\\":403,\\\"error\\\":\\\"Forbidden\\\"}");
-                        })
-                )
-                .headers(headers -> headers
-                        .frameOptions().sameOrigin()
-                )
+                // Add custom session authentication filter
+               .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+.exceptionHandling(ex -> ex
+        .authenticationEntryPoint((request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\"}");
+        })
+        .accessDeniedHandler((request, response, accessDeniedException) -> {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":403,\"error\":\"Forbidden\"}");
+        })
+)
+.headers(headers -> headers.frameOptions().sameOrigin())
+
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                 );
 
-
         return http.build();
     }
-
-
-
 }
