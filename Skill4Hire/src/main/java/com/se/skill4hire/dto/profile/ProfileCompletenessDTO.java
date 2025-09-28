@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileCompletenessDTO {
-    private Double completeness;
+    private double completenessPercentage; // CHANGED FROM 'completeness'
     private String message;
 }

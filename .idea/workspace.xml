@@ -4,7 +4,51 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)" />
+    <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/364cfd61-26dd-4410-988a-1dcecfa93d11.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/364cfd61-26dd-4410-988a-1dcecfa93d11/storage_v2/_src_/database/TESTDB.kGhKkw.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/364cfd61-26dd-4410-988a-1dcecfa93d11/storage_v2/_src_/database/TESTDB.kGhKkw/schema/INFORMATION_SCHEMA.NBgcMw.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/364cfd61-26dd-4410-988a-1dcecfa93d11/storage_v2/_src_/database/TESTDB.kGhKkw/schema/PUBLIC.aaZQjQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobSearchRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/EducationDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/ExperienceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/JobPreferencesDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/NotificationPreferencesDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/job/JobPost.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/job/JobPostSpecifications.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/job/JobPostRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/profile-pictures/35e11b67-c08b-4c0a-aaf0-8398105a2eb3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/profile-pictures/7c7ae2eb-eca7-48e6-92d9-82056f29a110.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/resumes/f19943ff-a253-4edb-b8ca-2cf2ac2efe04.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/resumes/facc56e6-f6fa-490e-b6d6-b89d30086a70.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/Skill4HireApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/Skill4HireApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobSearchDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/CandidateProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/CandidateProfileDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/ProfileCompletenessDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/ProfileCompletenessDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/JobPost.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/CandidateProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/CandidateProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Education.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Education.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Experience.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Experience.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/EmployeeProfileRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/JobPostRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/NotificationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CandidateProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CandidateProfileRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/JobNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/JobNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobSearchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateServiceImpl.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,18 +65,20 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "it23736832"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+
+    &quot;assignee&quot;: &quot;it23736832&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/s-sandali/Skill4Hire-Backend.git",
-    "accountId": "b88f44bb-ebff-41af-8d48-2e871031c556"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/s-sandali/Skill4Hire-Backend.git&quot;,
+
+    &quot;accountId&quot;: &quot;99be4021-ef51-463b-ba57-a01e9485f3b5&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -50,7 +96,7 @@
     "Application.Skill4HireApplication.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "SCRUM-98-Backend-Extend-Application-entity-with-status-field-Applied-Shortlisted",
+    "git-widget-placeholder": "Merging SCRUM-98-Backend-Extend-Application-entity-with-status-field-Applied-Shortlisted",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/User/Skill4Hire-Backend",
@@ -89,6 +135,14 @@
         <item itemvalue="Application.Skill4HireApplication" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

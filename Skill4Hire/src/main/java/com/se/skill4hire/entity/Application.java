@@ -1,5 +1,6 @@
 package com.se.skill4hire.entity;
 
+import com.se.skill4hire.entity.job.JobPost;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ public class Application {
     private String decidedBy;
 
     public enum ApplicationStatus { APPLIED, SHORTLISTED, REJECTED }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_post_id")
+    private JobPost jobPost;
 
     // Getters and setters
     public Long getId() { return id; }

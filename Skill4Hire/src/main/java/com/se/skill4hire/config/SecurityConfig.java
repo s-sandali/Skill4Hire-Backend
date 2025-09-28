@@ -3,7 +3,6 @@ package com.se.skill4hire.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
 
@@ -34,9 +32,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5175"));
-
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5714"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -52,8 +48,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        // Allow CORS preflight requests
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Public endpoints - authentication (MUST come first)
                         .requestMatchers(
                                 // Standard API endpoints
@@ -68,11 +62,9 @@ public class SecurityConfig {
                                 "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
-
-                                // File upload endpoints
-                                "/uploads/**",
-
-                                // Without /api prefix
+                                "/api/jobposts/**",
+                                "/api/jobs/**",
+                                // Without /api prefix (in case it's being stripped somewhere)
                                 "/candidates/auth/register",
                                 "/candidates/auth/login",
                                 "/companies/auth/register",
@@ -83,8 +75,11 @@ public class SecurityConfig {
                                 "/admin/auth/login",
                                 "/auth/login",
                                 "/auth/logout",
-
-                                // Other public endpoints
+                                "/api/jobposts/search",  // Add this
+                                "/api/jobposts",         // Already exists but ensure it's public
+                                 "/api/jobposts/**",
+                               // This allows all jobpost endpoints publicly
+                                "/api/jobs/**",
                                 "/h2-console/**",
                                 "/h2-console",
                                 "/error/**",
@@ -103,7 +98,7 @@ public class SecurityConfig {
                                 "/api/admin/auth/me"
                         ).authenticated()
 
-                        // Role-specific endpoints
+                        // Role-specific endpoints (broader patterns come last)
                         .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ADMIN")
                         .requestMatchers("/api/companies/**").hasAnyAuthority("COMPANY", "ADMIN")
                         .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
@@ -111,27 +106,21 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                // Add custom session authentication filter
-               .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-.exceptionHandling(ex -> ex
-        .authenticationEntryPoint((request, response, authException) -> {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\"}");
-        })
-        .accessDeniedHandler((request, response, accessDeniedException) -> {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"status\":403,\"error\":\"Forbidden\"}");
-        })
-)
-.headers(headers -> headers.frameOptions().sameOrigin())
-
+                // Temporarily disable custom filter to test
+                // ENABLE the session authentication filter (remove the comment)
+                .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers
+                        .frameOptions().sameOrigin()
+                )
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                 );
 
+
         return http.build();
     }
+
+
+
 }

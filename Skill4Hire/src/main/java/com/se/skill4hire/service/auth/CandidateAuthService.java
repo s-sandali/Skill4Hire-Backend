@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class CandidateAuthService implements BaseAuthService {
 
     private final CandidateAuthRepository candidateRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     public CandidateAuthService(CandidateAuthRepository candidateRepository,
