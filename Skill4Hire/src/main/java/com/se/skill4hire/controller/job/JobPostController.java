@@ -1,5 +1,7 @@
 package com.se.skill4hire.controller.job;
 
+import com.se.skill4hire.entity.Application;
+import com.se.skill4hire.entity.auth.User;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
@@ -12,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +107,12 @@ public class JobPostController {
         filterOptions.put("locations", jobPostService.getDistinctLocations());
         filterOptions.put("salaryRanges", List.of("0-30000", "30000-50000", "50000-70000", "70000-100000", "100000+"));
         filterOptions.put("experienceRanges", List.of("0-2", "2-5", "5-10", "10+"));
+        filterOptions.put("candidateStatuses", Arrays.stream(Application.ApplicationStatus.values())
+                .map(Enum::name)
+                .collect(Collectors.toList()));
+        filterOptions.put("cvStatuses", Arrays.stream(User.CandidateCv.CvStatus.values())
+                .map(Enum::name)
+                .collect(Collectors.toList()));
 
         return ResponseEntity.ok(filterOptions);
     }

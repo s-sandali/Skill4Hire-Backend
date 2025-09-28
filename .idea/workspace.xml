@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <changelist_data name="sasindibandara" email="sasindi.bandara2003@gmail.com" automatic="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,12 +16,17 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="sasindibandara &lt;sasindi.bandara2003@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -53,15 +58,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Skill4HireApplication.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.Skill4HireApplication.executor": "Run",
-    "git-widget-placeholder": "SCRUM-91-backend-implement-job-search-api-by-keyword-type-location-salary-experience",
+    "git-widget-placeholder": "SCRUM-98-Backend-Extend-Application-entity-with-status-field-Applied-Shortlisted",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/User/Skill4Hire-Backend",
@@ -73,7 +72,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Spring Boot.Skill4HireApplication">
+  <component name="RunManager" selected="Application.Skill4HireApplication">
     <configuration name="Skill4HireApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.se.skill4hire.Skill4HireApplication" />
       <module name="skill4hire" />
@@ -128,7 +127,31 @@
       <option name="project" value="LOCAL" />
       <updated>1757924212838</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <option name="closed" value="true" />
+      <created>1759035722870</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759035722870</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <option name="closed" value="true" />
+      <created>1759035757054</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759035757054</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
+      <option name="closed" value="true" />
+      <created>1759035781731</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759035781731</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,7 +167,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/CandidateProfile.java</url>
-          <line>20</line>
+          <line>22</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
