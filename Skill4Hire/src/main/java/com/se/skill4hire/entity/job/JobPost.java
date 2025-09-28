@@ -3,7 +3,6 @@ package com.se.skill4hire.entity.job;
 import com.se.skill4hire.entity.auth.Company;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +33,7 @@ public class JobPost {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    @NotNull(message = "Company is required")
+    // REMOVED: @NotNull annotation - company is set programmatically in service
     private Company company;
 
     @Enumerated(EnumType.STRING)
@@ -54,9 +53,7 @@ public class JobPost {
         updatedAt = LocalDateTime.now();
     }
 
-
     public enum JobStatus {
         ACTIVE, INACTIVE, FILLED, EXPIRED
     }
-
 }
