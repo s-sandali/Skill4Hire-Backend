@@ -1,15 +1,31 @@
 package com.se.skill4hire.dto.profile;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class NotificationPreferencesDTO {
-    private Boolean emailAlerts = true;
-    private Boolean inAppNotifications = true;
+    private Boolean emailAlerts;
+    private Boolean inAppNotifications;
+
+    public NotificationPreferencesDTO() {
+        // Default constructor
+    }
+
+    public NotificationPreferencesDTO(Boolean emailAlerts, Boolean inAppNotifications) {
+        this.emailAlerts = emailAlerts;
+        this.inAppNotifications = inAppNotifications;
+    }
+
+    public Boolean getEmailAlerts() {
+        return emailAlerts;
+    }
+
+    public void setEmailAlerts(Boolean emailAlerts) {
+        this.emailAlerts = emailAlerts;
+    }
+
+    public Boolean getInAppNotifications() {
+        return inAppNotifications;
+    }
+
+    public void setInAppNotifications(Boolean inAppNotifications) {
+        this.inAppNotifications = inAppNotifications;
+    }
 }

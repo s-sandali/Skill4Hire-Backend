@@ -11,7 +11,6 @@ import com.se.skill4hire.dto.profile.NotificationPreferencesDTO;
 import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import com.se.skill4hire.repository.profile.CandidateProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -22,12 +21,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class CandidateServiceImpl implements CandidateService {
 
     private final CandidateProfileRepository candidateProfileRepository;
     private final CandidateAuthRepository candidateAuthRepository;
     private static final String UPLOAD_DIR = "uploads/";
+
+    public CandidateServiceImpl(CandidateProfileRepository candidateProfileRepository,
+                                   CandidateAuthRepository candidateAuthRepository) {
+        this.candidateProfileRepository = candidateProfileRepository;
+        this.candidateAuthRepository = candidateAuthRepository;
+    }
 
     @Override
     public CandidateProfileDTO getProfile(Long candidateId) {

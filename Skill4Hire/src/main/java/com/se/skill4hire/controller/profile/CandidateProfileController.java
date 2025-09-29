@@ -5,7 +5,6 @@ import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import com.se.skill4hire.service.profile.CandidateService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +18,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/candidates")
-@RequiredArgsConstructor
 public class CandidateProfileController {
 
     private final CandidateService candidateService;
+
+    public CandidateProfileController(CandidateService candidateService) {
+        this.candidateService = candidateService;
+    }
 
     @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")

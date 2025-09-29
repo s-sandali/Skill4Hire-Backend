@@ -3,7 +3,6 @@ package com.se.skill4hire.service.profile;
 import com.se.skill4hire.dto.profile.CompanyProfileDTO;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,11 +11,16 @@ import java.io.IOException;
 import java.util.Base64;
 
 @Service
-@RequiredArgsConstructor
 public class CompanyProfileService {
 
     private final CompanyAuthRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public CompanyProfileService(CompanyAuthRepository companyRepository,
+                              PasswordEncoder passwordEncoder) {
+        this.companyRepository = companyRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public CompanyProfileDTO getProfile(Long companyId) {
         Company company = companyRepository.findById(companyId)
@@ -61,7 +65,7 @@ public class CompanyProfileService {
         companyRepository.save(company);
     }
 
-    // ✅ Update email
+    // Update email
     public void updateEmail(Long companyId, String newEmail) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
@@ -69,7 +73,7 @@ public class CompanyProfileService {
         companyRepository.save(company);
     }
 
-    // ✅ Delete account
+    // Delete account
     public void deleteAccount(Long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));

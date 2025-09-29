@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "application")
+@Table(name = "applications")
 public class Application {
 
     @Id
@@ -16,7 +16,6 @@ public class Application {
     @Column(nullable = false)
     private Long candidateId;
 
-    // Store the company directly to avoid missing relations in current codebase
     @Column(nullable = false)
     private Long companyId;
 
@@ -25,44 +24,41 @@ public class Application {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApplicationStatus status; // APPLIED, SHORTLISTED, REJECTED
+    private ApplicationStatus status;
 
     private LocalDateTime appliedAt;
-
-    private String rejectionReason;    // nullable, only set if REJECTED
-    private LocalDateTime decisionAt;  // when status was moved
+    private String rejectionReason;
+    private LocalDateTime decisionAt;
     private String decidedBy;
 
-    public enum ApplicationStatus { APPLIED, SHORTLISTED, REJECTED }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_post_id")
     private JobPost jobPost;
 
-    // Getters and setters
+    public enum ApplicationStatus {
+        APPLIED,
+        SHORTLISTED,
+        REJECTED
+    }
+    
+    // Explicit getters and setters to ensure compilation
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getCandidateId() { return candidateId; }
-    public void setCandidateId(Long candidateId) { this.candidateId = candidateId; }
-
     public Long getCompanyId() { return companyId; }
     public void setCompanyId(Long companyId) { this.companyId = companyId; }
-
     public String getCompanyName() { return companyName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
-
     public ApplicationStatus getStatus() { return status; }
     public void setStatus(ApplicationStatus status) { this.status = status; }
-
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public void setAppliedAt(LocalDateTime appliedAt) { this.appliedAt = appliedAt; }
-
+    public Long getCandidateId() { return candidateId; }
+    public void setCandidateId(Long candidateId) { this.candidateId = candidateId; }
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
-
     public LocalDateTime getDecisionAt() { return decisionAt; }
     public void setDecisionAt(LocalDateTime decisionAt) { this.decisionAt = decisionAt; }
-
     public String getDecidedBy() { return decidedBy; }
     public void setDecidedBy(String decidedBy) { this.decidedBy = decidedBy; }
+    public JobPost getJobPost() { return jobPost; }
+    public void setJobPost(JobPost jobPost) { this.jobPost = jobPost; }
 }
