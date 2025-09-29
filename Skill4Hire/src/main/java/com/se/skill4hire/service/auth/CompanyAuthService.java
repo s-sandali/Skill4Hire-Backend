@@ -2,6 +2,7 @@
 
 import com.se.skill4hire.dto.auth.*;
 import com.se.skill4hire.entity.auth.Company;
+// Ensure this import matches the actual location of CompanyAuthRepository
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,20 @@ public class CompanyAuthService {
             return new AuthResponse("Email already registered", false);
         }
 
-        Company company = new Company();
-        company.setName(request.getName());
-        company.setEmail(request.getEmail());
-        company.setPassword(passwordEncoder.encode(request.getPassword()));
+        Company company = new Company(
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName(),
+                request.getDescription(),
+                request.getPhone(),
+                request.getWebsite(),
+                request.getAddress(),
+                request.getFacebook(),
+                request.getLinkedin(),
+                request.getTwitter()
+        );
         company.setRole("COMPANY");
+        company.setLogo(request.getLogo());
 
         companyRepository.save(company);
 
@@ -40,7 +50,7 @@ public class CompanyAuthService {
                 true,
                 company.getId(),
                 company.getRole(),
-                company.getEmail()  // Include email for frontend
+                company.getEmail()
         );
     }
 
@@ -75,7 +85,7 @@ public class CompanyAuthService {
                 true,
                 company.getId(),
                 company.getRole(),
-                company.getEmail()  // Include email for frontend
+                company.getEmail()
         );
     }
 

@@ -14,13 +14,6 @@ public class AuthResponse {
         this.success = success;
     }
 
-    public AuthResponse(String message, boolean success, Long id, String role) {
-        this.message = message;
-        this.success = success;
-        this.id = id;
-        this.role = role;
-    }
-
     public AuthResponse(String message, boolean success, Long id, String role, String email) {
         this.message = message;
         this.success = success;
@@ -29,7 +22,7 @@ public class AuthResponse {
         this.email = email;
     }
 
-    // Getters and setters
+    // Getters / setters
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 

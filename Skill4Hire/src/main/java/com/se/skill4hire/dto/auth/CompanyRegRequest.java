@@ -1,7 +1,8 @@
 package com.se.skill4hire.dto.auth;
 
-public class CompanyRegRequest extends RegisterRequest {
-
+public class CompanyRegRequest {
+    private String email;
+    private String password;
     private String name;
     private String description;
     private String phone;
@@ -10,87 +11,39 @@ public class CompanyRegRequest extends RegisterRequest {
     private String facebook;
     private String linkedin;
     private String twitter;
+    private String logo;
 
-    public CompanyRegRequest() {}
+    // Getters / setters
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public CompanyRegRequest(String email, String password, String role,
-                                  String name, String description,
-                                  String phone, String website, String address,
-                                  String facebook, String linkedin, String twitter) {
-        super(email, password, role);
-        this.name = name;
-        this.description = description;
-        this.phone = phone;
-        this.website = website;
-        this.address = address;
-        this.facebook = facebook;
-        this.linkedin = linkedin;
-        this.twitter = twitter;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getWebsite() { return website; }
+    public void setWebsite(String website) { this.website = website; }
 
-    public String getPhone() {
-        return phone;
-    }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+    public String getFacebook() { return facebook; }
+    public void setFacebook(String facebook) { this.facebook = facebook; }
 
-    public String getWebsite() {
-        return website;
-    }
+    public String getLinkedin() { return linkedin; }
+    public void setLinkedin(String linkedin) { this.linkedin = linkedin; }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
+    public String getTwitter() { return twitter; }
+    public void setTwitter(String twitter) { this.twitter = twitter; }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getFacebook() {
-        return facebook;
-    }
-
-    public void setFacebook(String facebook) {
-        this.facebook = facebook;
-    }
-
-    public String getLinkedin() {
-        return linkedin;
-    }
-
-    public void setLinkedin(String linkedin) {
-        this.linkedin = linkedin;
-    }
-
-    public String getTwitter() {
-        return twitter;
-    }
-
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
-    }
-
-    // Getters and Setters...
+    public String getLogo() { return logo; }
+    public void setLogo(String logo) { this.logo = logo; }
 }
