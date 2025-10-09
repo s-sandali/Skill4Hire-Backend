@@ -6,128 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <changelist_data name="sasindibandara" email="sasindi.bandara2003@gmail.com" automatic="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/Skill4Hire/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/run.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/MigrationConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/migration/MigrationRunner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/src/main/resources/application-migration.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/Skill4HireApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/Skill4HireApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SessionAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SessionAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateApplicationCompanyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateApplicationCompanyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateApplicationsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateCvController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateCvController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateStateController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateStateController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/SimpleCandidateController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/SimpleCandidateController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/application/CandidateApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/application/CandidateApplicationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/application/CandidateApplicationTrackingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/application/CandidateApplicationTrackingController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CandidateAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CandidateAuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CompanyAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/auth/CompanyAuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/job/JobPostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CandidateProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CandidateProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CompanyProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/CompanyProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/EmployeeProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/profile/EmployeeProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/application/ApplicationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/application/ApplicationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/auth/AuthResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/auth/AuthResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/job/JobPostDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/CandidateProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/CandidateProfileDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/EmployeeProfileDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/EmployeeProfileDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/JobPreferencesDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/JobPreferencesDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/NotificationPreferencesDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/dto/profile/NotificationPreferencesDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/CompanyProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/CompanyProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/EmployeeProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/EmployeeProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/Notification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Candidate.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Candidate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Company.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Company.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/auth/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/candidate/CandidateCv.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/candidate/CandidateCv.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/job/JobPost.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/job/JobPost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/job/JobPostSpecifications.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/CandidateProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/CandidateProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Education.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Education.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Experience.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/Experience.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/JobPreferences.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/JobPreferences.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/NotificationPreferences.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/entity/profile/NotificationPreferences.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/ApplicationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/ApplicationRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/CandidateCvRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/CandidateCvRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/CandidatePreferredJobRoleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/CandidatePreferredJobRoleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/CandidateAuthRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/CandidateAuthRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/CompanyAuthRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/CompanyAuthRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/auth/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/job/JobPostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/job/JobPostRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CandidateProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CandidateProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CompanyProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/CompanyProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/EmployeeProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/repository/profile/EmployeeProfileRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/CandidateCvService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/CandidateCvService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/application/ApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/application/ApplicationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/application/CandidateApplicationTrackingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/application/CandidateApplicationTrackingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/UnifiedAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/UnifiedAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/ApplicationNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/ApplicationNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobPostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobSearchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/job/JobSearchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CandidateServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CompanyProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/CompanyProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/EmployeeProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/EmployeeProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/EmployeeProfileServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/profile/EmployeeProfileServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/0570d6d6-77dc-4e74-aaca-4553b926eff2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/09cd58a3-7ac6-4597-b31b-79861ac4b112.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/13737e11-27fc-4c02-9ea2-aa39e43ddbe7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/1f7aacee-fd88-4b31-a2a3-ab3b06291998.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/2fd2c877-b230-4467-bda6-df66194e21bd.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/31509d72-349b-4c29-9450-921260c97cee.gif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/35e11b67-c08b-4c0a-aaf0-8398105a2eb3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/3b6ce042-aaba-4e9b-850b-7da1707e36a5.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/4bc50520-0914-44ed-9eaf-cb3042d1c541.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/501f058c-36d0-485e-b388-03576bd8b531.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/63f4fe4d-7cf8-405b-96e0-5a6663fe0ead.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/7c7ae2eb-eca7-48e6-92d9-82056f29a110.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/7f8ac09b-3436-4c53-9240-413d55f14ad1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/81bcc282-b259-4ae0-9d2f-b451be3a3e2c.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/85b71730-33ad-40f7-a7df-8d6fc3cd779e.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/902d1e16-fcca-4ef9-98ca-eeb37bbebeda.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/992d1787-5ff9-40b7-abf0-be98052e705a.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/a46cf525-b598-4e8a-a767-5acec8b07d0e.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/a96e46e7-14a9-45cd-ab89-271fd6a1546d.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/ac387361-bac3-4f78-8b7e-62b8b4539b5b.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/d8bed423-a6cc-4503-94d7-33c762dcc2bb.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/e752d54e-5ad9-41c8-b9cd-58c2e157a593.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/profile-pictures/fc9eea84-4baa-4c4b-946d-1b63d5f7ce1f.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/09d61e1f-9918-4c23-b412-f7ddd9a704e6.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/1fd73013-dcbb-4367-b62c-bd026e3099a0.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/23e4bfbb-6e83-4820-b0be-d928b614d28e.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/274a1ce4-b1b8-4c56-9acf-03c8763d88c4.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/2c93ca6b-eae2-4a0d-a809-455746866c23.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/43e5420a-e3ad-4636-8897-1558634593cc.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/543ae434-27ac-415e-97ab-bcb029676a8c.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/64f3d101-b594-4218-8567-7226d92d3fac.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/658bad18-ebc4-4496-9204-fd98b1dbb21a.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/6aa49999-e7aa-4f33-8af5-d2814a5dbf40.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/8a7c5543-84e5-48c8-8084-614b8c5bb8e0.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/9b879778-a836-4a80-9e78-079404d9cf99.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/a3298224-5330-4c81-a022-0b167dadd2e2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/a825b46c-39ad-4ed2-b507-5b021d1083f0.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/a8dfe073-bd51-4829-a3ac-25044b077409.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/aa9c1ca7-dba8-41fe-81b6-1ac67e52d1f0.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/be23fa06-df6e-4e84-8bf2-0e32eda8fa69.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/bf42b617-8057-4bc1-b8f4-9de0c634377a.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/caf57238-811c-4b7c-b1dc-73251381b17d.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/cd3bd7c2-9d34-43b0-b025-00b820919151.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/d38121a0-3a3a-4284-85a9-f41c41c65061.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/d9077bcd-4080-405e-a080-0ecd417443c1.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/ebc0054b-31f4-4df8-86ea-2dff7dd7f452.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/f19943ff-a253-4edb-b8ca-2cf2ac2efe04.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/fa3790fc-29ac-409b-b865-64f3af1958db.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uploads/resumes/facc56e6-f6fa-490e-b6d6-b89d30086a70.pdf" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +65,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.Skill4HireApplication.executor": "Run",
-    "git-widget-placeholder": "Merging SCRUM-99-Backend-API-to-get-all-applications-for-a-candidate",
+    "git-widget-placeholder": "SCRUM-99-Backend-API-to-get-all-applications-for-a-candidate",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/User/Skill4Hire-Backend",

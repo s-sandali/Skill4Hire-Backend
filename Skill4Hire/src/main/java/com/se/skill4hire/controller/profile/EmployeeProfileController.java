@@ -75,7 +75,7 @@ public class EmployeeProfileController {
 
     @PutMapping("/applications/{applicationId}/status")
     @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<ApplicationDTO> updateApplicationStatus(@PathVariable Long applicationId,
+    public ResponseEntity<ApplicationDTO> updateApplicationStatus(@PathVariable String applicationId,
                                                                   @Valid @RequestBody ApplicationStatusUpdateRequest request,
                                                                   HttpSession session) {
         Application.ApplicationStatus status = parseStatus(request.getStatus());
@@ -83,7 +83,7 @@ public class EmployeeProfileController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rejection reason is required when rejecting an application");
         }
 
-        Long employeeId = (Long) session.getAttribute("userId");
+        String employeeId = (String) session.getAttribute("userId");
         String decidedBy = employeeId != null ? "EMPLOYEE_" + employeeId : "EMPLOYEE";
 
         ApplicationDTO updated = applicationService.updateStatus(applicationId, status, request.getReason(), decidedBy);
