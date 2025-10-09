@@ -27,8 +27,6 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             "/api/companies/auth/login",
             "/api/employees/auth/register",
             "/api/employees/auth/login",
-            "/api/admin/auth/register",
-            "/api/admin/auth/login",
             "/api/auth/login",
             "/api/auth/logout",
             "/h2-console",

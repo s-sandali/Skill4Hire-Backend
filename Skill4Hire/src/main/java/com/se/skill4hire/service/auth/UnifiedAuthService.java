@@ -5,8 +5,6 @@ import com.se.skill4hire.dto.auth.AuthResponse;
 import com.se.skill4hire.entity.auth.Candidate;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.entity.auth.Employee;
-import com.se.skill4hire.entity.auth.Admin;
-import com.se.skill4hire.repository.auth.AdminRepository;
 import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
 import com.se.skill4hire.repository.auth.EmployeeRepository;
@@ -21,18 +19,15 @@ public class UnifiedAuthService {
     private final CandidateAuthRepository candidateAuthRepository;
     private final CompanyAuthRepository companyRepository;
     private final EmployeeRepository employeeRepository;
-    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UnifiedAuthService(CandidateAuthRepository candidateAuthRepository,
                               CompanyAuthRepository companyRepository,
                               EmployeeRepository employeeRepository,
-                              AdminRepository adminRepository,
                               PasswordEncoder passwordEncoder) {
         this.candidateAuthRepository = candidateAuthRepository;
         this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
-        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -61,14 +56,6 @@ public class UnifiedAuthService {
             return new AuthResponse("Login successful", true, employee.getId(), employee.getRole());
         }
 
-
-        // Check admins
-        Admin admin = adminRepository.findByEmail(request.getEmail());
-        if (admin != null && passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-            session.setAttribute("userId", admin.getId());
-            session.setAttribute("role", admin.getRole());
-            return new AuthResponse("Login successful", true, admin.getId(), admin.getRole());
-        }
 
 
         return new AuthResponse("Invalid credentials", false);

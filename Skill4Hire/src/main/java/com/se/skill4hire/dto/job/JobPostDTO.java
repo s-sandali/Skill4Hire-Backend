@@ -30,4 +30,19 @@ public class JobPostDTO {
     private LocalDate deadline;
 
     // No company field - it's set from session in the controller
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public Double getSalary() { return salary; }
+    public void setSalary(Double salary) { this.salary = salary; }
+    public Integer getExperience() { return experience; }
+    public void setExperience(Integer experience) { this.experience = experience; }
+    public java.time.LocalDate getDeadline() { return deadline; }
+    public void setDeadline(java.time.LocalDate deadline) { this.deadline = deadline; }
 }

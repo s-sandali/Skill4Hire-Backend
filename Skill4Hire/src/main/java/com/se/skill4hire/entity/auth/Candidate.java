@@ -28,4 +28,6 @@ public class Candidate extends User {
     public void setRole(String role) {
         super.setRole(role); // store role in User
     }
+
+    public Long getId() { return super.getId(); }
 }

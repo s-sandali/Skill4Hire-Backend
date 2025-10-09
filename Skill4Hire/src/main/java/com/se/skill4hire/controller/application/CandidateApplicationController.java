@@ -26,14 +26,14 @@ public class CandidateApplicationController {
     }
 
     @GetMapping("/summary")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<ApplicationService.Summary> getApplicationSummary(HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         return ResponseEntity.ok(applicationService.summary(candidateId));
     }
 
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatus(@PathVariable String status,
                                                                         HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
@@ -42,7 +42,7 @@ public class CandidateApplicationController {
     }
 
     @GetMapping("/status")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatusQuery(@RequestParam("status") String status,
                                                                              HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");

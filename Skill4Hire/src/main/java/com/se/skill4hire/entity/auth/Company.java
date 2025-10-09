@@ -111,4 +111,6 @@ public class Company extends User {
     public void setRole(String role) {
         super.setRole(role);
     }
+
+    public Long getId() { return super.getId(); }
 }
