@@ -27,7 +27,7 @@ public class CandidateProfileController {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<CandidateProfileDTO> getProfile(HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         CandidateProfileDTO profile = candidateService.getProfile(candidateId);
@@ -35,7 +35,7 @@ public class CandidateProfileController {
     }
 
     @PutMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<CandidateProfileDTO> updateProfile(
             @Valid @RequestBody CandidateProfileDTO profileDTO,
             HttpSession session) {
@@ -45,7 +45,7 @@ public class CandidateProfileController {
     }
 
     @GetMapping("/profile/completeness")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<ProfileCompletenessDTO> getProfileCompleteness(HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         ProfileCompletenessDTO completeness = candidateService.getProfileCompleteness(candidateId);
@@ -53,7 +53,7 @@ public class CandidateProfileController {
     }
 
     @PostMapping("/upload/resume")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<Map<String, String>> uploadResume(
             @RequestParam("resume") MultipartFile file,
             HttpSession session) {
@@ -68,7 +68,7 @@ public class CandidateProfileController {
     }
 
     @PostMapping("/upload/profile-picture")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {
@@ -83,7 +83,7 @@ public class CandidateProfileController {
     }
 
     @PostMapping("/skills")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<String>> addSkill(
             @RequestParam("skill") String skill,  // Fixed parameter name
             HttpSession session) {
@@ -93,7 +93,7 @@ public class CandidateProfileController {
     }
 
     @DeleteMapping("/skills/{skill}")
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<String>> removeSkill(
             @PathVariable String skill,
             HttpSession session) {

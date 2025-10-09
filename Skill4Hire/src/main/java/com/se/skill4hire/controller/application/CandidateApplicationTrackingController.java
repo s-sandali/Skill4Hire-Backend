@@ -22,10 +22,9 @@ public class CandidateApplicationTrackingController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('CANDIDATE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(HttpSession session) {
         Long candidateId = (Long) session.getAttribute("userId");
         return ResponseEntity.ok(trackingService.getAllApplicationsForCandidate(candidateId));
     }
 }
-

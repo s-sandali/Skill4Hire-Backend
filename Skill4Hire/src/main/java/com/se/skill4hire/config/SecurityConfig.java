@@ -59,8 +59,6 @@ public class SecurityConfig {
                                 "/api/companies/auth/login",
                                 "/api/employees/auth/register",
                                 "/api/employees/auth/login",
-                                "/api/admin/auth/register",
-                                "/api/admin/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
                                 "/api/jobposts/**",
@@ -72,8 +70,6 @@ public class SecurityConfig {
                                 "/companies/auth/login",
                                 "/employees/auth/register",
                                 "/employees/auth/login",
-                                "/admin/auth/register",
-                                "/admin/auth/login",
                                 "/auth/login",
                                 "/auth/logout",
                                 "/api/jobposts/search",  // Add this
@@ -96,16 +92,13 @@ public class SecurityConfig {
                                 "/api/companies/auth/logout",
                                 "/api/companies/auth/me",
                                 "/api/employees/auth/logout",
-                                "/api/employees/auth/me",
-                                "/api/admin/auth/logout",
-                                "/api/admin/auth/me"
+                                "/api/employees/auth/me"
                         ).authenticated()
 
                         // Role-specific endpoints (broader patterns come last)
-                        .requestMatchers("/api/candidates/**").hasAnyAuthority("CANDIDATE", "ADMIN")
-                        .requestMatchers("/api/companies/**").hasAnyAuthority("COMPANY", "ADMIN")
-                        .requestMatchers("/api/employees/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
-                        .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/candidates/**").hasAuthority("CANDIDATE")
+                        .requestMatchers("/api/companies/**").hasAuthority("COMPANY")
+                        .requestMatchers("/api/employees/**").hasAuthority("EMPLOYEE")
 
                         .anyRequest().authenticated()
                 )

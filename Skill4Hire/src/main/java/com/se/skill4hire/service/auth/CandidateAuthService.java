@@ -62,8 +62,7 @@ public class CandidateAuthService implements BaseAuthService {
     private boolean isValidCandidateRole(String role) {
         // Allow null/empty roles since we auto-set them
         return role == null || role.isEmpty() ||
-                "CANDIDATE".equalsIgnoreCase(role) ||
-                "ADMIN".equalsIgnoreCase(role);
+                "CANDIDATE".equalsIgnoreCase(role);
     }
     @Override
     public AuthResponse login(LoginRequest request, HttpSession session) {

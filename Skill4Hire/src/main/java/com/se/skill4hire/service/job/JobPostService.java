@@ -80,7 +80,7 @@ public class JobPostService {
         return jobPostRepository.findById(id);
     }
 
-    // Get all job posts (admin only) - UPDATED to include all statuses
+    // Get all job posts (employee only) - includes all statuses
     public List<JobPost> getAllJobPosts() {
         return jobPostRepository.findAll();
     }
