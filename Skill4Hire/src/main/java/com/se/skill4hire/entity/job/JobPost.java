@@ -1,27 +1,20 @@
 package com.se.skill4hire.entity.job;
 
-import com.se.skill4hire.entity.auth.Company;
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "job_posts")
-@Getter
-@Setter
+@Document(collection = "job_posts")
 public class JobPost {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @NotBlank(message = "Title is required")
     private String title;
 
-    @Column(columnDefinition = "TEXT")
     @NotBlank(message = "Description is required")
     private String description;
 
@@ -31,34 +24,21 @@ public class JobPost {
     private Integer experience; // in years
     private LocalDate deadline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    // REMOVED: @NotNull annotation - company is set programmatically in service
-    private Company company;
+    private String companyId; // Reference to Company by ID
 
-    @Enumerated(EnumType.STRING)
     private JobStatus status = JobStatus.ACTIVE;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+    public JobPost() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    public enum JobStatus {
-        ACTIVE, INACTIVE, FILLED, EXPIRED
-    }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Getters and setters...
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
@@ -71,14 +51,20 @@ public class JobPost {
     public void setSalary(Double salary) { this.salary = salary; }
     public Integer getExperience() { return experience; }
     public void setExperience(Integer experience) { this.experience = experience; }
-    public java.time.LocalDate getDeadline() { return deadline; }
-    public void setDeadline(java.time.LocalDate deadline) { this.deadline = deadline; }
-    public Company getCompany() { return company; }
-    public void setCompany(Company company) { this.company = company; }
+    public LocalDate getDeadline() { return deadline; }
+    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
+    public String getCompanyId() { return companyId; }
+    public void setCompanyId(String companyId) { this.companyId = companyId; }
     public JobStatus getStatus() { return status; }
     public void setStatus(JobStatus status) { this.status = status; }
-    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public enum JobStatus {
+        ACTIVE,
+        INACTIVE,
+        CLOSED
+    }
 }

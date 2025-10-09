@@ -23,7 +23,7 @@ public class CandidateApplicationsController {
      * Endpoint: GET /api/candidates/{candidateId}/applications
      */
     @GetMapping(value = "/{candidateId}/applications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationDTO>> getCandidateApplications(@PathVariable Long candidateId) {
+    public ResponseEntity<List<ApplicationDTO>> getCandidateApplications(@PathVariable String candidateId) {
         List<ApplicationDTO> applications = applicationService.list(candidateId, null);
         return ResponseEntity.ok(applications);
     }

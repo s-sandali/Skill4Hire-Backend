@@ -1,18 +1,46 @@
 package com.se.skill4hire.dto.profile;
 
 public class JobPreferencesDTO {
+    private String preferredRole;
+    private String preferredLocation;
+    private Double expectedSalary;
     private String jobType;
-    private String expectedSalary;
     private Boolean willingToRelocate;
 
     public JobPreferencesDTO() {
         // Default constructor
     }
 
-    public JobPreferencesDTO(String jobType, String expectedSalary, Boolean willingToRelocate) {
-        this.jobType = jobType;
+    public JobPreferencesDTO(String preferredRole, String preferredLocation, Double expectedSalary, String jobType, Boolean willingToRelocate) {
+        this.preferredRole = preferredRole;
+        this.preferredLocation = preferredLocation;
         this.expectedSalary = expectedSalary;
+        this.jobType = jobType;
         this.willingToRelocate = willingToRelocate;
+    }
+
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
+    }
+
+    public String getPreferredLocation() {
+        return preferredLocation;
+    }
+
+    public void setPreferredLocation(String preferredLocation) {
+        this.preferredLocation = preferredLocation;
+    }
+
+    public Double getExpectedSalary() {
+        return expectedSalary;
+    }
+
+    public void setExpectedSalary(Double expectedSalary) {
+        this.expectedSalary = expectedSalary;
     }
 
     public String getJobType() {
@@ -21,14 +49,6 @@ public class JobPreferencesDTO {
 
     public void setJobType(String jobType) {
         this.jobType = jobType;
-    }
-
-    public String getExpectedSalary() {
-        return expectedSalary;
-    }
-
-    public void setExpectedSalary(String expectedSalary) {
-        this.expectedSalary = expectedSalary;
     }
 
     public Boolean getWillingToRelocate() {

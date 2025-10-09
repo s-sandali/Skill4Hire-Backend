@@ -8,12 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CandidateService {
-    CandidateProfileDTO getProfile(Long candidateId);
-    CandidateProfileDTO updateProfile(Long candidateId, CandidateProfileDTO profileDTO);
-    ProfileCompletenessDTO getProfileCompleteness(Long candidateId);
-    String uploadResume(Long candidateId, MultipartFile file);
-    String uploadProfilePicture(Long candidateId, MultipartFile file);
-    List<String> addSkill(Long candidateId, String skill);
-    List<String> removeSkill(Long candidateId, String skill);
-    CandidateProfile getCandidateEntity(Long candidateId);
+    CandidateProfileDTO getProfile(String candidateId);
+    CandidateProfileDTO updateProfile(String candidateId, CandidateProfileDTO profileDTO);
+    ProfileCompletenessDTO getProfileCompleteness(String candidateId);
+    String uploadResume(String candidateId, MultipartFile file);
+    String uploadProfilePicture(String candidateId, MultipartFile file);
+    List<String> addSkill(String candidateId, String skill);
+    List<String> removeSkill(String candidateId, String skill);
+    CandidateProfile getCandidateEntity(String candidateId);
 }

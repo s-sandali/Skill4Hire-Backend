@@ -1,20 +1,12 @@
 package com.se.skill4hire.repository.profile;
 
 import com.se.skill4hire.entity.EmployeeProfile;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile, Long> {
-
-    // Find profile by auth user ID
-    @Query("SELECT ep FROM EmployeeProfile ep WHERE ep.user.id = :userId")
-    Optional<EmployeeProfile> findByUserId(@Param("userId") Long userId);
-
-    // Check if profile exists for user
-    boolean existsByUser_Id(Long userId);
+public interface EmployeeProfileRepository extends MongoRepository<EmployeeProfile, String> {
+    Optional<EmployeeProfile> findByUserId(String userId);
 }

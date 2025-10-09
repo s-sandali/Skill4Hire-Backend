@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class EmployeeProfileDTO {
-    private Long id;
+    private String id;
     private String name;
     private String email;
     private String phoneNumber;
@@ -26,7 +26,7 @@ public class EmployeeProfileDTO {
         // Default constructor
     }
 
-    public EmployeeProfileDTO(Long id, String name, String email, String phoneNumber, String location,
+    public EmployeeProfileDTO(String id, String name, String email, String phoneNumber, String location,
                               LocalDate dateOfBirth, String title, String headline, List<String> skills,
                               EducationDTO education, ExperienceDTO experience,
                               NotificationPreferencesDTO notificationPreferences, String profilePicturePath,
@@ -49,11 +49,11 @@ public class EmployeeProfileDTO {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,10 +1,8 @@
 package com.se.skill4hire.entity.auth;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "companies")
+@Document(collection = "companies")
 public class Company extends User {
 
     private String name;
@@ -111,6 +109,4 @@ public class Company extends User {
     public void setRole(String role) {
         super.setRole(role);
     }
-
-    public Long getId() { return super.getId(); }
 }

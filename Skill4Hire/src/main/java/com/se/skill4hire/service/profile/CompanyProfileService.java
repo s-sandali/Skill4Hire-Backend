@@ -22,13 +22,13 @@ public class CompanyProfileService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public CompanyProfileDTO getProfile(Long companyId) {
+    public CompanyProfileDTO getProfile(String companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
         return mapToDTO(company);
     }
 
-    public CompanyProfileDTO updateProfile(Long companyId, CompanyProfileDTO dto) {
+    public CompanyProfileDTO updateProfile(String companyId, CompanyProfileDTO dto) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
@@ -45,7 +45,7 @@ public class CompanyProfileService {
         return mapToDTO(company);
     }
 
-    public String updateLogo(Long companyId, MultipartFile file) throws IOException {
+    public String updateLogo(String companyId, MultipartFile file) throws IOException {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
@@ -55,7 +55,7 @@ public class CompanyProfileService {
         companyRepository.save(company);
         return base64Logo;
     }
-    public void changePassword(Long companyId, String oldPassword, String newPassword) {
+    public void changePassword(String companyId, String oldPassword, String newPassword) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
         if (!passwordEncoder.matches(oldPassword, company.getPassword())) {
@@ -66,7 +66,7 @@ public class CompanyProfileService {
     }
 
     // Update email
-    public void updateEmail(Long companyId, String newEmail) {
+    public void updateEmail(String companyId, String newEmail) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
         company.setEmail(newEmail);
@@ -74,7 +74,7 @@ public class CompanyProfileService {
     }
 
     // Delete account
-    public void deleteAccount(Long companyId) {
+    public void deleteAccount(String companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
         companyRepository.delete(company);

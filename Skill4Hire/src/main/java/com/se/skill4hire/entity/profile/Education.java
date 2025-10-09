@@ -1,9 +1,7 @@
 package com.se.skill4hire.entity.profile;
 
-import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
 
-@Embeddable
 public class Education {
     @Size(max = 100, message = "Degree must be less than 100 characters")
     private String degree;

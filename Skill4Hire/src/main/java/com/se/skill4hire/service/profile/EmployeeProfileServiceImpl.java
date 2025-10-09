@@ -6,7 +6,7 @@ import com.se.skill4hire.entity.auth.Employee;
 import com.se.skill4hire.entity.EmployeeProfile;
 import com.se.skill4hire.repository.auth.EmployeeRepository;
 import com.se.skill4hire.repository.profile.EmployeeProfileRepository;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,30 +14,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
 
-    private final EmployeeProfileRepository employeeProfileRepository;
-    private final EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeProfileRepository employeeProfileRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
     private static final String UPLOAD_DIR = "uploads/";
 
-    public EmployeeProfileServiceImpl(EmployeeProfileRepository employeeProfileRepository,
-                                     EmployeeRepository employeeRepository) {
-        this.employeeProfileRepository = employeeProfileRepository;
-        this.employeeRepository = employeeRepository;
-    }
-
     @Override
-    public EmployeeProfileDTO getProfile(Long employeeId) {
+    public EmployeeProfileDTO getProfile(String employeeId) {
         EmployeeProfile profile = employeeProfileRepository.findByUserId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee profile not found for user id: " + employeeId));
+                .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user id: " + employeeId));
         return convertToDTO(profile);
     }
 
     @Override
-    public EmployeeProfileDTO updateProfile(Long employeeId, EmployeeProfileDTO profileDTO) {
+    public EmployeeProfileDTO updateProfile(String employeeId, EmployeeProfileDTO profileDTO) {
         EmployeeProfile profile = employeeProfileRepository.findByUserId(employeeId)
                 .orElseGet(() -> createNewProfile(employeeId));
 
@@ -61,9 +58,9 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
     }
 
     @Override
-    public ProfileCompletenessDTO getProfileCompleteness(Long employeeId) {
+    public ProfileCompletenessDTO getProfileCompleteness(String employeeId) {
         EmployeeProfile profile = employeeProfileRepository.findByUserId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee profile not found for user id: " + employeeId));
+                .orElseThrow(() -> new NoSuchElementException("Employee profile not found for user id: " + employeeId));
 
         double completeness = calculateCompleteness(profile);
         String message = getCompletenessMessage(completeness);
@@ -71,7 +68,7 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
     }
 
     @Override
-    public String uploadProfilePicture(Long employeeId, MultipartFile file) {
+    public String uploadProfilePicture(String employeeId, MultipartFile file) {
         EmployeeProfile profile = employeeProfileRepository.findByUserId(employeeId)
                 .orElseGet(() -> createNewProfile(employeeId));
 
@@ -86,12 +83,12 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         }
     }
 
-    private EmployeeProfile createNewProfile(Long employeeId) {
+    private EmployeeProfile createNewProfile(String employeeId) {
         Employee authEmployee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Auth employee not found with id: " + employeeId));
+                .orElseThrow(() -> new NoSuchElementException("Auth employee not found with id: " + employeeId));
 
         EmployeeProfile newProfile = new EmployeeProfile();
-        newProfile.setUser(authEmployee);
+        newProfile.setUserId(employeeId);
         newProfile.setName(authEmployee.getName() != null ? authEmployee.getName() : "");
         newProfile.setEmail(authEmployee.getEmail() != null ? authEmployee.getEmail() : "");
         return employeeProfileRepository.save(newProfile);

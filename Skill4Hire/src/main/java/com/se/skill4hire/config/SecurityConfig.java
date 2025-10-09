@@ -79,8 +79,6 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 // This allows all jobpost endpoints publicly
                                 "/api/jobs/**",
-                                "/h2-console/**",
-                                "/h2-console",
                                 "/error/**",
                                 "/error"
                         ).permitAll()
@@ -106,7 +104,7 @@ public class SecurityConfig {
                 // ENABLE the session authentication filter (remove the comment)
                 .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
-                        .frameOptions().sameOrigin()
+                        .frameOptions(frame -> frame.sameOrigin())
                 )
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession()

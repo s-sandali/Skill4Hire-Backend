@@ -30,7 +30,7 @@ public class JobSearchService {
             "c++", "c#", "ruby", "php", "swift", "kotlin", "go", "rust"
     );
 
-    public List<JobWithMatchScore> searchJobsWithSkillMatching(Long candidateId, String keyword, String type,
+    public List<JobWithMatchScore> searchJobsWithSkillMatching(String candidateId, String keyword, String type,
                                                                String location, Double minSalary, Integer maxExperience) {
         // Get candidate skills
         CandidateProfile candidateProfile = candidateService.getCandidateEntity(candidateId);

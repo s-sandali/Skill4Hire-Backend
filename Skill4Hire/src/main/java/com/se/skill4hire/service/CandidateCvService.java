@@ -18,7 +18,7 @@ public class CandidateCvService {
     }
 
     @Transactional
-    public CandidateCv upload(Long candidateId, MultipartFile file) throws IOException {
+    public CandidateCv upload(String candidateId, MultipartFile file) throws IOException {
         if (candidateId == null) {
             throw new IllegalArgumentException("candidateId must not be null");
         }
@@ -35,7 +35,7 @@ public class CandidateCvService {
     }
 
     @Transactional(readOnly = true)
-    public CandidateCv getByCandidateId(Long candidateId) {
+    public CandidateCv getByCandidateId(String candidateId) {
         if (candidateId == null) {
             throw new IllegalArgumentException("candidateId must not be null");
         }
@@ -49,7 +49,7 @@ public class CandidateCvService {
     }
 
     @Transactional
-    public void deleteByCandidateId(Long candidateId) {
+    public void deleteByCandidateId(String candidateId) {
         if (candidateId == null) {
             throw new IllegalArgumentException("candidateId must not be null");
         }

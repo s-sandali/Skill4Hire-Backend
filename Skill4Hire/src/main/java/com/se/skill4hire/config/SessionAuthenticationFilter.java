@@ -29,9 +29,6 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             "/api/employees/auth/login",
             "/api/auth/login",
             "/api/auth/logout",
-            "/h2-console",
-            "/h2-console/",
-            "/h2-console/**",
             "/error",
             "/uploads/**"
     );
@@ -56,13 +53,13 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
-            Long userId = (Long) session.getAttribute("userId");
+            String userId = (String) session.getAttribute("userId");
             String role = (String) session.getAttribute("role");
 
             if (userId != null && role != null) {
                 // Create authentication token with proper role authority
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userId.toString(),
+                        userId,
                         null,
                         Collections.singletonList(new SimpleGrantedAuthority(role.toUpperCase()))
 
