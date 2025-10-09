@@ -1,6 +1,6 @@
 package com.se.skill4hire.controller;
 
-import com.se.skill4hire.entity.auth.CandidateCv;
+import com.se.skill4hire.entity.candidate.CandidateCv;
 import com.se.skill4hire.entity.auth.User;
 import com.se.skill4hire.service.CandidateCvService;
 import org.springframework.http.HttpHeaders;
