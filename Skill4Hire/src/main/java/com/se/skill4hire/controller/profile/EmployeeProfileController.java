@@ -24,7 +24,7 @@ public class EmployeeProfileController {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDTO> getProfile(HttpSession session) {
         Long employeeId = (Long) session.getAttribute("userId");
         EmployeeProfileDTO profile = employeeProfileService.getProfile(employeeId);
@@ -32,7 +32,7 @@ public class EmployeeProfileController {
     }
 
     @PutMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDTO> updateProfile(
             @Valid @RequestBody EmployeeProfileDTO profileDTO,
             HttpSession session) {
@@ -42,7 +42,7 @@ public class EmployeeProfileController {
     }
 
     @GetMapping("/profile/completeness")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<ProfileCompletenessDTO> getProfileCompleteness(HttpSession session) {
         Long employeeId = (Long) session.getAttribute("userId");
         ProfileCompletenessDTO completeness = employeeProfileService.getProfileCompleteness(employeeId);
@@ -50,7 +50,7 @@ public class EmployeeProfileController {
     }
 
     @PostMapping("/upload/profile-picture")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {

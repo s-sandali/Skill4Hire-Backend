@@ -1,6 +1,6 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.entity.auth.User;
+import com.se.skill4hire.entity.auth.CandidateCv;
 import com.se.skill4hire.exception.NotFoundException;
 import com.se.skill4hire.repository.CandidateCvRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class CandidateCvService {
     }
 
     @Transactional
-    public User.CandidateCv upload(Long candidateId, MultipartFile file) throws IOException {
+    public CandidateCv upload(Long candidateId, MultipartFile file) throws IOException {
         if (candidateId == null) {
             throw new IllegalArgumentException("candidateId must not be null");
         }
@@ -26,7 +26,7 @@ public class CandidateCvService {
             throw new IllegalArgumentException("file must not be null or empty");
         }
 
-        User.CandidateCv entity = repository.findByCandidateId(candidateId).orElse(new User.CandidateCv());
+        CandidateCv entity = repository.findByCandidateId(candidateId).orElse(new CandidateCv());
         entity.setCandidateId(candidateId);
         entity.setFilename(file.getOriginalFilename() != null ? file.getOriginalFilename() : "cv");
         entity.setContentType(file.getContentType() != null ? file.getContentType() : "application/octet-stream");
@@ -35,12 +35,12 @@ public class CandidateCvService {
     }
 
     @Transactional(readOnly = true)
-    public User.CandidateCv getByCandidateId(Long candidateId) {
+    public CandidateCv getByCandidateId(Long candidateId) {
         if (candidateId == null) {
             throw new IllegalArgumentException("candidateId must not be null");
         }
 
-        User.CandidateCv cv = repository.findByCandidateId(candidateId)
+        CandidateCv cv = repository.findByCandidateId(candidateId)
                 .orElseThrow(() -> new NotFoundException("CV not found for candidate " + candidateId));
 
         // Access LOB inside transaction so data is initialized before returning

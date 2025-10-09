@@ -1,5 +1,6 @@
 package com.se.skill4hire.controller;
 
+import com.se.skill4hire.entity.auth.CandidateCv;
 import com.se.skill4hire.entity.auth.User;
 import com.se.skill4hire.service.CandidateCvService;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +28,7 @@ public class CandidateCvController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateCvResponse> upload(@PathVariable Long candidateId,
                                                       @RequestPart("file") MultipartFile file) throws Exception {
-        User.CandidateCv saved = service.upload(candidateId, file);
+        CandidateCv saved = service.upload(candidateId, file);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CandidateCvResponse.from(saved));
     }
@@ -38,14 +39,14 @@ public class CandidateCvController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CandidateCvResponse> replace(@PathVariable Long candidateId,
                                                        @RequestPart("file") MultipartFile file) throws Exception {
-        User.CandidateCv saved = service.upload(candidateId, file);
+        CandidateCv saved = service.upload(candidateId, file);
         return ResponseEntity.ok(CandidateCvResponse.from(saved));
     }
 
     /** Download the CV binary. */
     @GetMapping
     public ResponseEntity<byte[]> download(@PathVariable Long candidateId) {
-        User.CandidateCv cv = service.getByCandidateId(candidateId);
+        CandidateCv cv = service.getByCandidateId(candidateId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFilename() + "\"")
                 .contentType(MediaType.parseMediaType(cv.getContentType()))
@@ -61,7 +62,7 @@ public class CandidateCvController {
 
     // Lightweight DTO to avoid exposing byte[] in JSON responses
     public record CandidateCvResponse(Long id, Long candidateId, String filename, String contentType) {
-        public static CandidateCvResponse from(User.CandidateCv cv) {
+        public static CandidateCvResponse from(CandidateCv cv) {
             return new CandidateCvResponse(cv.getId(), cv.getCandidateId(), cv.getFilename(), cv.getContentType());
         }
     }

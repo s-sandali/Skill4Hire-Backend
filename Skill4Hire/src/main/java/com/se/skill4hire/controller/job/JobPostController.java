@@ -3,6 +3,7 @@ package com.se.skill4hire.controller.job;
 import com.se.skill4hire.dto.job.JobPostDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.entity.auth.User;
+import com.se.skill4hire.entity.auth.CandidateCv;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
@@ -34,7 +35,7 @@ public class JobPostController {
    // Just the CREATE method - add this to your existing controller
 
 @PostMapping
-@PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+@PreAuthorize("hasAuthority('COMPANY')")
 public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest, HttpSession session) {
     try {
         Long companyId = (Long) session.getAttribute("userId");
@@ -77,7 +78,7 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
 
     // GET COMPANY'S JOBS (for company dashboard)
     @GetMapping("/my-jobs")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<?> getMyJobPosts(HttpSession session) {
         try {
             Long companyId = (Long) session.getAttribute("userId");
@@ -158,7 +159,7 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
         filterOptions.put("candidateStatuses", Arrays.stream(Application.ApplicationStatus.values())
                 .map(Enum::name)
                 .collect(Collectors.toList()));
-        filterOptions.put("cvStatuses", Arrays.stream(User.CandidateCv.CvStatus.values())
+        filterOptions.put("cvStatuses", Arrays.stream(CandidateCv.CvStatus.values())
                 .map(Enum::name)
                 .collect(Collectors.toList()));
 
@@ -167,7 +168,7 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
 
     // UPDATE - Only for job owner company
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<?> updateJobPost(@PathVariable Long id,
                                          @Valid @RequestBody JobPost jobPost,
                                          HttpSession session) {
@@ -196,7 +197,7 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
 
     // DELETE - Only for job owner company
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<?> deleteJobPost(@PathVariable Long id, HttpSession session) {
         try {
             Long companyId = (Long) session.getAttribute("userId");

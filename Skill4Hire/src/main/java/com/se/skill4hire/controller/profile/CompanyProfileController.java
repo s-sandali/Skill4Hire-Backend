@@ -23,7 +23,7 @@ public class CompanyProfileController {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<CompanyProfileDTO> getProfile(HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
         CompanyProfileDTO profile = companyService.getProfile(companyId);
@@ -31,7 +31,7 @@ public class CompanyProfileController {
     }
 
     @PutMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<CompanyProfileDTO> updateProfile(@RequestBody CompanyProfileDTO dto,
                                                            HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
@@ -40,7 +40,7 @@ public class CompanyProfileController {
     }
 
     @PostMapping("/upload/logo")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> uploadLogo(@RequestParam("file") MultipartFile file,
                                                           HttpSession session) throws IOException {
         Long companyId = (Long) session.getAttribute("userId");
@@ -52,7 +52,7 @@ public class CompanyProfileController {
     }
 
     @PostMapping("/change-password")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> payload,
                                                               HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
@@ -63,7 +63,7 @@ public class CompanyProfileController {
     }
 
     @PostMapping("/update-email")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> updateEmail(@RequestBody Map<String, String> payload,
                                                            HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
@@ -74,7 +74,7 @@ public class CompanyProfileController {
     }
 
     @DeleteMapping("/delete-account")
-    @PreAuthorize("hasAnyAuthority('COMPANY', 'ADMIN')")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> deleteAccount(HttpSession session) {
         Long companyId = (Long) session.getAttribute("userId");
         companyService.deleteAccount(companyId);
