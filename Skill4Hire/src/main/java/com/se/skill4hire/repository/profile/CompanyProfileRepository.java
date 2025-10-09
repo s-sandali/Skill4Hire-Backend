@@ -1,11 +1,10 @@
 package com.se.skill4hire.repository.profile;
 
-import com.se.skill4hire.entity.auth.Company;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.se.skill4hire.entity.CompanyProfile;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyProfileRepository extends JpaRepository<Company, Long> {
-    // Find a company by email if needed
-    Company findByEmail(String email);
+public interface CompanyProfileRepository extends MongoRepository<CompanyProfile, String> {
+    // No custom methods needed
 }

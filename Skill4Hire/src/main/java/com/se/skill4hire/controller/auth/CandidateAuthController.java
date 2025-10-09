@@ -40,7 +40,7 @@ public class CandidateAuthController {
     // Fixed protected endpoint
     @GetMapping("/me")
     public ResponseEntity<AuthResponse> getCurrentCandidate(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
+        String userId = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
         if (userId == null || role == null) {

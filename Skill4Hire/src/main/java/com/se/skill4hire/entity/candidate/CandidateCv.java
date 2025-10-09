@@ -1,37 +1,26 @@
 package com.se.skill4hire.entity.candidate;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.Instant;
 
-@Entity
-@Table(name = "candidate_cv")
+@Document(collection = "candidate_cv")
 public class CandidateCv {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false)
-    private Long candidateId;
+    private String candidateId;
 
-    @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false)
     private String contentType;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private byte[] data;
 
-    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(nullable = false)
     private Instant updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private CvStatus status;
 
     public enum CvStatus {
@@ -41,33 +30,28 @@ public class CandidateCv {
         REJECTED
     }
 
-    @PrePersist
-    void onCreate() {
+    public CandidateCv() {
         this.createdAt = this.updatedAt = Instant.now();
         if (this.status == null) {
             this.status = CvStatus.UPLOADED;
         }
     }
 
-    @PreUpdate
-    void onUpdate() {
-        this.updatedAt = Instant.now();
-    }
-
     // Getters & setters
-    public Long getId() { return id; }
-    public Long getCandidateId() { return candidateId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getCandidateId() { return candidateId; }
+    public void setCandidateId(String candidateId) { this.candidateId = candidateId; }
     public String getFilename() { return filename; }
-    public String getContentType() { return contentType; }
-    public byte[] getData() { return data; }
-    public CvStatus getStatus() { return status; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
-    public void setId(Long id) { this.id = id; }
-    public void setCandidateId(Long candidateId) { this.candidateId = candidateId; }
     public void setFilename(String filename) { this.filename = filename; }
+    public String getContentType() { return contentType; }
     public void setContentType(String contentType) { this.contentType = contentType; }
+    public byte[] getData() { return data; }
     public void setData(byte[] data) { this.data = data; }
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public CvStatus getStatus() { return status; }
     public void setStatus(CvStatus status) { this.status = status; }
 }
-

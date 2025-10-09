@@ -67,7 +67,7 @@ public class UnifiedAuthService {
     }
 
     public AuthResponse getCurrentUser(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
+        String userId = (String) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
         if (userId != null && role != null) {

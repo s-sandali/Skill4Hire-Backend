@@ -95,5 +95,19 @@ public class CandidateAuthService implements BaseAuthService {
         return new AuthResponse("Logged out successfully", true);
     }
 
+    public Candidate registerCandidate(Candidate candidate) {
+        return candidateRepository.save(candidate);
+    }
 
+    public Candidate findByEmail(String email) {
+        return candidateRepository.findByEmail(email);
+    }
+
+    public Candidate findById(String id) {
+        return candidateRepository.findById(id).orElse(null);
+    }
+
+    public boolean existsByEmail(String email) {
+        return candidateRepository.findByEmail(email) != null;
+    }
 }

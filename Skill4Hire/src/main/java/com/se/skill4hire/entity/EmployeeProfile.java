@@ -1,96 +1,51 @@
 package com.se.skill4hire.entity;
 
-import com.se.skill4hire.entity.auth.Employee;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "employee_profiles")
+@Document(collection = "employee_profiles")
 public class EmployeeProfile {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private Employee user;
-
-    @Column(nullable = false, length = 255)
+    private String id;
+    private String userId;
     private String name;
-
-    @Column(nullable = false, unique = true, length = 255)
     private String email;
-
     @Size(max = 15)
-    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
-
     @Size(max = 100)
-    @Column(length = 100)
     private String location;
-
-    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-
     @Size(max = 100)
-    @Column(length = 100)
     private String title;
-
-    @Column(length = 500)
     private String headline;
-
-    @ElementCollection
-    @CollectionTable(name = "employee_skills", joinColumns = @JoinColumn(name = "employee_id"))
-    @Column(name = "skill")
     private List<String> skills;
-
-    @Column(name = "education", length = 1000)
+    @Size(max = 1000)
     private String education;
-
-    @Column(name = "experience", length = 2000)
+    @Size(max = 2000)
     private String experience;
-
-    @Column(name = "notification_preferences", length = 500)
+    @Size(max = 500)
     private String notificationPreferences;
-
-    @Column(name = "profile_picture_path", length = 255)
+    @Size(max = 255)
     private String profilePicturePath;
-
-    @Column(name = "profile_completeness")
     private Double profileCompleteness;
-
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public EmployeeProfile() {
         // Default constructor
     }
 
-    public EmployeeProfile(Long id, Employee user, String name, String email, String phoneNumber, String location,
+    public EmployeeProfile(String id, String userId, String name, String email, String phoneNumber, String location,
                            LocalDate dateOfBirth, String title, String headline, List<String> skills, String education,
                            String experience, String notificationPreferences, String profilePicturePath,
                            Double profileCompleteness, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -108,32 +63,20 @@ public class EmployeeProfile {
         this.updatedAt = updatedAt;
     }
 
-    @PrePersist
-    protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
-        createdAt = now;
-        updatedAt = now;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Employee getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(Employee user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {

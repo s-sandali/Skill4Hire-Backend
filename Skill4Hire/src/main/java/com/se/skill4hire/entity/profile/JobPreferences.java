@@ -1,15 +1,17 @@
 package com.se.skill4hire.entity.profile;
 
-import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
 
-@Embeddable
 public class JobPreferences {
-    @Size(max = 50, message = "Job type must be less than 50 characters")
-    private String jobType;
+    @Size(max = 100, message = "Preferred role must be less than 100 characters")
+    private String preferredRole;
 
-    @Size(max = 100, message = "Expected salary must be less than 100 characters")
-    private String expectedSalary;
+    @Size(max = 100, message = "Preferred location must be less than 100 characters")
+    private String preferredLocation;
+
+    private Double expectedSalary;
+
+    private String jobType; // FULL_TIME, PART_TIME, CONTRACT
 
     private Boolean willingToRelocate = false;
 
@@ -17,10 +19,36 @@ public class JobPreferences {
         // Default constructor
     }
 
-    public JobPreferences(String jobType, String expectedSalary, Boolean willingToRelocate) {
-        this.jobType = jobType;
+    public JobPreferences(String preferredRole, String preferredLocation, Double expectedSalary, String jobType, Boolean willingToRelocate) {
+        this.preferredRole = preferredRole;
+        this.preferredLocation = preferredLocation;
         this.expectedSalary = expectedSalary;
+        this.jobType = jobType;
         this.willingToRelocate = willingToRelocate;
+    }
+
+    public String getPreferredRole() {
+        return preferredRole;
+    }
+
+    public void setPreferredRole(String preferredRole) {
+        this.preferredRole = preferredRole;
+    }
+
+    public String getPreferredLocation() {
+        return preferredLocation;
+    }
+
+    public void setPreferredLocation(String preferredLocation) {
+        this.preferredLocation = preferredLocation;
+    }
+
+    public Double getExpectedSalary() {
+        return expectedSalary;
+    }
+
+    public void setExpectedSalary(Double expectedSalary) {
+        this.expectedSalary = expectedSalary;
     }
 
     public String getJobType() {
@@ -29,14 +57,6 @@ public class JobPreferences {
 
     public void setJobType(String jobType) {
         this.jobType = jobType;
-    }
-
-    public String getExpectedSalary() {
-        return expectedSalary;
-    }
-
-    public void setExpectedSalary(String expectedSalary) {
-        this.expectedSalary = expectedSalary;
     }
 
     public Boolean getWillingToRelocate() {
