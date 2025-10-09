@@ -1,4 +1,4 @@
-package com.se.skill4hire.entity.auth;
+package com.se.skill4hire.entity.candidate;
 
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -63,16 +63,11 @@ public class CandidateCv {
     public CvStatus getStatus() { return status; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
-
     public void setId(Long id) { this.id = id; }
-
     public void setCandidateId(Long candidateId) { this.candidateId = candidateId; }
-
     public void setFilename(String filename) { this.filename = filename; }
-
     public void setContentType(String contentType) { this.contentType = contentType; }
-
     public void setData(byte[] data) { this.data = data; }
-
     public void setStatus(CvStatus status) { this.status = status; }
 }
+

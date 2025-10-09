@@ -1,6 +1,6 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.entity.auth.CandidateCv;
+import com.se.skill4hire.entity.candidate.CandidateCv;
 import com.se.skill4hire.exception.NotFoundException;
 import com.se.skill4hire.repository.CandidateCvRepository;
 import org.springframework.stereotype.Service;
