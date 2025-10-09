@@ -1,19 +1,12 @@
 package com.se.skill4hire.controller.application;
 
 import com.se.skill4hire.dto.application.ApplicationDTO;
-import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.service.application.ApplicationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/candidates/applications")
@@ -25,36 +18,25 @@ public class CandidateApplicationController {
         this.applicationService = applicationService;
     }
 
-    @GetMapping("/summary")
-    @PreAuthorize("hasAuthority('CANDIDATE')")
-    public ResponseEntity<ApplicationService.Summary> getApplicationSummary(HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
-        return ResponseEntity.ok(applicationService.summary(candidateId));
+    @GetMapping
+    public ResponseEntity<List<ApplicationDTO>> getMyApplications(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        String candidateId = userIdObj == null ? null : String.valueOf(userIdObj);
+        return ResponseEntity.ok(applicationService.list(candidateId, null));
     }
 
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasAuthority('CANDIDATE')")
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatus(@PathVariable String status,
-                                                                        HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
-        Application.ApplicationStatus appStatus = parseStatus(status);
+    public ResponseEntity<List<ApplicationDTO>> getMyApplicationsByStatus(@PathVariable String status, HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        String candidateId = userIdObj == null ? null : String.valueOf(userIdObj);
+        com.se.skill4hire.entity.Application.ApplicationStatus appStatus = com.se.skill4hire.entity.Application.ApplicationStatus.valueOf(status.toUpperCase());
         return ResponseEntity.ok(applicationService.list(candidateId, appStatus));
     }
 
-    @GetMapping("/status")
-    @PreAuthorize("hasAuthority('CANDIDATE')")
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatusQuery(@RequestParam("status") String status,
-                                                                             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
-        Application.ApplicationStatus appStatus = parseStatus(status);
-        return ResponseEntity.ok(applicationService.list(candidateId, appStatus));
-    }
-
-    private Application.ApplicationStatus parseStatus(String status) {
-        try {
-            return Application.ApplicationStatus.valueOf(status.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Invalid status value: " + status, ex);
-        }
+    @GetMapping("/summary")
+    public ResponseEntity<ApplicationService.Summary> getSummary(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        String candidateId = userIdObj == null ? null : String.valueOf(userIdObj);
+        return ResponseEntity.ok(applicationService.summary(candidateId));
     }
 }

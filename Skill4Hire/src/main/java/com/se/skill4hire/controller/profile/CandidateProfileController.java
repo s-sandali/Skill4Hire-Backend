@@ -29,7 +29,7 @@ public class CandidateProfileController {
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<CandidateProfileDTO> getProfile(HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         CandidateProfileDTO profile = candidateService.getProfile(candidateId);
         return ResponseEntity.ok(profile);
     }
@@ -39,7 +39,7 @@ public class CandidateProfileController {
     public ResponseEntity<CandidateProfileDTO> updateProfile(
             @Valid @RequestBody CandidateProfileDTO profileDTO,
             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         CandidateProfileDTO updatedProfile = candidateService.updateProfile(candidateId, profileDTO);
         return ResponseEntity.ok(updatedProfile);
     }
@@ -47,7 +47,7 @@ public class CandidateProfileController {
     @GetMapping("/profile/completeness")
     @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<ProfileCompletenessDTO> getProfileCompleteness(HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         ProfileCompletenessDTO completeness = candidateService.getProfileCompleteness(candidateId);
         return ResponseEntity.ok(completeness);
     }
@@ -57,7 +57,7 @@ public class CandidateProfileController {
     public ResponseEntity<Map<String, String>> uploadResume(
             @RequestParam("resume") MultipartFile file,
             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         String fileName = candidateService.uploadResume(candidateId, file);
 
         Map<String, String> response = new HashMap<>();
@@ -72,7 +72,7 @@ public class CandidateProfileController {
     public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         String fileName = candidateService.uploadProfilePicture(candidateId, file);
 
         Map<String, String> response = new HashMap<>();
@@ -87,7 +87,7 @@ public class CandidateProfileController {
     public ResponseEntity<List<String>> addSkill(
             @RequestParam("skill") String skill,  // Fixed parameter name
             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         List<String> updatedSkills = candidateService.addSkill(candidateId, skill);
         return ResponseEntity.ok(updatedSkills);
     }
@@ -97,7 +97,7 @@ public class CandidateProfileController {
     public ResponseEntity<List<String>> removeSkill(
             @PathVariable String skill,
             HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
 
         // URL decode the skill parameter
         String decodedSkill = URLDecoder.decode(skill, StandardCharsets.UTF_8);

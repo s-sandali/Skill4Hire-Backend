@@ -22,7 +22,7 @@ public class SimpleCandidateController {
      * Get all applications for a candidate with job details and statuses
      */
     @GetMapping(value = "/{candidateId}/applications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationDTO>> getCandidateApplications(@PathVariable Long candidateId) {
+    public ResponseEntity<List<ApplicationDTO>> getCandidateApplications(@PathVariable String candidateId) {
         List<ApplicationDTO> applications = applicationService.list(candidateId, null);
         return ResponseEntity.ok(applications);
     }
@@ -31,7 +31,7 @@ public class SimpleCandidateController {
      * Get application summary for a candidate
      */
     @GetMapping(value = "/{candidateId}/applications/summary", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationService.Summary> getApplicationSummary(@PathVariable Long candidateId) {
+    public ResponseEntity<ApplicationService.Summary> getApplicationSummary(@PathVariable String candidateId) {
         return ResponseEntity.ok(applicationService.summary(candidateId));
     }
 
@@ -39,7 +39,7 @@ public class SimpleCandidateController {
      * Get applications by status
      */
     @GetMapping(value = "/{candidateId}/applications/status/{status}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatus(@PathVariable Long candidateId, 
+    public ResponseEntity<List<ApplicationDTO>> getApplicationsByStatus(@PathVariable String candidateId,
                                                                         @PathVariable String status) {
         try {
             com.se.skill4hire.entity.Application.ApplicationStatus appStatus = 

@@ -8,6 +8,7 @@ import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.job.JobPostService;
 import com.se.skill4hire.service.job.JobSearchService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,40 +34,17 @@ public class JobPostController {
     @Autowired
     private JobSearchService jobSearchService;
 
-   // Just the CREATE method - add this to your existing controller
+    // Just the CREATE method - add this to your existing controller
 
-@PostMapping
-@PreAuthorize("hasAuthority('COMPANY')")
-public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest, HttpSession session) {
-    try {
-        Long companyId = (Long) session.getAttribute("userId");
-        if (companyId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message", "User not authenticated"));
-        }
-        
-        System.out.println("📦 Creating job for company ID: " + companyId);
-        System.out.println("📦 Job data received: " + jobRequest);
-        
-        // Convert DTO to entity
-        JobPost jobPost = new JobPost();
-        jobPost.setTitle(jobRequest.getTitle());
-        jobPost.setDescription(jobRequest.getDescription());
-        jobPost.setType(jobRequest.getType());
-        jobPost.setLocation(jobRequest.getLocation());
-        jobPost.setSalary(jobRequest.getSalary());
-        jobPost.setExperience(jobRequest.getExperience());
-        jobPost.setDeadline(jobRequest.getDeadline());
-        
-        JobPost createdJobPost = jobPostService.createJobPost(jobPost, companyId);
+    @PostMapping
+    public ResponseEntity<JobPost> createJobPost(@Valid @RequestBody JobPost jobPost, HttpServletRequest request) {
+        // Get company ID from session or authentication
+        String companyId = getCompanyIdFromSession(request);
+        jobPost.setCompanyId(companyId);
+        JobPost createdJobPost = jobPostService.createJobPost(jobPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJobPost);
-    } catch (Exception e) {
-        System.err.println("❌ Error creating job post: " + e.getMessage());
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(Map.of("message", "Failed to create job post: " + e.getMessage()));
     }
-}
+
     // GET ALL ACTIVE JOBS (for candidates - public)
     @GetMapping
     public ResponseEntity<List<JobPost>> getAllActiveJobPosts() {
@@ -79,39 +58,21 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
     // GET COMPANY'S JOBS (for company dashboard)
     @GetMapping("/my-jobs")
     @PreAuthorize("hasAuthority('COMPANY')")
-    public ResponseEntity<?> getMyJobPosts(HttpSession session) {
-        try {
-            Long companyId = (Long) session.getAttribute("userId");
-            if (companyId == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "User not authenticated"));
-            }
-            
-            System.out.println("📦 Fetching jobs for company ID: " + companyId);
-            List<JobPost> jobPosts = jobPostService.getJobPostsByCompany(companyId);
-            System.out.println("📦 Found " + jobPosts.size() + " jobs");
-            return ResponseEntity.ok(jobPosts);
-        } catch (Exception e) {
-            System.err.println("❌ Error fetching company jobs: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "Failed to fetch jobs: " + e.getMessage()));
-        }
+    public ResponseEntity<?> getMyJobPosts(HttpServletRequest request) {
+        String companyId = getCompanyIdFromSession(request);
+        List<JobPost> jobPosts = jobPostService.getJobPostsByCompanyId(companyId);
+        return ResponseEntity.ok(jobPosts);
     }
 
     // GET JOB BY ID (public)
     @GetMapping("/{id}")
-    public ResponseEntity<?> getJobPostById(@PathVariable Long id) {
-        try {
-            JobPost jobPost = jobPostService.getJobPostById(id)
-                    .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + id));
-            return ResponseEntity.ok(jobPost);
-        } catch (JobNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "Failed to fetch job: " + e.getMessage()));
+    public ResponseEntity<JobPost> getJobPostById(@PathVariable String id, HttpServletRequest request) {
+        String companyId = getCompanyIdFromSession(request);
+        if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
+            Optional<JobPost> jobPost = jobPostService.getJobPostById(id);
+            return jobPost.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -125,7 +86,7 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
             @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
             HttpSession session) {
 
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         if (candidateId == null) {
             return ResponseEntity.status(401).build();
         }
@@ -168,54 +129,27 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
 
     // UPDATE - Only for job owner company
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('COMPANY')")
-    public ResponseEntity<?> updateJobPost(@PathVariable Long id,
-                                         @Valid @RequestBody JobPost jobPost,
-                                         HttpSession session) {
-        try {
-            Long companyId = (Long) session.getAttribute("userId");
-            if (companyId == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "User not authenticated"));
-            }
-            
-            System.out.println("📦 Updating job ID: " + id + " for company ID: " + companyId);
-            System.out.println("📦 Job data received: " + jobPost);
-            
-            JobPost updatedJobPost = jobPostService.updateJobPost(id, jobPost, companyId);
+    public ResponseEntity<JobPost> updateJobPost(@PathVariable String id, @Valid @RequestBody JobPost jobPost, HttpServletRequest request) {
+        String companyId = getCompanyIdFromSession(request);
+        if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
+            jobPost.setId(id);
+            jobPost.setCompanyId(companyId);
+            JobPost updatedJobPost = jobPostService.updateJobPost(jobPost);
             return ResponseEntity.ok(updatedJobPost);
-        } catch (JobNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", e.getMessage()));
-        } catch (Exception e) {
-            System.err.println("❌ Error updating job post: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("message", "Failed to update job post: " + e.getMessage()));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
     // DELETE - Only for job owner company
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('COMPANY')")
-    public ResponseEntity<?> deleteJobPost(@PathVariable Long id, HttpSession session) {
-        try {
-            Long companyId = (Long) session.getAttribute("userId");
-            if (companyId == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "User not authenticated"));
-            }
-            
-            System.out.println("📦 Deleting job ID: " + id + " for company ID: " + companyId);
-            jobPostService.deleteJobPost(id, companyId);
-            return ResponseEntity.ok(Map.of("message", "Job deleted successfully with id: " + id));
-        } catch (JobNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", e.getMessage()));
-        } catch (Exception e) {
-            System.err.println("❌ Error deleting job post: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", "Failed to delete job: " + e.getMessage()));
+    public ResponseEntity<Void> deleteJobPost(@PathVariable String id, HttpServletRequest request) {
+        String companyId = getCompanyIdFromSession(request);
+        if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
+            jobPostService.deleteJobPost(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -249,5 +183,10 @@ public ResponseEntity<?> createJobPost(@Valid @RequestBody JobPostDTO jobRequest
 
         List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxExperience);
         return ResponseEntity.ok(jobs);
+    }
+
+    private String getCompanyIdFromSession(HttpServletRequest request) {
+        // Implement session-based company ID retrieval
+        return (String) request.getSession().getAttribute("companyId");
     }
 }

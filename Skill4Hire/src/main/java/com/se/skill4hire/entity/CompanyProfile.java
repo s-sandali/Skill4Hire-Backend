@@ -1,18 +1,12 @@
 package com.se.skill4hire.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "company_profile")
+@Document(collection = "company_profile")
 public class CompanyProfile {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String companyName;
     private String contactNumber;
@@ -33,11 +27,11 @@ public class CompanyProfile {
         // Default constructor
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

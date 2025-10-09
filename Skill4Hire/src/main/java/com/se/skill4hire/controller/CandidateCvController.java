@@ -1,7 +1,6 @@
 package com.se.skill4hire.controller;
 
 import com.se.skill4hire.entity.candidate.CandidateCv;
-import com.se.skill4hire.entity.auth.User;
 import com.se.skill4hire.service.CandidateCvService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,7 @@ public class CandidateCvController {
      *   curl -X POST -F file=@/path/to/cv.pdf http://localhost:8080/api/candidates/123/cv
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CandidateCvResponse> upload(@PathVariable Long candidateId,
+    public ResponseEntity<CandidateCvResponse> upload(@PathVariable String candidateId,
                                                       @RequestPart("file") MultipartFile file) throws Exception {
         CandidateCv saved = service.upload(candidateId, file);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,7 +36,7 @@ public class CandidateCvController {
      * Update/replace also allowed via PUT (idempotent).
      */
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CandidateCvResponse> replace(@PathVariable Long candidateId,
+    public ResponseEntity<CandidateCvResponse> replace(@PathVariable String candidateId,
                                                        @RequestPart("file") MultipartFile file) throws Exception {
         CandidateCv saved = service.upload(candidateId, file);
         return ResponseEntity.ok(CandidateCvResponse.from(saved));
@@ -45,7 +44,7 @@ public class CandidateCvController {
 
     /** Download the CV binary. */
     @GetMapping
-    public ResponseEntity<byte[]> download(@PathVariable Long candidateId) {
+    public ResponseEntity<byte[]> download(@PathVariable String candidateId) {
         CandidateCv cv = service.getByCandidateId(candidateId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFilename() + "\"")
@@ -55,13 +54,13 @@ public class CandidateCvController {
 
     /** Delete the CV. */
     @DeleteMapping
-    public ResponseEntity<Void> delete(@PathVariable Long candidateId) {
+    public ResponseEntity<Void> delete(@PathVariable String candidateId) {
         service.deleteByCandidateId(candidateId);
         return ResponseEntity.noContent().build();
     }
 
     // Lightweight DTO to avoid exposing byte[] in JSON responses
-    public record CandidateCvResponse(Long id, Long candidateId, String filename, String contentType) {
+    public record CandidateCvResponse(String id, String candidateId, String filename, String contentType) {
         public static CandidateCvResponse from(CandidateCv cv) {
             return new CandidateCvResponse(cv.getId(), cv.getCandidateId(), cv.getFilename(), cv.getContentType());
         }

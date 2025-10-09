@@ -21,10 +21,10 @@ public class CandidateApplicationTrackingController {
         this.trackingService = trackingService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("hasAuthority('CANDIDATE')")
     public ResponseEntity<List<ApplicationDTO>> getAllApplications(HttpSession session) {
-        Long candidateId = (Long) session.getAttribute("userId");
+        String candidateId = (String) session.getAttribute("userId");
         return ResponseEntity.ok(trackingService.getAllApplicationsForCandidate(candidateId));
     }
 }

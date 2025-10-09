@@ -20,7 +20,7 @@ public class CandidateApplicationCompanyController {
 
     // Generic filter endpoint: /?status=APPLIED|SHORTLISTED|REJECTED
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationService.CompanyView>> listByStatus(@PathVariable Long candidateId,
+    public ResponseEntity<List<ApplicationService.CompanyView>> listByStatus(@PathVariable String candidateId,
                                                                              @RequestParam(value = "status", required = false) String status) {
         if (status == null || status.isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -33,18 +33,17 @@ public class CandidateApplicationCompanyController {
         }
     }
     @GetMapping(value = "/applied", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationService.CompanyView>> listApplied(@PathVariable Long candidateId) {
+    public ResponseEntity<List<ApplicationService.CompanyView>> listApplied(@PathVariable String candidateId) {
         return ResponseEntity.ok(service.getCompaniesByStatus(candidateId, Application.ApplicationStatus.APPLIED));
     }
 
     @GetMapping(value = "/shortlisted", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationService.CompanyView>> listShortlisted(@PathVariable Long candidateId) {
+    public ResponseEntity<List<ApplicationService.CompanyView>> listShortlisted(@PathVariable String candidateId) {
         return ResponseEntity.ok(service.getCompaniesByStatus(candidateId, Application.ApplicationStatus.SHORTLISTED));
     }
 
     @GetMapping(value = "/rejected", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationService.CompanyView>> listRejected(@PathVariable Long candidateId) {
+    public ResponseEntity<List<ApplicationService.CompanyView>> listRejected(@PathVariable String candidateId) {
         return ResponseEntity.ok(service.getCompaniesByStatus(candidateId, Application.ApplicationStatus.REJECTED));
     }
 }
-

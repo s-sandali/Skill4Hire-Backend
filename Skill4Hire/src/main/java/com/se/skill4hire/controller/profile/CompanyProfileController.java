@@ -25,7 +25,7 @@ public class CompanyProfileController {
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<CompanyProfileDTO> getProfile(HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         CompanyProfileDTO profile = companyService.getProfile(companyId);
         return ResponseEntity.ok(profile);
     }
@@ -34,7 +34,7 @@ public class CompanyProfileController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<CompanyProfileDTO> updateProfile(@RequestBody CompanyProfileDTO dto,
                                                            HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         CompanyProfileDTO updatedProfile = companyService.updateProfile(companyId, dto);
         return ResponseEntity.ok(updatedProfile);
     }
@@ -43,7 +43,7 @@ public class CompanyProfileController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> uploadLogo(@RequestParam("file") MultipartFile file,
                                                           HttpSession session) throws IOException {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         String logo = companyService.updateLogo(companyId, file);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Logo updated successfully");
@@ -55,7 +55,7 @@ public class CompanyProfileController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> payload,
                                                               HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         companyService.changePassword(companyId, payload.get("oldPassword"), payload.get("newPassword"));
         Map<String, String> response = new HashMap<>();
         response.put("message", "Password changed successfully");
@@ -66,7 +66,7 @@ public class CompanyProfileController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> updateEmail(@RequestBody Map<String, String> payload,
                                                            HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         companyService.updateEmail(companyId, payload.get("newEmail"));
         Map<String, String> response = new HashMap<>();
         response.put("message", "Email updated successfully");
@@ -76,7 +76,7 @@ public class CompanyProfileController {
     @DeleteMapping("/delete-account")
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Map<String, String>> deleteAccount(HttpSession session) {
-        Long companyId = (Long) session.getAttribute("userId");
+        String companyId = (String) session.getAttribute("userId");
         companyService.deleteAccount(companyId);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Account deleted successfully");

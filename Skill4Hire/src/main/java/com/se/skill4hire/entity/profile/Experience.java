@@ -1,9 +1,7 @@
 package com.se.skill4hire.entity.profile;
 
-import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Size;
 
-@Embeddable
 public class Experience {
     private Boolean isExperienced = false;
 

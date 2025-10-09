@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,16 +57,14 @@ public class ApplicationService {
     public ApplicationDTO updateStatus(Long applicationId, Application.ApplicationStatus status, String reason, String decidedBy) {
         Application a = repository.findById(applicationId)
                 .orElseThrow(() -> new ApplicationNotFoundException(applicationId));
-
-        a.setStatus(status);
-        a.setDecisionAt(LocalDateTime.now());
-        a.setDecidedBy(decidedBy);
-        if (status == Application.ApplicationStatus.REJECTED) {
-            a.setRejectionReason((reason != null && !reason.isBlank()) ? reason : null);
-        } else {
-            a.setRejectionReason(null);
+        if (!Objects.equals(a.getStatus(), status)) {
+            a.setStatus(status);
+            a.setDecisionAt(LocalDateTime.now());
+            a.setDecidedBy(decidedBy);
+            if (status == Application.ApplicationStatus.REJECTED) {
+                a.setRejectionReason(reason);
+            }
         }
-
         return toDTO(repository.save(a));
     }
 
@@ -77,7 +76,7 @@ public class ApplicationService {
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
-
+        
         // Job details
         if (a.getJobPost() != null) {
             dto.setJobPostId(a.getJobPost().getId());
@@ -87,10 +86,10 @@ public class ApplicationService {
             dto.setJobLocation(a.getJobPost().getLocation());
             dto.setSalary(a.getJobPost().getSalary());
             dto.setExperienceRequired(a.getJobPost().getExperience());
-            dto.setJobDeadline(a.getJobPost().getDeadline() != null ?
+            dto.setJobDeadline(a.getJobPost().getDeadline() != null ? 
                 a.getJobPost().getDeadline().atStartOfDay() : null);
         }
-
+        
         return dto;
     }
 

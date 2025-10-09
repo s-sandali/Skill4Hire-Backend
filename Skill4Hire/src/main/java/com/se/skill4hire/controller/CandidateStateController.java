@@ -26,7 +26,7 @@ public class CandidateStateController {
      * Get comprehensive candidate state including applications and profile completeness
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> getCandidateState(@PathVariable Long candidateId) {
+    public ResponseEntity<Map<String, Object>> getCandidateState(@PathVariable String candidateId) {
         Map<String, Object> state = new HashMap<>();
         
         // Application summary
@@ -48,7 +48,7 @@ public class CandidateStateController {
      * Get only application statistics
      */
     @GetMapping(value = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationService.Summary> getApplicationStats(@PathVariable Long candidateId) {
+    public ResponseEntity<ApplicationService.Summary> getApplicationStats(@PathVariable String candidateId) {
         return ResponseEntity.ok(applicationService.summary(candidateId));
     }
 
@@ -56,7 +56,7 @@ public class CandidateStateController {
      * Get only profile completeness
      */
     @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProfileCompletenessDTO> getProfileState(@PathVariable Long candidateId) {
+    public ResponseEntity<ProfileCompletenessDTO> getProfileState(@PathVariable String candidateId) {
         return ResponseEntity.ok(candidateService.getProfileCompleteness(candidateId));
     }
 
@@ -64,7 +64,7 @@ public class CandidateStateController {
      * Get comprehensive tracking including CV uploads and application statuses
      */
     @GetMapping(value = "/tracking", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, Object>> getCandidateTracking(@PathVariable Long candidateId) {
+    public ResponseEntity<Map<String, Object>> getCandidateTracking(@PathVariable String candidateId) {
         Map<String, Object> tracking = new HashMap<>();
         
         // Application summary

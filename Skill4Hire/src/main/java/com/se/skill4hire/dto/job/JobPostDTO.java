@@ -45,4 +45,5 @@ public class JobPostDTO {
     public void setExperience(Integer experience) { this.experience = experience; }
     public java.time.LocalDate getDeadline() { return deadline; }
     public void setDeadline(java.time.LocalDate deadline) { this.deadline = deadline; }
+
 }

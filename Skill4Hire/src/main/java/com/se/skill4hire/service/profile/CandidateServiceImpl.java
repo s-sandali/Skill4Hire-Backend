@@ -1,7 +1,7 @@
 package com.se.skill4hire.service.profile;
 
-import com.se.skill4hire.dto.profile.CandidateProfileDTO; // ADD THIS IMPORT
-import com.se.skill4hire.dto.profile.ProfileCompletenessDTO; // ADD THIS IMPORT
+import com.se.skill4hire.dto.profile.CandidateProfileDTO;
+import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import com.se.skill4hire.entity.auth.Candidate;
 import com.se.skill4hire.entity.profile.*;
 import com.se.skill4hire.dto.profile.EducationDTO;
@@ -10,7 +10,7 @@ import com.se.skill4hire.dto.profile.JobPreferencesDTO;
 import com.se.skill4hire.dto.profile.NotificationPreferencesDTO;
 import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import com.se.skill4hire.repository.profile.CandidateProfileRepository;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -18,30 +18,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
 
-    private final CandidateProfileRepository candidateProfileRepository;
+    @Autowired
+    private CandidateProfileRepository candidateProfileRepository;
+
     private final CandidateAuthRepository candidateAuthRepository;
     private static final String UPLOAD_DIR = "uploads/";
 
-    public CandidateServiceImpl(CandidateProfileRepository candidateProfileRepository,
-                                   CandidateAuthRepository candidateAuthRepository) {
-        this.candidateProfileRepository = candidateProfileRepository;
+    public CandidateServiceImpl(CandidateAuthRepository candidateAuthRepository) {
         this.candidateAuthRepository = candidateAuthRepository;
     }
 
     @Override
-    public CandidateProfileDTO getProfile(Long candidateId) {
+    public CandidateProfileDTO getProfile(String candidateId) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
+                .orElseThrow(() -> new RuntimeException("Candidate profile not found for user id: " + candidateId));
         return convertToDTO(profile);
     }
 
     @Override
-    public CandidateProfileDTO updateProfile(Long candidateId, CandidateProfileDTO profileDTO) {
+    public CandidateProfileDTO updateProfile(String candidateId, CandidateProfileDTO profileDTO) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
                 .orElseGet(() -> createNewProfile(candidateId));
 
@@ -77,8 +78,10 @@ public class CandidateServiceImpl implements CandidateService {
             if (profile.getJobPreferences() == null) {
                 profile.setJobPreferences(new JobPreferences());
             }
-            profile.getJobPreferences().setJobType(profileDTO.getJobPreferences().getJobType());
+            profile.getJobPreferences().setPreferredRole(profileDTO.getJobPreferences().getPreferredRole());
+            profile.getJobPreferences().setPreferredLocation(profileDTO.getJobPreferences().getPreferredLocation());
             profile.getJobPreferences().setExpectedSalary(profileDTO.getJobPreferences().getExpectedSalary());
+            profile.getJobPreferences().setJobType(profileDTO.getJobPreferences().getJobType());
             profile.getJobPreferences().setWillingToRelocate(profileDTO.getJobPreferences().getWillingToRelocate());
         }
 
@@ -86,6 +89,9 @@ public class CandidateServiceImpl implements CandidateService {
             if (profile.getNotificationPreferences() == null) {
                 profile.setNotificationPreferences(new NotificationPreferences());
             }
+            profile.getNotificationPreferences().setEmailNotifications(profileDTO.getNotificationPreferences().getEmailNotifications());
+            profile.getNotificationPreferences().setSmsNotifications(profileDTO.getNotificationPreferences().getSmsNotifications());
+            profile.getNotificationPreferences().setCustomPreferences(profileDTO.getNotificationPreferences().getCustomPreferences());
             profile.getNotificationPreferences().setEmailAlerts(profileDTO.getNotificationPreferences().getEmailAlerts());
             profile.getNotificationPreferences().setInAppNotifications(profileDTO.getNotificationPreferences().getInAppNotifications());
         }
@@ -95,27 +101,29 @@ public class CandidateServiceImpl implements CandidateService {
         return convertToDTO(updatedProfile);
     }
 
-    private CandidateProfile createNewProfile(Long candidateId) {
+    private CandidateProfile createNewProfile(String candidateId) {
         Candidate authCandidate = candidateAuthRepository.findById(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Auth candidate not found with id: " + candidateId));
+                .orElseThrow(() -> new RuntimeException("Auth candidate not found with id: " + candidateId));
 
         CandidateProfile newProfile = new CandidateProfile();
-        newProfile.setUser(authCandidate);
+        newProfile.setUserId(candidateId);
+        newProfile.setName(authCandidate.getName() != null ? authCandidate.getName() : "");
+        newProfile.setEmail(authCandidate.getEmail() != null ? authCandidate.getEmail() : "");
         return candidateProfileRepository.save(newProfile);
     }
 
     @Override
-    public ProfileCompletenessDTO getProfileCompleteness(Long candidateId) {
+    public ProfileCompletenessDTO getProfileCompleteness(String candidateId) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
+                .orElseThrow(() -> new RuntimeException("Candidate profile not found for user id: " + candidateId));
 
         double completeness = calculateCompleteness(profile);
         String message = getCompletenessMessage(completeness);
-        return new ProfileCompletenessDTO(completeness, message); // This now matches the constructor
+        return new ProfileCompletenessDTO(completeness, message);
     }
 
     @Override
-    public String uploadResume(Long candidateId, MultipartFile file) {
+    public String uploadResume(String candidateId, MultipartFile file) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
                 .orElseGet(() -> createNewProfile(candidateId));
 
@@ -131,7 +139,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public String uploadProfilePicture(Long candidateId, MultipartFile file) {
+    public String uploadProfilePicture(String candidateId, MultipartFile file) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
                 .orElseGet(() -> createNewProfile(candidateId));
 
@@ -147,7 +155,7 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public List<String> addSkill(Long candidateId, String skill) {
+    public List<String> addSkill(String candidateId, String skill) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
                 .orElseGet(() -> createNewProfile(candidateId));
 
@@ -161,9 +169,9 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public List<String> removeSkill(Long candidateId, String skill) {
+    public List<String> removeSkill(String candidateId, String skill) {
         CandidateProfile profile = candidateProfileRepository.findByUserId(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
+                .orElseThrow(() -> new RuntimeException("Candidate profile not found for user id: " + candidateId));
 
         profile.getSkills().remove(skill);
         profile.setProfileCompleteness(calculateCompleteness(profile));
@@ -173,18 +181,19 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     @Override
-    public CandidateProfile getCandidateEntity(Long candidateId) {
+    public CandidateProfile getCandidateEntity(String candidateId) {
         return candidateProfileRepository.findByUserId(candidateId)
-                .orElseThrow(() -> new EntityNotFoundException("Candidate profile not found for user id: " + candidateId));
+                .orElseThrow(() -> new RuntimeException("Candidate profile not found for user id: " + candidateId));
     }
 
     private CandidateProfileDTO convertToDTO(CandidateProfile profile) {
         CandidateProfileDTO dto = new CandidateProfileDTO();
 
         // Get basic info from auth user
-        if (profile.getUser() != null) {
-            dto.setName(profile.getUser().getName());
-            dto.setEmail(profile.getUser().getEmail());
+        Candidate authCandidate = candidateAuthRepository.findById(profile.getUserId()).orElse(null);
+        if (authCandidate != null) {
+            dto.setName(authCandidate.getName());
+            dto.setEmail(authCandidate.getEmail());
         }
 
         // Copy profile-specific fields
@@ -221,14 +230,19 @@ public class CandidateServiceImpl implements CandidateService {
 
         if (profile.getJobPreferences() != null) {
             JobPreferencesDTO jobPrefDTO = new JobPreferencesDTO();
-            jobPrefDTO.setJobType(profile.getJobPreferences().getJobType());
+            jobPrefDTO.setPreferredRole(profile.getJobPreferences().getPreferredRole());
+            jobPrefDTO.setPreferredLocation(profile.getJobPreferences().getPreferredLocation());
             jobPrefDTO.setExpectedSalary(profile.getJobPreferences().getExpectedSalary());
+            jobPrefDTO.setJobType(profile.getJobPreferences().getJobType());
             jobPrefDTO.setWillingToRelocate(profile.getJobPreferences().getWillingToRelocate());
             dto.setJobPreferences(jobPrefDTO);
         }
 
         if (profile.getNotificationPreferences() != null) {
             NotificationPreferencesDTO notifPrefDTO = new NotificationPreferencesDTO();
+            notifPrefDTO.setEmailNotifications(profile.getNotificationPreferences().getEmailNotifications());
+            notifPrefDTO.setSmsNotifications(profile.getNotificationPreferences().getSmsNotifications());
+            notifPrefDTO.setCustomPreferences(profile.getNotificationPreferences().getCustomPreferences());
             notifPrefDTO.setEmailAlerts(profile.getNotificationPreferences().getEmailAlerts());
             notifPrefDTO.setInAppNotifications(profile.getNotificationPreferences().getInAppNotifications());
             dto.setNotificationPreferences(notifPrefDTO);
@@ -242,9 +256,10 @@ public class CandidateServiceImpl implements CandidateService {
         int completedFields = 0;
 
         // Check auth user fields
-        if (profile.getUser() != null) {
-            if (profile.getUser().getName() != null && !profile.getUser().getName().isEmpty()) completedFields++;
-            if (profile.getUser().getEmail() != null && !profile.getUser().getEmail().isEmpty()) completedFields++;
+        Candidate authCandidate = candidateAuthRepository.findById(profile.getUserId()).orElse(null);
+        if (authCandidate != null) {
+            if (authCandidate.getName() != null && !authCandidate.getName().isEmpty()) completedFields++;
+            if (authCandidate.getEmail() != null && !authCandidate.getEmail().isEmpty()) completedFields++;
         }
 
         // Check profile fields

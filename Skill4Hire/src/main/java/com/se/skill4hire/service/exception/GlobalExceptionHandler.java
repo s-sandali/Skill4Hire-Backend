@@ -1,20 +1,17 @@
 package com.se.skill4hire.service.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.se.skill4hire.service.exception.JobNotFoundException;
-
-import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-@ControllerAdvice
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
      // Validation errors (title, salary, deadline, etc.)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,10 +39,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String, String>> handleNoSuchElementException(NoSuchElementException ex) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", ex.getMessage());
+        response.put("message", "Resource not found: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
@@ -63,4 +60,3 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
-

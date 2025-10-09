@@ -35,7 +35,7 @@ public class EmployeeProfileController {
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<EmployeeProfileDTO> getProfile(HttpSession session) {
-        Long employeeId = (Long) session.getAttribute("userId");
+        String employeeId = (String) session.getAttribute("userId");
         EmployeeProfileDTO profile = employeeProfileService.getProfile(employeeId);
         return ResponseEntity.ok(profile);
     }
@@ -45,7 +45,7 @@ public class EmployeeProfileController {
     public ResponseEntity<EmployeeProfileDTO> updateProfile(
             @Valid @RequestBody EmployeeProfileDTO profileDTO,
             HttpSession session) {
-        Long employeeId = (Long) session.getAttribute("userId");
+        String employeeId = (String) session.getAttribute("userId");
         EmployeeProfileDTO updatedProfile = employeeProfileService.updateProfile(employeeId, profileDTO);
         return ResponseEntity.ok(updatedProfile);
     }
@@ -53,7 +53,7 @@ public class EmployeeProfileController {
     @GetMapping("/profile/completeness")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<ProfileCompletenessDTO> getProfileCompleteness(HttpSession session) {
-        Long employeeId = (Long) session.getAttribute("userId");
+        String employeeId = (String) session.getAttribute("userId");
         ProfileCompletenessDTO completeness = employeeProfileService.getProfileCompleteness(employeeId);
         return ResponseEntity.ok(completeness);
     }
@@ -63,7 +63,7 @@ public class EmployeeProfileController {
     public ResponseEntity<Map<String, String>> uploadProfilePicture(
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {
-        Long employeeId = (Long) session.getAttribute("userId");
+        String employeeId = (String) session.getAttribute("userId");
         String fileName = employeeProfileService.uploadProfilePicture(employeeId, file);
 
         Map<String, String> response = new HashMap<>();

@@ -1,14 +1,8 @@
 package com.se.skill4hire.entity.auth;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "candidates")
-@AttributeOverride(name = "id", column = @Column(name = "id"))
-
+@Document(collection = "candidates")
 public class Candidate extends User {
 
     private String name;
@@ -28,6 +22,4 @@ public class Candidate extends User {
     public void setRole(String role) {
         super.setRole(role); // store role in User
     }
-
-    public Long getId() { return super.getId(); }
 }
