@@ -2,13 +2,9 @@ package com.se.skill4hire.dto.job;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
 public class JobPostDTO {
     
     @NotBlank(message = "Title is required")

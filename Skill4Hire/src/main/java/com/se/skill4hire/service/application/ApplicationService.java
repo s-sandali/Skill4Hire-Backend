@@ -4,6 +4,7 @@ import com.se.skill4hire.dto.application.ApplicationDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.repository.ApplicationRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -80,17 +81,17 @@ public class ApplicationService {
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
         
-        // Job details: fetch JobPost by stored jobPostId (if present)
+        // Job details: load by jobPostId if available
         if (a.getJobPostId() != null) {
             dto.setJobPostId(a.getJobPostId());
-            jobPostRepository.findById(a.getJobPostId()).ifPresent(job -> {
-                dto.setJobTitle(job.getTitle());
-                dto.setJobDescription(job.getDescription());
-                dto.setJobType(job.getType());
-                dto.setJobLocation(job.getLocation());
-                dto.setSalary(job.getSalary());
-                dto.setExperienceRequired(job.getExperience());
-                dto.setJobDeadline(job.getDeadline() != null ? job.getDeadline().atStartOfDay() : null);
+            jobPostRepository.findById(a.getJobPostId()).ifPresent(jp -> {
+                dto.setJobTitle(jp.getTitle());
+                dto.setJobDescription(jp.getDescription());
+                dto.setJobType(jp.getType());
+                dto.setJobLocation(jp.getLocation());
+                dto.setSalary(jp.getSalary());
+                dto.setExperienceRequired(jp.getExperience());
+                dto.setJobDeadline(jp.getDeadline() != null ? jp.getDeadline().atStartOfDay() : null);
             });
         }
         
