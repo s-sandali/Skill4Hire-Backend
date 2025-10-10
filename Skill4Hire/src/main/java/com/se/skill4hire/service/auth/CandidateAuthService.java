@@ -23,6 +23,7 @@ public class CandidateAuthService implements BaseAuthService {
 
     @Override
     public AuthResponse register(RegisterRequest request) {
+
         if (!(request instanceof CandidateRegRequest)) {
             return new AuthResponse("Invalid registration request", false);
         }
@@ -73,6 +74,7 @@ public class CandidateAuthService implements BaseAuthService {
         CandidateLoginRequest loginRequest = (CandidateLoginRequest) request;
 
         Candidate candidate = candidateRepository.findByEmail(loginRequest.getEmail());
+        System.out.println(candidate.getEmail());
         if (candidate == null || !passwordEncoder.matches(loginRequest.getPassword(), candidate.getPassword())) {
             return new AuthResponse("Invalid email or password", false);
         }

@@ -4,8 +4,11 @@ import com.se.skill4hire.dto.application.ApplicationDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.repository.ApplicationRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.repository.auth.CompanyAuthRepository;
 import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
+import com.se.skill4hire.service.exception.JobNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,10 +20,14 @@ import java.util.stream.Collectors;
 public class ApplicationService {
     private final ApplicationRepository repository;
     private final JobPostRepository jobPostRepository;
+    private final CompanyAuthRepository companyAuthRepository;
 
-    public ApplicationService(ApplicationRepository repository, JobPostRepository jobPostRepository) {
+    public ApplicationService(ApplicationRepository repository,
+                              JobPostRepository jobPostRepository,
+                              CompanyAuthRepository companyAuthRepository) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
+        this.companyAuthRepository = companyAuthRepository;
     }
 
     // Existing: companies view by status
@@ -39,6 +46,29 @@ public class ApplicationService {
         a.setCompanyName(companyName);
         a.setStatus(Application.ApplicationStatus.APPLIED);
         a.setAppliedAt(LocalDateTime.now());
+        Application saved = repository.save(a);
+        return toDTO(saved);
+    }
+
+    // Create application for a specific job post (by EMPLOYEE)
+    public ApplicationDTO createForJob(String candidateId, String jobPostId) {
+        JobPost job = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new JobNotFoundException(jobPostId));
+
+        repository.findByCandidateIdAndJobPostId(candidateId, jobPostId)
+                .ifPresent(existing -> { throw new IllegalStateException("Application already exists for this candidate and job"); });
+
+        Application a = new Application();
+        a.setCandidateId(candidateId);
+        a.setCompanyId(job.getCompanyId());
+        // Try to populate company name if available
+        if (job.getCompanyId() != null) {
+            companyAuthRepository.findById(job.getCompanyId()).map(Company::getName).ifPresent(a::setCompanyName);
+        }
+        a.setJobPostId(jobPostId);
+        a.setStatus(Application.ApplicationStatus.APPLIED);
+        a.setAppliedAt(LocalDateTime.now());
+
         Application saved = repository.save(a);
         return toDTO(saved);
     }

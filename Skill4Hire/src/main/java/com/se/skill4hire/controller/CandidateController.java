@@ -65,6 +65,7 @@ public class CandidateController {
 
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody CandidateLoginRequest request, HttpSession session) {
+
         AuthResponse response = candidateAuthService.login(request, session);
         return ResponseEntity.ok(response);
     }
