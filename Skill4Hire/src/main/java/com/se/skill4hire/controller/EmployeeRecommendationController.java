@@ -4,11 +4,17 @@ import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.profile.CandidateProfile;
 import com.se.skill4hire.entity.Recommendation;
 import com.se.skill4hire.service.EmployeeRecommendationService;
+import com.se.skill4hire.service.CandidateCvService;
+import com.se.skill4hire.service.job.JobPostService;
+import com.se.skill4hire.entity.candidate.CandidateCv;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +26,16 @@ import java.util.Map;
 public class EmployeeRecommendationController {
 
     private final EmployeeRecommendationService employeeRecommendationService;
+    private final CandidateCvService candidateCvService;
+    private final JobPostService jobPostService;
 
     // Constructor injection instead of @RequiredArgsConstructor
-    public EmployeeRecommendationController(EmployeeRecommendationService employeeRecommendationService) {
+    public EmployeeRecommendationController(EmployeeRecommendationService employeeRecommendationService,
+                                            CandidateCvService candidateCvService,
+                                            JobPostService jobPostService) {
         this.employeeRecommendationService = employeeRecommendationService;
+        this.candidateCvService = candidateCvService;
+        this.jobPostService = jobPostService;
     }
 
     // ==================== EMPLOYEE ENDPOINTS ====================
@@ -44,6 +56,17 @@ public class EmployeeRecommendationController {
     public CandidateProfile getCandidateProfile(@PathVariable String candidateId, HttpSession session) {
         String employeeId = (String) session.getAttribute("userId");
         return employeeRecommendationService.getCandidateProfile(candidateId);
+    }
+
+    @GetMapping("/employees/candidates/{candidateId}/cv")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<byte[]> downloadCandidateCv(@PathVariable String candidateId, HttpSession session) {
+        String employeeId = (String) session.getAttribute("userId");
+        CandidateCv cv = candidateCvService.getByCandidateId(candidateId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFilename() + "\"")
+                .contentType(MediaType.parseMediaType(cv.getContentType()))
+                .body(cv.getData());
     }
 
     @GetMapping("/employees/candidates")
@@ -104,7 +127,8 @@ public class EmployeeRecommendationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
-        String companyId = (String) session.getAttribute("companyId");
+        // CompanyAuthService sets 'userId' in session
+        String companyId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return employeeRecommendationService.getCompanyRecommendations(companyId, pageable);
     }
@@ -116,8 +140,14 @@ public class EmployeeRecommendationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
-        String companyId = (String) session.getAttribute("companyId");
+        // CompanyAuthService sets 'userId' in session
+        String companyId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        // Ensure the job belongs to the requesting company; otherwise, forbid access
+        if (!jobPostService.existsByIdAndCompanyId(jobId, companyId)) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this job post");
+        }
         return employeeRecommendationService.getJobRecommendations(jobId, pageable);
     }
 }
