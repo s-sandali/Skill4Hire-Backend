@@ -34,12 +34,14 @@ public class JobPostController {
     @Autowired
     private JobSearchService jobSearchService;
 
-    // Just the CREATE method - add this to your existing controller
-
+    // CREATE - only for authenticated companies
     @PostMapping
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<JobPost> createJobPost(@Valid @RequestBody JobPost jobPost, HttpServletRequest request) {
-        // Get company ID from session or authentication
         String companyId = getCompanyIdFromSession(request);
+        if (companyId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         jobPost.setCompanyId(companyId);
         JobPost createdJobPost = jobPostService.createJobPost(jobPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdJobPost);
@@ -64,16 +66,14 @@ public class JobPostController {
         return ResponseEntity.ok(jobPosts);
     }
 
-    // GET JOB BY ID (public)
+    // GET JOB BY ID (public - only active)
     @GetMapping("/{id}")
-    public ResponseEntity<JobPost> getJobPostById(@PathVariable String id, HttpServletRequest request) {
-        String companyId = getCompanyIdFromSession(request);
-        if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
-            Optional<JobPost> jobPost = jobPostService.getJobPostById(id);
-            return jobPost.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    public ResponseEntity<JobPost> getJobPostById(@PathVariable String id) {
+        Optional<JobPost> jobPost = jobPostService.getJobPostById(id);
+        return jobPost
+                .filter(j -> j.getStatus() == JobPost.JobStatus.ACTIVE)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // ENHANCED SEARCH WITH SKILL MATCHING
@@ -83,6 +83,7 @@ public class JobPostController {
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "minSalary", required = false) Double minSalary,
+            @RequestParam(value = "maxSalary", required = false) Double maxSalary,
             @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
             HttpSession session) {
 
@@ -91,8 +92,9 @@ public class JobPostController {
             return ResponseEntity.status(401).build();
         }
 
+        // Use skill matching ranking; direct skill filter not needed here
         List<JobSearchService.JobWithMatchScore> jobs = jobSearchService.searchJobsWithSkillMatching(
-                candidateId, keyword, type, location, minSalary, maxExperience);
+                candidateId, keyword, type, location, minSalary, maxSalary, maxExperience);
 
         return ResponseEntity.ok(jobs);
     }
@@ -129,6 +131,7 @@ public class JobPostController {
 
     // UPDATE - Only for job owner company
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<JobPost> updateJobPost(@PathVariable String id, @Valid @RequestBody JobPost jobPost, HttpServletRequest request) {
         String companyId = getCompanyIdFromSession(request);
         if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
@@ -143,6 +146,7 @@ public class JobPostController {
 
     // DELETE - Only for job owner company
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<Void> deleteJobPost(@PathVariable String id, HttpServletRequest request) {
         String companyId = getCompanyIdFromSession(request);
         if (jobPostService.existsByIdAndCompanyId(id, companyId)) {
@@ -179,14 +183,21 @@ public class JobPostController {
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "minSalary", required = false) Double minSalary,
-            @RequestParam(value = "maxExperience", required = false) Integer maxExperience) {
+            @RequestParam(value = "maxSalary", required = false) Double maxSalary,
+            @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
+            @RequestParam(value = "skill", required = false) String skill) {
 
-        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxExperience);
+        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxSalary, maxExperience, skill);
         return ResponseEntity.ok(jobs);
     }
 
     private String getCompanyIdFromSession(HttpServletRequest request) {
-        // Implement session-based company ID retrieval
-        return (String) request.getSession().getAttribute("companyId");
+        HttpSession session = request.getSession(false);
+        if (session == null) return null;
+        String role = (String) session.getAttribute("role");
+        if (role != null && role.equalsIgnoreCase("COMPANY")) {
+            return (String) session.getAttribute("userId");
+        }
+        return null;
     }
 }
