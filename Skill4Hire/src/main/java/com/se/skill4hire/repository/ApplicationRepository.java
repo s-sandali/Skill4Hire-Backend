@@ -10,4 +10,5 @@ import java.util.List;
 public interface ApplicationRepository extends MongoRepository<Application, String> {
     List<Application> findByCandidateId(String candidateId);
     List<Application> findByCandidateIdAndStatus(String candidateId, Application.ApplicationStatus status);
+    java.util.Optional<Application> findByCandidateIdAndJobPostId(String candidateId, String jobPostId);
 }

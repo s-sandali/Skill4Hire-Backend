@@ -97,4 +97,33 @@ public class EmployeeProfileController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status value: " + status, ex);
         }
     }
+
+    // ======================== Applications (Employee creates on behalf of candidate) ========================
+
+    @PostMapping("/applications")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<ApplicationDTO> submitCandidateToJob(@RequestBody CreateApplicationRequest request) {
+        if (request == null || request.candidateId == null || request.candidateId.isBlank()
+                || request.jobPostId == null || request.jobPostId.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "candidateId and jobPostId are required");
+        }
+        try {
+            ApplicationDTO dto = applicationService.createForJob(request.candidateId, request.jobPostId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        } catch (com.se.skill4hire.service.exception.JobNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
+        }
+    }
+
+    // Inline request payload to avoid extra small files
+    public static class CreateApplicationRequest {
+        public String candidateId;
+        public String jobPostId;
+        public String getCandidateId() { return candidateId; }
+        public void setCandidateId(String candidateId) { this.candidateId = candidateId; }
+        public String getJobPostId() { return jobPostId; }
+        public void setJobPostId(String jobPostId) { this.jobPostId = jobPostId; }
+    }
 }
