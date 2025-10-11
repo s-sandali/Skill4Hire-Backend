@@ -4,8 +4,12 @@ import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
 import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import com.se.skill4hire.entity.auth.Employee;
 import com.se.skill4hire.entity.EmployeeProfile;
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.entity.profile.CandidateProfile;
 import com.se.skill4hire.repository.auth.EmployeeRepository;
 import com.se.skill4hire.repository.profile.EmployeeProfileRepository;
+import com.se.skill4hire.repository.profile.CandidateProfileRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -22,8 +27,16 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
 
     @Autowired
     private EmployeeProfileRepository employeeProfileRepository;
+
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private CandidateProfileRepository candidateProfileRepository;
+
+    @Autowired
+    private JobPostRepository jobPostRepository;
+
     private static final String UPLOAD_DIR = "uploads/";
 
     @Override
@@ -80,6 +93,55 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
             return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload profile picture", e);
+        }
+    }
+
+    @Override
+    public long getTotalCandidatesCount() {
+        try {
+            return candidateProfileRepository.count();
+        } catch (Exception e) {
+            // Fallback if repository is not available
+            return 0L;
+        }
+    }
+
+    @Override
+    public long getActiveJobsCount() {
+        try {
+            // Use the existing findByStatus method and get the size
+            List<JobPost> activeJobs = jobPostRepository.findByStatus(JobPost.JobStatus.ACTIVE);
+            return activeJobs != null ? activeJobs.size() : 0L;
+        } catch (Exception e) {
+            // Fallback if repository is not available
+            return 0L;
+        }
+    }
+
+    @Override
+    public long getUpcomingInterviewsCount(String employeeId) {
+        // This would typically query an interview repository
+        // For now, return a mock value or 0
+        try {
+            // If you have an interview repository:
+            // return interviewRepository.countByEmployeeIdAndDateAfter(employeeId, LocalDateTime.now());
+            return 0L; // Temporary - implement based on your interview system
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    @Override
+    public long getNewApplicationsCount() {
+        // This would typically query applications from the last 7 days
+        // For now, return a mock value or 0
+        try {
+            // If you have an application repository:
+            // LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+            // return applicationRepository.countByCreatedAtAfter(weekAgo);
+            return 0L; // Temporary - implement based on your application system
+        } catch (Exception e) {
+            return 0L;
         }
     }
 
