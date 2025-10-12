@@ -5,6 +5,7 @@ import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.repository.ApplicationRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.repository.RecommendationRepository;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
@@ -21,13 +22,16 @@ public class ApplicationService {
     private final ApplicationRepository repository;
     private final JobPostRepository jobPostRepository;
     private final CompanyAuthRepository companyAuthRepository;
+    private final RecommendationRepository recommendationRepository;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
-                              CompanyAuthRepository companyAuthRepository) {
+                              CompanyAuthRepository companyAuthRepository,
+                              RecommendationRepository recommendationRepository) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
+        this.recommendationRepository = recommendationRepository;
     }
 
     // Existing: companies view by status
@@ -102,6 +106,22 @@ public class ApplicationService {
         return toDTO(repository.save(a));
     }
 
+    // Company views: list applications by company with optional status
+    public java.util.List<ApplicationDTO> listByCompany(String companyId, Application.ApplicationStatus status) {
+        java.util.List<Application> apps = (status == null)
+                ? repository.findByCompanyId(companyId)
+                : repository.findByCompanyIdAndStatus(companyId, status);
+        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    }
+
+    // Company views: list applications by job with optional status
+    public java.util.List<ApplicationDTO> listByJob(String jobPostId, Application.ApplicationStatus status) {
+        java.util.List<Application> apps = (status == null)
+                ? repository.findByJobPostId(jobPostId)
+                : repository.findByJobPostIdAndStatus(jobPostId, status);
+        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    }
+
     private ApplicationDTO toDTO(Application a) {
         ApplicationDTO dto = new ApplicationDTO();
         dto.setId(a.getId());
@@ -110,7 +130,7 @@ public class ApplicationService {
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
-        
+
         // Job details: load by jobPostId if available
         if (a.getJobPostId() != null) {
             dto.setJobPostId(a.getJobPostId());
@@ -123,8 +143,11 @@ public class ApplicationService {
                 dto.setExperienceRequired(jp.getExperience());
                 dto.setJobDeadline(jp.getDeadline() != null ? jp.getDeadline().atStartOfDay() : null);
             });
+            // Tag as recommended if any employee recommended this candidate for this job
+            boolean recommended = recommendationRepository.existsByCandidateIdAndJobId(a.getCandidateId(), a.getJobPostId());
+            dto.setRecommendedBySkill4Hire(recommended);
         }
-        
+
         return dto;
     }
 

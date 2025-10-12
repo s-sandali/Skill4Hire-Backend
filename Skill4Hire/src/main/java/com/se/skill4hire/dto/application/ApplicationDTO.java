@@ -19,7 +19,10 @@ public class ApplicationDTO {
     private Double salary;
     private Integer experienceRequired;
     private LocalDateTime jobDeadline;
-    
+
+    // Tag if candidate was recommended by a Skill4Hire employee for this job
+    private boolean recommendedBySkill4Hire;
+
     // Explicit setters for required fields
     public void setId(String id) { this.id = id; }
     public void setCandidateId(String candidateId) { this.candidateId = candidateId; }
@@ -35,7 +38,8 @@ public class ApplicationDTO {
     public void setSalary(Double salary) { this.salary = salary; }
     public void setExperienceRequired(Integer experienceRequired) { this.experienceRequired = experienceRequired; }
     public void setJobDeadline(LocalDateTime jobDeadline) { this.jobDeadline = jobDeadline; }
-    
+    public void setRecommendedBySkill4Hire(boolean recommendedBySkill4Hire) { this.recommendedBySkill4Hire = recommendedBySkill4Hire; }
+
     // Getters
     public String getId() { return id; }
     public String getCandidateId() { return candidateId; }
@@ -51,4 +55,5 @@ public class ApplicationDTO {
     public Double getSalary() { return salary; }
     public Integer getExperienceRequired() { return experienceRequired; }
     public LocalDateTime getJobDeadline() { return jobDeadline; }
+    public boolean isRecommendedBySkill4Hire() { return recommendedBySkill4Hire; }
 }

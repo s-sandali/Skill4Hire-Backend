@@ -72,6 +72,13 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Embedded MongoDB for integration tests (programmatic start) -->
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>3.5.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -107,6 +114,20 @@
                     <groupId>com.h2database</groupId>
                     <artifactId>h2</artifactId>
                     <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+        <!-- Run with embedded Mongo in runtime -->
+        <profile>
+            <id>embedded-mongo</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>de.flapdoodle.embed</groupId>
+                    <artifactId>de.flapdoodle.embed.mongo</artifactId>
+                    <version>4.12.3</version>
                 </dependency>
             </dependencies>
         </profile>
