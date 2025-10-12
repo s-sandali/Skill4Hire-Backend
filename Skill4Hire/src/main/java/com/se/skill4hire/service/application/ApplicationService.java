@@ -5,6 +5,7 @@ import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.repository.ApplicationRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.repository.RecommendationRepository;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
@@ -21,13 +22,16 @@ public class ApplicationService {
     private final ApplicationRepository repository;
     private final JobPostRepository jobPostRepository;
     private final CompanyAuthRepository companyAuthRepository;
+    private final RecommendationRepository recommendationRepository;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
-                              CompanyAuthRepository companyAuthRepository) {
+                              CompanyAuthRepository companyAuthRepository,
+                              RecommendationRepository recommendationRepository) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
+        this.recommendationRepository = recommendationRepository;
     }
 
     // Existing: companies view by status
@@ -139,6 +143,9 @@ public class ApplicationService {
                 dto.setExperienceRequired(jp.getExperience());
                 dto.setJobDeadline(jp.getDeadline() != null ? jp.getDeadline().atStartOfDay() : null);
             });
+            // Tag as recommended if any employee recommended this candidate for this job
+            boolean recommended = recommendationRepository.existsByCandidateIdAndJobId(a.getCandidateId(), a.getJobPostId());
+            dto.setRecommendedBySkill4Hire(recommended);
         }
 
         return dto;

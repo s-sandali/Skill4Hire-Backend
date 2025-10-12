@@ -95,3 +95,4 @@ public class CompanyApplicantController {
         return parseStatus(status);
     }
 }
+

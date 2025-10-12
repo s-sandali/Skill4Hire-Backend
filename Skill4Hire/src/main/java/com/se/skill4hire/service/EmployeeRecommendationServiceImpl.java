@@ -6,6 +6,9 @@ import com.se.skill4hire.entity.Recommendation;
 import com.se.skill4hire.repository.RecommendationRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.repository.profile.CandidateProfileRepository;
+import com.se.skill4hire.service.notification.NotificationService;
+import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.entity.auth.Company;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,17 +31,23 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
     private final CandidateProfileRepository candidateProfileRepository;
     private final RecommendationRepository recommendationRepository;
     private final MongoTemplate mongoTemplate;
+    private final NotificationService notificationService;
+    private final CompanyAuthRepository companyAuthRepository;
 
     // Constructor injection instead of @RequiredArgsConstructor
     public EmployeeRecommendationServiceImpl(
             JobPostRepository jobPostRepository,
             CandidateProfileRepository candidateProfileRepository,
             RecommendationRepository recommendationRepository,
-            MongoTemplate mongoTemplate) {
+            MongoTemplate mongoTemplate,
+            NotificationService notificationService,
+            CompanyAuthRepository companyAuthRepository) {
         this.jobPostRepository = jobPostRepository;
         this.candidateProfileRepository = candidateProfileRepository;
         this.recommendationRepository = recommendationRepository;
         this.mongoTemplate = mongoTemplate;
+        this.notificationService = notificationService;
+        this.companyAuthRepository = companyAuthRepository;
     }
 
     @Override
@@ -113,6 +122,16 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
         try {
             Recommendation saved = recommendationRepository.save(recommendation);
             log.info("Successfully created recommendation: {}", saved.getId());
+
+            // Notify candidate
+            String companyName = null;
+            if (job.getCompanyId() != null) {
+                companyName = companyAuthRepository.findById(job.getCompanyId())
+                        .map(Company::getName)
+                        .orElse(null);
+            }
+            notificationService.notifyCandidateRecommended(candidateId, companyName, job);
+
             return saved;
         } catch (DuplicateKeyException e) {
             throw new RuntimeException("Recommendation already exists for this candidate and job");
