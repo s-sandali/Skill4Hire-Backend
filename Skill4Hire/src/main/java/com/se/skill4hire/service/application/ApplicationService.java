@@ -130,7 +130,7 @@ public class ApplicationService {
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
-        
+
         // Job details: load by jobPostId if available
         if (a.getJobPostId() != null) {
             dto.setJobPostId(a.getJobPostId());
@@ -147,7 +147,7 @@ public class ApplicationService {
             boolean recommended = recommendationRepository.existsByCandidateIdAndJobId(a.getCandidateId(), a.getJobPostId());
             dto.setRecommendedBySkill4Hire(recommended);
         }
-        
+
         return dto;
     }
 
