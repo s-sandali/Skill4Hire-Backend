@@ -102,6 +102,22 @@ public class ApplicationService {
         return toDTO(repository.save(a));
     }
 
+    // Company views: list applications by company with optional status
+    public java.util.List<ApplicationDTO> listByCompany(String companyId, Application.ApplicationStatus status) {
+        java.util.List<Application> apps = (status == null)
+                ? repository.findByCompanyId(companyId)
+                : repository.findByCompanyIdAndStatus(companyId, status);
+        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    }
+
+    // Company views: list applications by job with optional status
+    public java.util.List<ApplicationDTO> listByJob(String jobPostId, Application.ApplicationStatus status) {
+        java.util.List<Application> apps = (status == null)
+                ? repository.findByJobPostId(jobPostId)
+                : repository.findByJobPostIdAndStatus(jobPostId, status);
+        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+    }
+
     private ApplicationDTO toDTO(Application a) {
         ApplicationDTO dto = new ApplicationDTO();
         dto.setId(a.getId());
@@ -110,7 +126,7 @@ public class ApplicationService {
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
         dto.setAppliedAt(a.getAppliedAt());
-        
+
         // Job details: load by jobPostId if available
         if (a.getJobPostId() != null) {
             dto.setJobPostId(a.getJobPostId());
@@ -124,7 +140,7 @@ public class ApplicationService {
                 dto.setJobDeadline(jp.getDeadline() != null ? jp.getDeadline().atStartOfDay() : null);
             });
         }
-        
+
         return dto;
     }
 
