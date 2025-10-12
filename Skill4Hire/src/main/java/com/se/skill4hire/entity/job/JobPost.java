@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "job_posts")
 public class JobPost {
@@ -30,6 +31,9 @@ public class JobPost {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    // New: structured list of skills for this job
+    private List<String> skills;
 
     public JobPost() {
         this.createdAt = LocalDateTime.now();
@@ -61,6 +65,8 @@ public class JobPost {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public List<String> getSkills() { return skills; }
+    public void setSkills(List<String> skills) { this.skills = skills; }
 
     public enum JobStatus {
         ACTIVE,

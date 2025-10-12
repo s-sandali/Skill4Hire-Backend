@@ -1,0 +1,31 @@
+package com.se.skill4hire.service;
+
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.entity.profile.CandidateProfile;
+import com.se.skill4hire.entity.Recommendation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface EmployeeRecommendationService {
+
+    // Get all active jobs
+    Page<JobPost> getActiveJobs(Pageable pageable);
+
+    // Get candidate profile by ID
+    CandidateProfile getCandidateProfile(String candidateId);
+
+    // Search candidates with optional filters
+    Page<CandidateProfile> searchCandidates(String skill, Integer minExperience, Pageable pageable);
+
+    // Recommend a candidate to a job
+    Recommendation recommendCandidate(String employeeId, String candidateId, String jobId, String note);
+
+    // Get employee's recommendations
+    Page<Recommendation> getEmployeeRecommendations(String employeeId, Pageable pageable);
+
+    // Get recommendations for a specific job
+    Page<Recommendation> getJobRecommendations(String jobId, Pageable pageable);
+
+    // Get recommendations for a company's jobs
+    Page<Recommendation> getCompanyRecommendations(String companyId, Pageable pageable);
+}
