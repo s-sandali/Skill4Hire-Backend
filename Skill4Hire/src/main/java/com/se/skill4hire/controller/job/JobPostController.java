@@ -172,7 +172,7 @@ public class JobPostController {
         return ResponseEntity.ok(jobPosts);
     }
 
-    // BASIC SEARCH (public - no authentication required)
+    // BASIC SEARCH
     @GetMapping("/search")
     public ResponseEntity<List<JobPost>> searchJobs(
             @RequestParam(value = "keyword", required = false) String keyword,
