@@ -22,4 +22,7 @@ public interface RecommendationRepository extends MongoRepository<Recommendation
 
     // Find recommendations for a specific candidate
     Page<Recommendation> findByCandidateId(String candidateId, Pageable pageable);
+
+    // Exists for candidate+job (any employee)
+    boolean existsByCandidateIdAndJobId(String candidateId, String jobId);
 }
