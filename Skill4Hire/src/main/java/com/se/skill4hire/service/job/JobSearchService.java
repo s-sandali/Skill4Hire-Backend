@@ -31,13 +31,13 @@ public class JobSearchService {
     );
 
     public List<JobWithMatchScore> searchJobsWithSkillMatching(String candidateId, String keyword, String type,
-                                                               String location, Double minSalary, Integer maxExperience) {
+                                                               String location, Double minSalary, Double maxSalary, Integer maxExperience) {
         // Get candidate skills
         CandidateProfile candidateProfile = candidateService.getCandidateEntity(candidateId);
         List<String> candidateSkills = candidateProfile.getSkills();
 
-        // Search jobs using existing service
-        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxExperience);
+        // Search jobs using existing service (no direct skill filter here)
+        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxSalary, maxExperience, null);
 
         // Filter and rank by skill matching
         return jobs.stream()
@@ -84,7 +84,8 @@ public class JobSearchService {
     // Simple search without skill matching (for non-logged in users)
     public List<JobPost> searchJobsBasic(String keyword, String type, String location,
                                          Double minSalary, Integer maxExperience) {
-        return jobPostService.searchJobs(keyword, type, location, minSalary, maxExperience);
+        // Keep legacy signature for compatibility; delegate to new method
+        return jobPostService.searchJobs(keyword, type, location, minSalary, null, maxExperience, null);
     }
 
     private static class JobMatchResult {

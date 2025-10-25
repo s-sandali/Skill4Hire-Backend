@@ -353,4 +353,31 @@ public class CandidateController {
             return new CandidateCvResponse(cv.getId(), cv.getCandidateId(), cv.getFilename(), cv.getContentType());
         }
     }
+
+    // ======================== Applications ========================
+
+    // Candidate clicks Apply to a job
+    @PostMapping("/applications")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
+    public ResponseEntity<ApplicationDTO> applyToJob(@RequestBody ApplyRequest request, HttpSession session) {
+        if (request == null || request.jobPostId == null || request.jobPostId.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        String candidateId = (String) session.getAttribute("userId");
+        try {
+            ApplicationDTO dto = applicationService.createForJob(candidateId, request.jobPostId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        } catch (com.se.skill4hire.service.exception.JobNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalStateException ex) {
+            // Already applied
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    public static class ApplyRequest {
+        public String jobPostId;
+        public String getJobPostId() { return jobPostId; }
+        public void setJobPostId(String jobPostId) { this.jobPostId = jobPostId; }
+    }
 }

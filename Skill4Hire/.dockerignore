@@ -1,0 +1,15 @@
+# Ignore Git and IDE files
+.git
+.gitignore
+.idea
+.vscode
+
+# Maven build cache/outputs
+.mvn/
+**/target/
+
+# OS / editor
+*.swp
+*.log
+.DS_Store
+

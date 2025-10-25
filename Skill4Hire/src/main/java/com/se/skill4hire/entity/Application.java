@@ -22,7 +22,9 @@ public class Application {
     public enum ApplicationStatus {
         APPLIED,
         SHORTLISTED,
-        REJECTED
+        INTERVIEW,
+        REJECTED,
+        HIRED
     }
 
     // Explicit getters and setters to ensure compilation

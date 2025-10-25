@@ -9,4 +9,10 @@ public interface EmployeeProfileService {
     EmployeeProfileDTO updateProfile(String employeeId, EmployeeProfileDTO profileDTO);
     ProfileCompletenessDTO getProfileCompleteness(String employeeId);
     String uploadProfilePicture(String employeeId, MultipartFile file);
+
+    // Dashboard metrics methods
+    long getTotalCandidatesCount();
+    long getActiveJobsCount();
+    long getUpcomingInterviewsCount(String employeeId);
+    long getNewApplicationsCount();
 }

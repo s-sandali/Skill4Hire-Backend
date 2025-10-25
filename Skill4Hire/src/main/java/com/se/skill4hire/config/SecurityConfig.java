@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,27 +57,15 @@ public class SecurityConfig {
                                 "/api/employees/auth/login",
                                 "/api/auth/login",
                                 "/api/auth/logout",
-                                "/api/jobposts/**",
-                                "/api/jobs/**",
-                                // Without /api prefix (in case it's being stripped somewhere)
-                                "/candidates/auth/register",
-                                "/candidates/auth/login",
-                                "/companies/auth/register",
-                                "/companies/auth/login",
-                                "/employees/auth/register",
-                                "/employees/auth/login",
-                                "/auth/login",
-                                "/auth/logout",
-                                "/api/jobposts/search",  // Add this
-                                "/api/jobposts",         // Already exists but ensure it's public
-                                 "/api/jobposts/**",
-                                "/api/uploads/**",  // Add this line for file access
+                                "/api/uploads/**",  // file access
                                 "/uploads/**",
-                                // This allows all jobpost endpoints publicly
-                                "/api/jobs/**",
                                 "/error/**",
                                 "/error"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/jobposts",
+                                "/api/jobposts/**",
+                                "/api/jobs/**").permitAll()
 
                         // Authenticated endpoints (specific patterns before broad ones)
                         .requestMatchers(
@@ -93,8 +84,6 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
-                // Temporarily disable custom filter to test
-                // ENABLE the session authentication filter (remove the comment)
                 .addFilterBefore(sessionAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
@@ -103,7 +92,7 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                 );
-                    
+
 
 
         return http.build();
