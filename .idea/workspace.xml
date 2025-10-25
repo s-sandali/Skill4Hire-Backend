@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <changelist_data name="sasindibandara" email="sasindi.bandara2003@gmail.com" automatic="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/.dockerignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Skill4Hire/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/Skill4Hire/src/main/java/com/se/skill4hire/service/notification/NotificationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/Skill4Hire/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +128,7 @@
       <workItem from="1758488905044" duration="1175000" />
       <workItem from="1758597285455" duration="19486000" />
       <workItem from="1761063949943" duration="35000" />
-      <workItem from="1761367993008" duration="1498000" />
+      <workItem from="1761367993008" duration="4723000" />
     </task>
     <task id="LOCAL-00001" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <option name="closed" value="true" />
