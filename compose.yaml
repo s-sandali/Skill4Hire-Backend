@@ -8,11 +8,27 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
   server:
     build:
-      context: .
+      context: ./Skill4Hire
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/skill4hire
+    depends_on:
+      - mongo
     ports:
       - 8080:8080
+
+volumes:
+  mongo-data:
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
