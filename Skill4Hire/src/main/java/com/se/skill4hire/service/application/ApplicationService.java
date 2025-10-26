@@ -1,21 +1,23 @@
 package com.se.skill4hire.service.application;
 
-import com.se.skill4hire.dto.application.ApplicationDTO;
-import com.se.skill4hire.entity.Application;
-import com.se.skill4hire.repository.ApplicationRepository;
-import com.se.skill4hire.repository.job.JobPostRepository;
-import com.se.skill4hire.repository.auth.CompanyAuthRepository;
-import com.se.skill4hire.repository.RecommendationRepository;
-import com.se.skill4hire.entity.job.JobPost;
-import com.se.skill4hire.entity.auth.Company;
-import com.se.skill4hire.service.exception.ApplicationNotFoundException;
-import com.se.skill4hire.service.exception.JobNotFoundException;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.se.skill4hire.dto.application.ApplicationDTO;
+import com.se.skill4hire.entity.Application;
+import com.se.skill4hire.entity.auth.Company;
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.repository.ApplicationRepository;
+import com.se.skill4hire.repository.RecommendationRepository;
+import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.service.exception.ApplicationNotFoundException;
+import com.se.skill4hire.service.exception.JobNotFoundException;
+import com.se.skill4hire.service.notification.CompanyNotificationService;
 
 @Service
 public class ApplicationService {
@@ -23,15 +25,18 @@ public class ApplicationService {
     private final JobPostRepository jobPostRepository;
     private final CompanyAuthRepository companyAuthRepository;
     private final RecommendationRepository recommendationRepository;
+    private final CompanyNotificationService companyNotificationService;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
                               CompanyAuthRepository companyAuthRepository,
-                              RecommendationRepository recommendationRepository) {
+                              RecommendationRepository recommendationRepository,
+                              CompanyNotificationService companyNotificationService) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
         this.recommendationRepository = recommendationRepository;
+        this.companyNotificationService = companyNotificationService;
     }
 
     // Existing: companies view by status
@@ -50,7 +55,8 @@ public class ApplicationService {
         a.setCompanyName(companyName);
         a.setStatus(Application.ApplicationStatus.APPLIED);
         a.setAppliedAt(LocalDateTime.now());
-        Application saved = repository.save(a);
+    Application saved = repository.save(a);
+    companyNotificationService.notifyDirectApplication(a.getCompanyId(), a.getCandidateId(), a.getCompanyName(), saved.getId());
         return toDTO(saved);
     }
 
@@ -73,7 +79,8 @@ public class ApplicationService {
         a.setStatus(Application.ApplicationStatus.APPLIED);
         a.setAppliedAt(LocalDateTime.now());
 
-        Application saved = repository.save(a);
+    Application saved = repository.save(a);
+    companyNotificationService.notifyNewApplication(job, candidateId, saved.getId());
         return toDTO(saved);
     }
 

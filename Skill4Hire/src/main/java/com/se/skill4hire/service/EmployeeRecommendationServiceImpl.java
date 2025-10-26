@@ -1,26 +1,31 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.entity.job.JobPost;
-import com.se.skill4hire.entity.profile.CandidateProfile;
-import com.se.skill4hire.entity.Recommendation;
-import com.se.skill4hire.repository.RecommendationRepository;
-import com.se.skill4hire.repository.job.JobPostRepository;
-import com.se.skill4hire.repository.profile.CandidateProfileRepository;
-import com.se.skill4hire.service.notification.NotificationService;
-import com.se.skill4hire.repository.auth.CompanyAuthRepository;
-import com.se.skill4hire.entity.auth.Company;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.se.skill4hire.entity.Recommendation;
+import com.se.skill4hire.entity.auth.Company;
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.entity.profile.CandidateProfile;
+import com.se.skill4hire.repository.RecommendationRepository;
+import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.repository.profile.CandidateProfileRepository;
+import com.se.skill4hire.service.notification.CompanyNotificationService;
+import com.se.skill4hire.service.notification.NotificationService;
 
 @Service
 public class EmployeeRecommendationServiceImpl implements EmployeeRecommendationService {
@@ -32,6 +37,7 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
     private final RecommendationRepository recommendationRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationService notificationService;
+    private final CompanyNotificationService companyNotificationService;
     private final CompanyAuthRepository companyAuthRepository;
 
     // Constructor injection instead of @RequiredArgsConstructor
@@ -41,12 +47,14 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
             RecommendationRepository recommendationRepository,
             MongoTemplate mongoTemplate,
             NotificationService notificationService,
+            CompanyNotificationService companyNotificationService,
             CompanyAuthRepository companyAuthRepository) {
         this.jobPostRepository = jobPostRepository;
         this.candidateProfileRepository = candidateProfileRepository;
         this.recommendationRepository = recommendationRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationService = notificationService;
+        this.companyNotificationService = companyNotificationService;
         this.companyAuthRepository = companyAuthRepository;
     }
 
@@ -130,7 +138,14 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
                         .map(Company::getName)
                         .orElse(null);
             }
-            notificationService.notifyCandidateRecommended(candidateId, companyName, job);
+        notificationService.notifyCandidateRecommended(candidateId, companyName, job);
+        companyNotificationService.notifyCandidateRecommended(
+            job,
+            candidateId,
+            candidate.getName(),
+            employeeId,
+            saved.getId()
+        );
 
             return saved;
         } catch (DuplicateKeyException e) {

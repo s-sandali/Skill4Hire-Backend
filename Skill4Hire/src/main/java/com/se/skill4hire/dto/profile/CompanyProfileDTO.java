@@ -12,11 +12,26 @@ public class CompanyProfileDTO {
     @JsonProperty("phone")
     private String phone;
 
+    @JsonProperty("email")
+    private String email;
+
     @JsonProperty("website")
     private String website;
 
     @JsonProperty("address")
     private String address;
+
+    @JsonProperty("city")
+    private String city;
+
+    @JsonProperty("state")
+    private String state;
+
+    @JsonProperty("zipCode")
+    private String zipCode;
+
+    @JsonProperty("country")
+    private String country;
 
     @JsonProperty("facebook")
     private String facebook;
@@ -26,6 +41,15 @@ public class CompanyProfileDTO {
 
     @JsonProperty("twitter")
     private String twitter;
+
+    @JsonProperty("industry")
+    private String industry;
+
+    @JsonProperty("companySize")
+    private String companySize;
+
+    @JsonProperty("founded")
+    private String founded;
 
     @JsonProperty("logo")
     private String logo;
@@ -54,6 +78,14 @@ public class CompanyProfileDTO {
         this.phone = phone;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getWebsite() {
         return website;
     }
@@ -68,6 +100,38 @@ public class CompanyProfileDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getFacebook() {
@@ -92,6 +156,30 @@ public class CompanyProfileDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getCompanySize() {
+        return companySize;
+    }
+
+    public void setCompanySize(String companySize) {
+        this.companySize = companySize;
+    }
+
+    public String getFounded() {
+        return founded;
+    }
+
+    public void setFounded(String founded) {
+        this.founded = founded;
     }
 
     public String getLogo() {

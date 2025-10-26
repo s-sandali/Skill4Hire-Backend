@@ -14,6 +14,13 @@ public class Company extends User {
     private String linkedin;
     private String twitter;
     private String logo;
+    private String industry;
+    private String companySize;
+    private String founded;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
 
     public Company() {
         super();
@@ -21,7 +28,9 @@ public class Company extends User {
 
     public Company(String email, String password, String name, String description,
                    String phone, String website, String address,
-                   String facebook, String linkedin, String twitter) {
+                   String facebook, String linkedin, String twitter,
+                   String industry, String companySize, String founded,
+                   String city, String state, String zipCode, String country) {
         super(email, password);
         this.name = name;
         this.description = description;
@@ -31,6 +40,13 @@ public class Company extends User {
         this.facebook = facebook;
         this.linkedin = linkedin;
         this.twitter = twitter;
+        this.industry = industry;
+        this.companySize = companySize;
+        this.founded = founded;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.country = country;
     }
 
     public String getName() {
@@ -103,6 +119,62 @@ public class Company extends User {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getCompanySize() {
+        return companySize;
+    }
+
+    public void setCompanySize(String companySize) {
+        this.companySize = companySize;
+    }
+
+    public String getFounded() {
+        return founded;
+    }
+
+    public void setFounded(String founded) {
+        this.founded = founded;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Override
