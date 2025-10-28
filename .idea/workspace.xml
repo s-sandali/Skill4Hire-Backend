@@ -7,7 +7,6 @@
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <changelist_data name="sasindibandara" email="sasindi.bandara2003@gmail.com" automatic="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +57,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Skill4HireApplication.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
+    "Notification.DoNotAsk-Database detector": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -69,7 +70,7 @@
     "git-widget-placeholder": "SCRUM-174-deploy-the-backend",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sanda/Documents/Skill4Hire/Skill4Hire-backend",
+    "last_opened_file_path": "C:/Users/sanda/Documents/Skill4Hire",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -128,7 +129,12 @@
       <workItem from="1758488905044" duration="1175000" />
       <workItem from="1758597285455" duration="19486000" />
       <workItem from="1761063949943" duration="35000" />
-      <workItem from="1761367993008" duration="4723000" />
+      <workItem from="1761367993008" duration="6504000" />
+      <workItem from="1761386308937" duration="701000" />
+      <workItem from="1761409242308" duration="2445000" />
+      <workItem from="1761461775737" duration="13120000" />
+      <workItem from="1761551846999" duration="610000" />
+      <workItem from="1761632642845" duration="2342000" />
     </task>
     <task id="LOCAL-00001" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <option name="closed" value="true" />

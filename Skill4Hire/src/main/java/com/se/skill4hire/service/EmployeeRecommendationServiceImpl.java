@@ -26,6 +26,8 @@ import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.repository.profile.CandidateProfileRepository;
 import com.se.skill4hire.service.notification.CompanyNotificationService;
 import com.se.skill4hire.service.notification.NotificationService;
+import com.se.skill4hire.dto.candidate.CandidateBasicView;
+import com.se.skill4hire.repository.CandidateCvRepository;
 
 @Service
 public class EmployeeRecommendationServiceImpl implements EmployeeRecommendationService {
@@ -39,6 +41,7 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
     private final NotificationService notificationService;
     private final CompanyNotificationService companyNotificationService;
     private final CompanyAuthRepository companyAuthRepository;
+    private final CandidateCvRepository candidateCvRepository;
 
     // Constructor injection instead of @RequiredArgsConstructor
     public EmployeeRecommendationServiceImpl(
@@ -48,7 +51,8 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
             MongoTemplate mongoTemplate,
             NotificationService notificationService,
             CompanyNotificationService companyNotificationService,
-            CompanyAuthRepository companyAuthRepository) {
+            CompanyAuthRepository companyAuthRepository,
+            CandidateCvRepository candidateCvRepository) {
         this.jobPostRepository = jobPostRepository;
         this.candidateProfileRepository = candidateProfileRepository;
         this.recommendationRepository = recommendationRepository;
@@ -56,6 +60,7 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
         this.notificationService = notificationService;
         this.companyNotificationService = companyNotificationService;
         this.companyAuthRepository = companyAuthRepository;
+        this.candidateCvRepository = candidateCvRepository;
     }
 
     @Override
@@ -92,6 +97,49 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
                 pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), CandidateProfile.class, "candidate_profiles")
         );
+    }
+
+    @Override
+    public CandidateBasicView getCandidateBasic(String candidateId) {
+        CandidateProfile profile = getCandidateProfile(candidateId);
+        CandidateBasicView view = new CandidateBasicView();
+        view.setCandidateId(profile.getUserId());
+        view.setName(profile.getName());
+        view.setTitle(profile.getTitle());
+        view.setLocation(profile.getLocation());
+        view.setSkills(profile.getSkills() == null ? java.util.List.of() : profile.getSkills());
+        if (profile.getProfilePicturePath() != null && !profile.getProfilePicturePath().isBlank()) {
+            view.setProfilePictureUrl("/uploads/profile-pictures/" + profile.getProfilePicturePath());
+        }
+        boolean hasCv = candidateCvRepository.existsByCandidateId(candidateId);
+        view.setHasCv(hasCv);
+        if (hasCv) {
+            view.setCvDownloadUrl("/api/employees/candidates/" + candidateId + "/cv");
+        }
+        return view;
+    }
+
+    @Override
+    public Page<CandidateBasicView> searchCandidateBasics(String skill, Integer minExperience, Pageable pageable) {
+        Page<CandidateProfile> page = searchCandidates(skill, minExperience, pageable);
+        List<CandidateBasicView> basics = page.getContent().stream().map(p -> {
+            CandidateBasicView v = new CandidateBasicView();
+            v.setCandidateId(p.getUserId());
+            v.setName(p.getName());
+            v.setTitle(p.getTitle());
+            v.setLocation(p.getLocation());
+            v.setSkills(p.getSkills() == null ? java.util.List.of() : p.getSkills());
+            if (p.getProfilePicturePath() != null && !p.getProfilePicturePath().isBlank()) {
+                v.setProfilePictureUrl("/uploads/profile-pictures/" + p.getProfilePicturePath());
+            }
+            boolean hasCv = candidateCvRepository.existsByCandidateId(p.getUserId());
+            v.setHasCv(hasCv);
+            if (hasCv) {
+                v.setCvDownloadUrl("/api/employees/candidates/" + p.getUserId() + "/cv");
+            }
+            return v;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(basics, pageable, page.getTotalElements());
     }
 
     @Override

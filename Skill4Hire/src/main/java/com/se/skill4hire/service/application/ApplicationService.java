@@ -18,6 +18,7 @@ import com.se.skill4hire.repository.job.JobPostRepository;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.notification.CompanyNotificationService;
+import com.se.skill4hire.service.notification.NotificationService;
 
 @Service
 public class ApplicationService {
@@ -26,17 +27,20 @@ public class ApplicationService {
     private final CompanyAuthRepository companyAuthRepository;
     private final RecommendationRepository recommendationRepository;
     private final CompanyNotificationService companyNotificationService;
+    private final NotificationService candidateNotificationService;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
                               CompanyAuthRepository companyAuthRepository,
                               RecommendationRepository recommendationRepository,
-                              CompanyNotificationService companyNotificationService) {
+                              CompanyNotificationService companyNotificationService,
+                              NotificationService candidateNotificationService) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
         this.recommendationRepository = recommendationRepository;
         this.companyNotificationService = companyNotificationService;
+        this.candidateNotificationService = candidateNotificationService;
     }
 
     // Existing: companies view by status
@@ -55,12 +59,15 @@ public class ApplicationService {
         a.setCompanyName(companyName);
         a.setStatus(Application.ApplicationStatus.APPLIED);
         a.setAppliedAt(LocalDateTime.now());
-    Application saved = repository.save(a);
-    companyNotificationService.notifyDirectApplication(a.getCompanyId(), a.getCandidateId(), a.getCompanyName(), saved.getId());
+        Application saved = repository.save(a);
+        // Notify company
+        companyNotificationService.notifyDirectApplication(a.getCompanyId(), a.getCandidateId(), a.getCompanyName(), saved.getId());
+        // Notify candidate
+        candidateNotificationService.notifyApplicationSubmitted(candidateId, null, companyName);
         return toDTO(saved);
     }
 
-    // Create application for a specific job post (by EMPLOYEE)
+    // Create application for a specific job post (by EMPLOYEE or candidate via job)
     public ApplicationDTO createForJob(String candidateId, String jobPostId) {
         JobPost job = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new JobNotFoundException(jobPostId));
@@ -79,8 +86,11 @@ public class ApplicationService {
         a.setStatus(Application.ApplicationStatus.APPLIED);
         a.setAppliedAt(LocalDateTime.now());
 
-    Application saved = repository.save(a);
-    companyNotificationService.notifyNewApplication(job, candidateId, saved.getId());
+        Application saved = repository.save(a);
+        // Notify company
+        companyNotificationService.notifyNewApplication(job, candidateId, saved.getId());
+        // Notify candidate
+        candidateNotificationService.notifyApplicationSubmitted(candidateId, job, a.getCompanyName());
         return toDTO(saved);
     }
 
@@ -109,6 +119,14 @@ public class ApplicationService {
             if (status == Application.ApplicationStatus.REJECTED) {
                 a.setRejectionReason(reason);
             }
+            // Notify candidate with friendly message
+            JobPost job = null;
+            if (a.getJobPostId() != null) {
+                job = jobPostRepository.findById(a.getJobPostId()).orElse(null);
+            }
+            candidateNotificationService.notifyApplicationStatusChanged(
+                    a.getCandidateId(), status, job, a.getCompanyName(), reason, a.getId()
+            );
         }
         return toDTO(repository.save(a));
     }

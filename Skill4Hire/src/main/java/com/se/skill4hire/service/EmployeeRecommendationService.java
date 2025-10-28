@@ -3,6 +3,7 @@ package com.se.skill4hire.service;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.entity.profile.CandidateProfile;
 import com.se.skill4hire.entity.Recommendation;
+import com.se.skill4hire.dto.candidate.CandidateBasicView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,6 +17,12 @@ public interface EmployeeRecommendationService {
 
     // Search candidates with optional filters
     Page<CandidateProfile> searchCandidates(String skill, Integer minExperience, Pageable pageable);
+
+    // Basic candidate view by ID (name, skills, picture url, cv availability)
+    CandidateBasicView getCandidateBasic(String candidateId);
+
+    // Search basic views of candidates
+    Page<CandidateBasicView> searchCandidateBasics(String skill, Integer minExperience, Pageable pageable);
 
     // Recommend a candidate to a job
     Recommendation recommendCandidate(String employeeId, String candidateId, String jobId, String note);
