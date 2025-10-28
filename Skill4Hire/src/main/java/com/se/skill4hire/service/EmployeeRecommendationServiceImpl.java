@@ -1,26 +1,33 @@
 package com.se.skill4hire.service;
 
-import com.se.skill4hire.entity.job.JobPost;
-import com.se.skill4hire.entity.profile.CandidateProfile;
-import com.se.skill4hire.entity.Recommendation;
-import com.se.skill4hire.repository.RecommendationRepository;
-import com.se.skill4hire.repository.job.JobPostRepository;
-import com.se.skill4hire.repository.profile.CandidateProfileRepository;
-import com.se.skill4hire.service.notification.NotificationService;
-import com.se.skill4hire.repository.auth.CompanyAuthRepository;
-import com.se.skill4hire.entity.auth.Company;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.se.skill4hire.entity.Recommendation;
+import com.se.skill4hire.entity.auth.Company;
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.entity.profile.CandidateProfile;
+import com.se.skill4hire.repository.RecommendationRepository;
+import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.repository.profile.CandidateProfileRepository;
+import com.se.skill4hire.service.notification.CompanyNotificationService;
+import com.se.skill4hire.service.notification.NotificationService;
+import com.se.skill4hire.dto.candidate.CandidateBasicView;
+import com.se.skill4hire.repository.CandidateCvRepository;
 
 @Service
 public class EmployeeRecommendationServiceImpl implements EmployeeRecommendationService {
@@ -32,7 +39,9 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
     private final RecommendationRepository recommendationRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationService notificationService;
+    private final CompanyNotificationService companyNotificationService;
     private final CompanyAuthRepository companyAuthRepository;
+    private final CandidateCvRepository candidateCvRepository;
 
     // Constructor injection instead of @RequiredArgsConstructor
     public EmployeeRecommendationServiceImpl(
@@ -41,13 +50,17 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
             RecommendationRepository recommendationRepository,
             MongoTemplate mongoTemplate,
             NotificationService notificationService,
-            CompanyAuthRepository companyAuthRepository) {
+            CompanyNotificationService companyNotificationService,
+            CompanyAuthRepository companyAuthRepository,
+            CandidateCvRepository candidateCvRepository) {
         this.jobPostRepository = jobPostRepository;
         this.candidateProfileRepository = candidateProfileRepository;
         this.recommendationRepository = recommendationRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationService = notificationService;
+        this.companyNotificationService = companyNotificationService;
         this.companyAuthRepository = companyAuthRepository;
+        this.candidateCvRepository = candidateCvRepository;
     }
 
     @Override
@@ -84,6 +97,49 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
                 pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), CandidateProfile.class, "candidate_profiles")
         );
+    }
+
+    @Override
+    public CandidateBasicView getCandidateBasic(String candidateId) {
+        CandidateProfile profile = getCandidateProfile(candidateId);
+        CandidateBasicView view = new CandidateBasicView();
+        view.setCandidateId(profile.getUserId());
+        view.setName(profile.getName());
+        view.setTitle(profile.getTitle());
+        view.setLocation(profile.getLocation());
+        view.setSkills(profile.getSkills() == null ? java.util.List.of() : profile.getSkills());
+        if (profile.getProfilePicturePath() != null && !profile.getProfilePicturePath().isBlank()) {
+            view.setProfilePictureUrl("/uploads/profile-pictures/" + profile.getProfilePicturePath());
+        }
+        boolean hasCv = candidateCvRepository.existsByCandidateId(candidateId);
+        view.setHasCv(hasCv);
+        if (hasCv) {
+            view.setCvDownloadUrl("/api/employees/candidates/" + candidateId + "/cv");
+        }
+        return view;
+    }
+
+    @Override
+    public Page<CandidateBasicView> searchCandidateBasics(String skill, Integer minExperience, Pageable pageable) {
+        Page<CandidateProfile> page = searchCandidates(skill, minExperience, pageable);
+        List<CandidateBasicView> basics = page.getContent().stream().map(p -> {
+            CandidateBasicView v = new CandidateBasicView();
+            v.setCandidateId(p.getUserId());
+            v.setName(p.getName());
+            v.setTitle(p.getTitle());
+            v.setLocation(p.getLocation());
+            v.setSkills(p.getSkills() == null ? java.util.List.of() : p.getSkills());
+            if (p.getProfilePicturePath() != null && !p.getProfilePicturePath().isBlank()) {
+                v.setProfilePictureUrl("/uploads/profile-pictures/" + p.getProfilePicturePath());
+            }
+            boolean hasCv = candidateCvRepository.existsByCandidateId(p.getUserId());
+            v.setHasCv(hasCv);
+            if (hasCv) {
+                v.setCvDownloadUrl("/api/employees/candidates/" + p.getUserId() + "/cv");
+            }
+            return v;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(basics, pageable, page.getTotalElements());
     }
 
     @Override
@@ -130,7 +186,14 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
                         .map(Company::getName)
                         .orElse(null);
             }
-            notificationService.notifyCandidateRecommended(candidateId, companyName, job);
+        notificationService.notifyCandidateRecommended(candidateId, companyName, job);
+        companyNotificationService.notifyCandidateRecommended(
+            job,
+            candidateId,
+            candidate.getName(),
+            employeeId,
+            saved.getId()
+        );
 
             return saved;
         } catch (DuplicateKeyException e) {

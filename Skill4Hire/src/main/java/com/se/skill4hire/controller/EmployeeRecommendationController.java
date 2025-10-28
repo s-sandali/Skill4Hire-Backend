@@ -7,6 +7,7 @@ import com.se.skill4hire.service.EmployeeRecommendationService;
 import com.se.skill4hire.service.CandidateCvService;
 import com.se.skill4hire.service.job.JobPostService;
 import com.se.skill4hire.entity.candidate.CandidateCv;
+import com.se.skill4hire.dto.candidate.CandidateBasicView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,14 @@ public class EmployeeRecommendationController {
         return employeeRecommendationService.getActiveJobs(pageable);
     }
 
+    // Basic candidate card for employees
+    @GetMapping("/employees/candidates/{candidateId}/basic")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public CandidateBasicView getCandidateBasic(@PathVariable String candidateId, HttpSession session) {
+        String employeeId = (String) session.getAttribute("userId");
+        return employeeRecommendationService.getCandidateBasic(candidateId);
+    }
+
     @GetMapping("/employees/candidates/{candidateId}")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public CandidateProfile getCandidateProfile(@PathVariable String candidateId, HttpSession session) {
@@ -80,6 +89,20 @@ public class EmployeeRecommendationController {
         String employeeId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return employeeRecommendationService.searchCandidates(skill, minExperience, pageable);
+    }
+
+    // Search candidate basics list for quick browse
+    @GetMapping("/employees/candidates/basic")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public Page<CandidateBasicView> searchCandidateBasics(
+            @RequestParam(required = false) String skill,
+            @RequestParam(required = false) Integer minExperience,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpSession session) {
+        String employeeId = (String) session.getAttribute("userId");
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return employeeRecommendationService.searchCandidateBasics(skill, minExperience, pageable);
     }
 
     @PostMapping("/employees/recommendations")
@@ -151,3 +174,4 @@ public class EmployeeRecommendationController {
         return employeeRecommendationService.getJobRecommendations(jobId, pageable);
     }
 }
+
