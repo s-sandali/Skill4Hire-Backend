@@ -1,5 +1,6 @@
 package com.se.skill4hire.controller.job;
 
+import com.se.skill4hire.dto.job.EnrichedJobPostDTO;
 import com.se.skill4hire.dto.job.JobPostDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.entity.auth.User;
@@ -49,8 +50,10 @@ public class JobPostController {
 
     // GET ALL ACTIVE JOBS (for candidates - public)
     @GetMapping
-    public ResponseEntity<List<JobPost>> getAllActiveJobPosts() {
-        List<JobPost> jobPosts = jobPostService.getActiveJobPosts();
+    public ResponseEntity<List<EnrichedJobPostDTO>> getAllActiveJobPosts() {
+        List<EnrichedJobPostDTO> jobPosts = jobPostService.getActiveJobPosts().stream()
+                .map(jobSearchService::toEnriched)
+                .collect(Collectors.toList());
         if (jobPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -68,17 +71,18 @@ public class JobPostController {
 
     // GET JOB BY ID (public - only active)
     @GetMapping("/{id}")
-    public ResponseEntity<JobPost> getJobPostById(@PathVariable String id) {
+    public ResponseEntity<EnrichedJobPostDTO> getJobPostById(@PathVariable String id) {
         Optional<JobPost> jobPost = jobPostService.getJobPostById(id);
         return jobPost
                 .filter(j -> j.getStatus() == JobPost.JobStatus.ACTIVE)
+                .map(jobSearchService::toEnriched)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ENHANCED SEARCH WITH SKILL MATCHING
+    // ENHANCED SEARCH WITH SKILL MATCHING (returns enriched job posts; hides match score to simplify UI)
     @GetMapping("/search/with-matching")
-    public ResponseEntity<List<JobSearchService.JobWithMatchScore>> searchJobsWithSkillMatching(
+    public ResponseEntity<List<EnrichedJobPostDTO>> searchJobsWithSkillMatching(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "location", required = false) String location,
@@ -92,19 +96,25 @@ public class JobPostController {
             return ResponseEntity.status(401).build();
         }
 
-        // Use skill matching ranking; direct skill filter not needed here
+        // Use skill matching ranking; then map to enriched job posts
         List<JobSearchService.JobWithMatchScore> jobs = jobSearchService.searchJobsWithSkillMatching(
                 candidateId, keyword, type, location, minSalary, maxSalary, maxExperience);
 
-        return ResponseEntity.ok(jobs);
+        List<EnrichedJobPostDTO> enriched = jobs.stream()
+                .map(JobSearchService.JobWithMatchScore::getJobPost)
+                .map(jobSearchService::toEnriched)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(enriched);
     }
 
     // GET FEATURED JOBS (active jobs with recent deadline)
     @GetMapping("/featured")
-    public ResponseEntity<List<JobPost>> getFeaturedJobs() {
-        List<JobPost> featuredJobs = jobPostService.getActiveJobPosts().stream()
+    public ResponseEntity<List<EnrichedJobPostDTO>> getFeaturedJobs() {
+        List<EnrichedJobPostDTO> featuredJobs = jobPostService.getActiveJobPosts().stream()
                 .sorted((j1, j2) -> j2.getCreatedAt().compareTo(j1.getCreatedAt()))
                 .limit(10)
+                .map(jobSearchService::toEnriched)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(featuredJobs);
@@ -159,8 +169,10 @@ public class JobPostController {
 
     // EXISTING FILTER ENDPOINTS (public)
     @GetMapping("/type/{type}")
-    public ResponseEntity<List<JobPost>> getJobPostsByType(@PathVariable String type) {
-        List<JobPost> jobPosts = jobPostService.getJobPostsByType(type);
+    public ResponseEntity<List<EnrichedJobPostDTO>> getJobPostsByType(@PathVariable String type) {
+        List<EnrichedJobPostDTO> jobPosts = jobPostService.getJobPostsByType(type).stream()
+                .map(jobSearchService::toEnriched)
+                .collect(Collectors.toList());
         if (jobPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -168,8 +180,10 @@ public class JobPostController {
     }
 
     @GetMapping("/location/{location}")
-    public ResponseEntity<List<JobPost>> getJobPostsByLocation(@PathVariable String location) {
-        List<JobPost> jobPosts = jobPostService.getJobPostsByLocation(location);
+    public ResponseEntity<List<EnrichedJobPostDTO>> getJobPostsByLocation(@PathVariable String location) {
+        List<EnrichedJobPostDTO> jobPosts = jobPostService.getJobPostsByLocation(location).stream()
+                .map(jobSearchService::toEnriched)
+                .collect(Collectors.toList());
         if (jobPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -178,7 +192,7 @@ public class JobPostController {
 
     // BASIC SEARCH (public - no authentication required)
     @GetMapping("/search")
-    public ResponseEntity<List<JobPost>> searchJobs(
+    public ResponseEntity<List<EnrichedJobPostDTO>> searchJobs(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "location", required = false) String location,
@@ -187,7 +201,7 @@ public class JobPostController {
             @RequestParam(value = "maxExperience", required = false) Integer maxExperience,
             @RequestParam(value = "skill", required = false) String skill) {
 
-        List<JobPost> jobs = jobPostService.searchJobs(keyword, type, location, minSalary, maxSalary, maxExperience, skill);
+        List<EnrichedJobPostDTO> jobs = jobSearchService.searchJobsBasicEnriched(keyword, type, location, minSalary, maxSalary, maxExperience, skill);
         return ResponseEntity.ok(jobs);
     }
 
