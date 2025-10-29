@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 public class ApplicationDTO {
     private String id;
     private String candidateId;
+    private String candidateName;
+    private String candidateEmail;
+    private String candidateTitle;
+    private String candidateProfilePicturePath;
+    private String candidateProfilePictureUrl;
     private String companyId;
     private String companyName;
     private String status;
@@ -26,6 +31,11 @@ public class ApplicationDTO {
     // Explicit setters for required fields
     public void setId(String id) { this.id = id; }
     public void setCandidateId(String candidateId) { this.candidateId = candidateId; }
+    public void setCandidateName(String candidateName) { this.candidateName = candidateName; }
+    public void setCandidateEmail(String candidateEmail) { this.candidateEmail = candidateEmail; }
+    public void setCandidateTitle(String candidateTitle) { this.candidateTitle = candidateTitle; }
+    public void setCandidateProfilePicturePath(String candidateProfilePicturePath) { this.candidateProfilePicturePath = candidateProfilePicturePath; }
+    public void setCandidateProfilePictureUrl(String candidateProfilePictureUrl) { this.candidateProfilePictureUrl = candidateProfilePictureUrl; }
     public void setCompanyId(String companyId) { this.companyId = companyId; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
     public void setStatus(String status) { this.status = status; }
@@ -43,6 +53,11 @@ public class ApplicationDTO {
     // Getters
     public String getId() { return id; }
     public String getCandidateId() { return candidateId; }
+    public String getCandidateName() { return candidateName; }
+    public String getCandidateEmail() { return candidateEmail; }
+    public String getCandidateTitle() { return candidateTitle; }
+    public String getCandidateProfilePicturePath() { return candidateProfilePicturePath; }
+    public String getCandidateProfilePictureUrl() { return candidateProfilePictureUrl; }
     public String getCompanyId() { return companyId; }
     public String getCompanyName() { return companyName; }
     public String getStatus() { return status; }

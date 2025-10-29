@@ -10,6 +10,7 @@ public class RecommendationView {
     private String candidateTitle;
     private String candidateLocation;
     private String candidateProfilePicturePath;
+    private String candidateProfilePictureUrl; // added direct URL for convenience
     private String jobId;
     private String jobTitle;
     private String jobCompanyName;
@@ -72,6 +73,14 @@ public class RecommendationView {
 
     public void setCandidateProfilePicturePath(String candidateProfilePicturePath) {
         this.candidateProfilePicturePath = candidateProfilePicturePath;
+    }
+
+    public String getCandidateProfilePictureUrl() {
+        return candidateProfilePictureUrl;
+    }
+
+    public void setCandidateProfilePictureUrl(String candidateProfilePictureUrl) {
+        this.candidateProfilePictureUrl = candidateProfilePictureUrl;
     }
 
     public String getJobId() {

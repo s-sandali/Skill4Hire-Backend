@@ -3,7 +3,6 @@ package com.se.skill4hire.service.application;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,8 +12,10 @@ import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.repository.ApplicationRepository;
 import com.se.skill4hire.repository.RecommendationRepository;
+import com.se.skill4hire.repository.auth.CandidateAuthRepository;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
 import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.repository.profile.CandidateProfileRepository;
 import com.se.skill4hire.service.exception.ApplicationNotFoundException;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.notification.CompanyNotificationService;
@@ -28,19 +29,25 @@ public class ApplicationService {
     private final RecommendationRepository recommendationRepository;
     private final CompanyNotificationService companyNotificationService;
     private final NotificationService candidateNotificationService;
+    private final CandidateAuthRepository candidateAuthRepository;
+    private final CandidateProfileRepository candidateProfileRepository;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
                               CompanyAuthRepository companyAuthRepository,
                               RecommendationRepository recommendationRepository,
                               CompanyNotificationService companyNotificationService,
-                              NotificationService candidateNotificationService) {
+                              NotificationService candidateNotificationService,
+                              CandidateAuthRepository candidateAuthRepository,
+                              CandidateProfileRepository candidateProfileRepository) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
         this.recommendationRepository = recommendationRepository;
         this.companyNotificationService = companyNotificationService;
         this.candidateNotificationService = candidateNotificationService;
+        this.candidateAuthRepository = candidateAuthRepository;
+        this.candidateProfileRepository = candidateProfileRepository;
     }
 
     // Existing: companies view by status
@@ -48,7 +55,7 @@ public class ApplicationService {
         return repository.findByCandidateIdAndStatus(candidateId, status)
                 .stream()
                 .map(a -> new CompanyView(a.getCompanyId(), a.getCompanyName(), a.getStatus().name(), a.getAppliedAt()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // Create a new application (defaults to APPLIED)
@@ -95,10 +102,10 @@ public class ApplicationService {
     }
 
     public List<ApplicationDTO> list(String candidateId, Application.ApplicationStatus status) {
-        List<Application> apps = (status == null)
-                ? repository.findByCandidateId(candidateId)
-                : repository.findByCandidateIdAndStatus(candidateId, status);
-        return apps.stream().map(this::toDTO).collect(Collectors.toList());
+    List<Application> apps = (status == null)
+        ? repository.findByCandidateId(candidateId)
+        : repository.findByCandidateIdAndStatus(candidateId, status);
+    return apps.stream().map(this::toDTO).toList();
     }
 
     public Summary summary(String candidateId) {
@@ -136,7 +143,7 @@ public class ApplicationService {
         java.util.List<Application> apps = (status == null)
                 ? repository.findByCompanyId(companyId)
                 : repository.findByCompanyIdAndStatus(companyId, status);
-        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+        return apps.stream().map(this::toDTO).toList();
     }
 
     // Company views: list applications by job with optional status
@@ -144,13 +151,14 @@ public class ApplicationService {
         java.util.List<Application> apps = (status == null)
                 ? repository.findByJobPostId(jobPostId)
                 : repository.findByJobPostIdAndStatus(jobPostId, status);
-        return apps.stream().map(this::toDTO).collect(java.util.stream.Collectors.toList());
+        return apps.stream().map(this::toDTO).toList();
     }
 
     private ApplicationDTO toDTO(Application a) {
         ApplicationDTO dto = new ApplicationDTO();
         dto.setId(a.getId());
         dto.setCandidateId(a.getCandidateId());
+        enrichCandidateDetails(dto, a.getCandidateId());
         dto.setCompanyId(a.getCompanyId());
         dto.setCompanyName(a.getCompanyName());
         dto.setStatus(a.getStatus() != null ? a.getStatus().name() : null);
@@ -174,6 +182,46 @@ public class ApplicationService {
         }
 
         return dto;
+    }
+
+    private void enrichCandidateDetails(ApplicationDTO dto, String candidateId) {
+        if (candidateId == null || candidateId.isBlank()) {
+            return;
+        }
+
+        candidateAuthRepository.findById(candidateId).ifPresent(candidate -> {
+            dto.setCandidateName(candidate.getName());
+            dto.setCandidateEmail(candidate.getEmail());
+        });
+
+        candidateProfileRepository.findByUserId(candidateId).ifPresent(profile -> {
+            if ((dto.getCandidateName() == null || dto.getCandidateName().isBlank()) && profile.getName() != null) {
+                dto.setCandidateName(profile.getName());
+            }
+            if ((dto.getCandidateEmail() == null || dto.getCandidateEmail().isBlank()) && profile.getEmail() != null) {
+                dto.setCandidateEmail(profile.getEmail());
+            }
+            dto.setCandidateTitle(profile.getTitle());
+            dto.setCandidateProfilePicturePath(profile.getProfilePicturePath());
+            dto.setCandidateProfilePictureUrl(normalizeProfilePictureUrl(profile.getProfilePicturePath()));
+        });
+    }
+
+    private String normalizeProfilePictureUrl(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return null;
+        }
+        String sanitized = raw.trim().replace("\\", "/");
+        if (sanitized.startsWith("http://") || sanitized.startsWith("https://")) {
+            return sanitized;
+        }
+        if (sanitized.startsWith("/uploads/")) {
+            return sanitized;
+        }
+        if (sanitized.startsWith("uploads/")) {
+            return "/" + sanitized;
+        }
+        return "/uploads/profile-pictures/" + sanitized.replaceFirst("^/+", "");
     }
 
     public record CompanyView(String companyId, String companyName, String status, java.time.LocalDateTime appliedAt) {}

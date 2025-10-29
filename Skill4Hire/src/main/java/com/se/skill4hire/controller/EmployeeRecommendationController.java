@@ -8,7 +8,11 @@ import com.se.skill4hire.service.CandidateCvService;
 import com.se.skill4hire.service.job.JobPostService;
 import com.se.skill4hire.entity.candidate.CandidateCv;
 import com.se.skill4hire.dto.candidate.CandidateBasicView;
+import com.se.skill4hire.dto.job.EnrichedJobPostDTO;
+import com.se.skill4hire.service.job.JobSearchService;
+import com.se.skill4hire.dto.recommendation.RecommendationView;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +24,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -29,27 +35,34 @@ public class EmployeeRecommendationController {
     private final EmployeeRecommendationService employeeRecommendationService;
     private final CandidateCvService candidateCvService;
     private final JobPostService jobPostService;
+    private final JobSearchService jobSearchService;
 
     // Constructor injection instead of @RequiredArgsConstructor
     public EmployeeRecommendationController(EmployeeRecommendationService employeeRecommendationService,
                                             CandidateCvService candidateCvService,
-                                            JobPostService jobPostService) {
+                                            JobPostService jobPostService,
+                                            JobSearchService jobSearchService) {
         this.employeeRecommendationService = employeeRecommendationService;
         this.candidateCvService = candidateCvService;
         this.jobPostService = jobPostService;
+        this.jobSearchService = jobSearchService;
     }
 
     // ==================== EMPLOYEE ENDPOINTS ====================
 
     @GetMapping("/employees/jobs/active")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public Page<JobPost> getActiveJobs(
+    public Page<EnrichedJobPostDTO> getActiveJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
         String employeeId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return employeeRecommendationService.getActiveJobs(pageable);
+        Page<JobPost> raw = employeeRecommendationService.getActiveJobs(pageable);
+        List<EnrichedJobPostDTO> mapped = raw.getContent().stream()
+                .map(jobSearchService::toEnriched)
+                .collect(Collectors.toList());
+        return new PageImpl<>(mapped, pageable, raw.getTotalElements());
     }
 
     // Basic candidate card for employees
@@ -121,44 +134,44 @@ public class EmployeeRecommendationController {
 
     @GetMapping("/employees/recommendations")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public Page<Recommendation> getMyRecommendations(
+    public Page<RecommendationView> getMyRecommendations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
         String employeeId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return employeeRecommendationService.getEmployeeRecommendations(employeeId, pageable);
+        return employeeRecommendationService.getEmployeeRecommendationViews(employeeId, pageable);
     }
 
     @GetMapping("/employees/jobs/{jobId}/recommendations")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public Page<Recommendation> getJobRecommendations(
+    public Page<RecommendationView> getJobRecommendations(
             @PathVariable String jobId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
         String employeeId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return employeeRecommendationService.getJobRecommendations(jobId, pageable);
+        return employeeRecommendationService.getJobRecommendationViews(jobId, pageable);
     }
 
     // ==================== COMPANY ENDPOINTS ====================
 
     @GetMapping("/companies/recommendations")
     @PreAuthorize("hasAuthority('COMPANY')")
-    public Page<Recommendation> getCompanyRecommendations(
+    public Page<RecommendationView> getCompanyRecommendations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session) {
         // CompanyAuthService sets 'userId' in session
         String companyId = (String) session.getAttribute("userId");
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return employeeRecommendationService.getCompanyRecommendations(companyId, pageable);
+        return employeeRecommendationService.getCompanyRecommendationViews(companyId, pageable);
     }
 
     @GetMapping("/companies/jobs/{jobId}/recommendations")
     @PreAuthorize("hasAuthority('COMPANY')")
-    public Page<Recommendation> getCompanyJobRecommendations(
+    public Page<RecommendationView> getCompanyJobRecommendations(
             @PathVariable String jobId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -171,7 +184,6 @@ public class EmployeeRecommendationController {
         if (!jobPostService.existsByIdAndCompanyId(jobId, companyId)) {
             throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this job post");
         }
-        return employeeRecommendationService.getJobRecommendations(jobId, pageable);
+        return employeeRecommendationService.getJobRecommendationViews(jobId, pageable);
     }
 }
-
