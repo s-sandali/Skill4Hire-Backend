@@ -20,6 +20,7 @@ import com.se.skill4hire.service.exception.ApplicationNotFoundException;
 import com.se.skill4hire.service.exception.JobNotFoundException;
 import com.se.skill4hire.service.notification.CompanyNotificationService;
 import com.se.skill4hire.service.notification.NotificationService;
+import com.se.skill4hire.service.notification.EmployeeNotificationService;
 
 @Service
 public class ApplicationService {
@@ -31,6 +32,7 @@ public class ApplicationService {
     private final NotificationService candidateNotificationService;
     private final CandidateAuthRepository candidateAuthRepository;
     private final CandidateProfileRepository candidateProfileRepository;
+    private final EmployeeNotificationService employeeNotificationService;
 
     public ApplicationService(ApplicationRepository repository,
                               JobPostRepository jobPostRepository,
@@ -39,7 +41,8 @@ public class ApplicationService {
                               CompanyNotificationService companyNotificationService,
                               NotificationService candidateNotificationService,
                               CandidateAuthRepository candidateAuthRepository,
-                              CandidateProfileRepository candidateProfileRepository) {
+                              CandidateProfileRepository candidateProfileRepository,
+                              EmployeeNotificationService employeeNotificationService) {
         this.repository = repository;
         this.jobPostRepository = jobPostRepository;
         this.companyAuthRepository = companyAuthRepository;
@@ -48,6 +51,7 @@ public class ApplicationService {
         this.candidateNotificationService = candidateNotificationService;
         this.candidateAuthRepository = candidateAuthRepository;
         this.candidateProfileRepository = candidateProfileRepository;
+        this.employeeNotificationService = employeeNotificationService;
     }
 
     // Existing: companies view by status
@@ -71,6 +75,8 @@ public class ApplicationService {
         companyNotificationService.notifyDirectApplication(a.getCompanyId(), a.getCandidateId(), a.getCompanyName(), saved.getId());
         // Notify candidate
         candidateNotificationService.notifyApplicationSubmitted(candidateId, null, companyName);
+        // Notify employees (no jobId in this path)
+        try { employeeNotificationService.notifyNewApplication(candidateId, a.getJobPostId()); } catch (Exception ignored) {}
         return toDTO(saved);
     }
 
@@ -85,7 +91,6 @@ public class ApplicationService {
         Application a = new Application();
         a.setCandidateId(candidateId);
         a.setCompanyId(job.getCompanyId());
-        // Try to populate company name if available
         if (job.getCompanyId() != null) {
             companyAuthRepository.findById(job.getCompanyId()).map(Company::getName).ifPresent(a::setCompanyName);
         }
@@ -98,14 +103,16 @@ public class ApplicationService {
         companyNotificationService.notifyNewApplication(job, candidateId, saved.getId());
         // Notify candidate
         candidateNotificationService.notifyApplicationSubmitted(candidateId, job, a.getCompanyName());
+        // Notify employees
+        try { employeeNotificationService.notifyNewApplication(candidateId, jobPostId); } catch (Exception ignored) {}
         return toDTO(saved);
     }
 
     public List<ApplicationDTO> list(String candidateId, Application.ApplicationStatus status) {
-    List<Application> apps = (status == null)
-        ? repository.findByCandidateId(candidateId)
-        : repository.findByCandidateIdAndStatus(candidateId, status);
-    return apps.stream().map(this::toDTO).toList();
+        List<Application> apps = (status == null)
+            ? repository.findByCandidateId(candidateId)
+            : repository.findByCandidateIdAndStatus(candidateId, status);
+        return apps.stream().map(this::toDTO).toList();
     }
 
     public Summary summary(String candidateId) {
@@ -134,6 +141,8 @@ public class ApplicationService {
             candidateNotificationService.notifyApplicationStatusChanged(
                     a.getCandidateId(), status, job, a.getCompanyName(), reason, a.getId()
             );
+            // Notify employees about the application status change
+            try { employeeNotificationService.notifyApplicationStatusChanged(a.getCandidateId(), a.getJobPostId(), status); } catch (Exception ignored) {}
         }
         return toDTO(repository.save(a));
     }
@@ -227,3 +236,4 @@ public class ApplicationService {
     public record CompanyView(String companyId, String companyName, String status, java.time.LocalDateTime appliedAt) {}
     public record Summary(long applied, long shortlisted, long rejected) {}
 }
+

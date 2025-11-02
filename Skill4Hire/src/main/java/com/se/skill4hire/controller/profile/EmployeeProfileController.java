@@ -127,6 +127,30 @@ public class EmployeeProfileController {
         }
     }
 
+    @GetMapping("/metrics")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<Map<String, Object>> getDashboardMetrics(HttpSession session) {
+        String employeeId = (String) session.getAttribute("userId");
+        Map<String, Object> metrics = new HashMap<>();
+        try {
+            long totalCandidates = employeeProfileService.getTotalCandidatesCount();
+            long activeJobs = employeeProfileService.getActiveJobsCount();
+            long upcomingInterviews = employeeProfileService.getUpcomingInterviewsCount(employeeId);
+            long newApplications = employeeProfileService.getNewApplicationsCount();
+
+            metrics.put("totalCandidates", totalCandidates);
+            metrics.put("activeJobs", activeJobs);
+            metrics.put("upcomingInterviews", upcomingInterviews);
+            metrics.put("newApplications", newApplications);
+        } catch (Exception e) {
+            metrics.put("totalCandidates", 0);
+            metrics.put("activeJobs", 0);
+            metrics.put("upcomingInterviews", 0);
+            metrics.put("newApplications", 0);
+        }
+        return ResponseEntity.ok(metrics);
+    }
+
     // Inline request payload to avoid extra small files
     public static class CreateApplicationRequest {
         public String candidateId;

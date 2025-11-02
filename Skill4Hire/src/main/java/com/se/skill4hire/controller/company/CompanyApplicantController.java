@@ -22,6 +22,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -99,11 +102,37 @@ public class CompanyApplicantController {
     @GetMapping("/candidates/{candidateId}/cv")
     @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<byte[]> downloadCandidateCv(@PathVariable String candidateId) {
-        CandidateCv cv = candidateCvService.getByCandidateId(candidateId);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFilename() + "\"")
-                .contentType(MediaType.parseMediaType(cv.getContentType()))
-                .body(cv.getData());
+        try {
+            CandidateCv cv = candidateCvService.getByCandidateId(candidateId);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + cv.getFilename() + "\"")
+                    .contentType(MediaType.parseMediaType(cv.getContentType()))
+                    .body(cv.getData());
+        } catch (com.se.skill4hire.exception.NotFoundException notFound) {
+            // Fallback to file-based resumePath on CandidateProfile if binary CV is not stored
+            CandidateProfileDTO dto = candidateService.getProfile(candidateId);
+            String resumePath = dto != null ? dto.getResumePath() : null;
+            if (resumePath == null || resumePath.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CV not found for candidate");
+            }
+            try {
+                String relative = resumePath.startsWith("/") ? resumePath.substring(1) : resumePath;
+                Path path = Paths.get(relative);
+                if (!Files.exists(path)) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CV file not found");
+                }
+                byte[] data = Files.readAllBytes(path);
+                String detected = Files.probeContentType(path);
+                MediaType type = detected != null ? MediaType.parseMediaType(detected) : MediaType.APPLICATION_OCTET_STREAM;
+                String filename = path.getFileName().toString();
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                        .contentType(type)
+                        .body(data);
+            } catch (java.io.IOException io) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to read CV file", io);
+            }
+        }
     }
 
     // Update application status (shortlist/interview/hire/reject), only for owning company
