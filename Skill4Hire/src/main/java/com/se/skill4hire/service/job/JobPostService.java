@@ -2,6 +2,7 @@ package com.se.skill4hire.service.job;
 
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.service.notification.EmployeeNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +17,18 @@ public class JobPostService {
     @Autowired
     private JobPostRepository jobPostRepository;
 
+    @Autowired
+    private EmployeeNotificationService employeeNotificationService;
+
     // Create a new job post for a specific company
     public JobPost createJobPost(JobPost jobPost) {
-        return jobPostRepository.save(jobPost);
+        JobPost saved = jobPostRepository.save(jobPost);
+        try {
+            if (saved != null && saved.getId() != null && saved.getCompanyId() != null) {
+                employeeNotificationService.notifyJobPostCreated(saved.getId(), saved.getCompanyId());
+            }
+        } catch (Exception ignored) {}
+        return saved;
     }
 
     // Get job post by ID (with company check for owners, without for candidates)

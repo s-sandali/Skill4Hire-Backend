@@ -1,26 +1,27 @@
 package com.se.skill4hire.service.profile;
 
-import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
-import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
-import com.se.skill4hire.entity.auth.Employee;
-import com.se.skill4hire.entity.EmployeeProfile;
-import com.se.skill4hire.entity.job.JobPost;
-import com.se.skill4hire.entity.profile.CandidateProfile;
-import com.se.skill4hire.repository.auth.EmployeeRepository;
-import com.se.skill4hire.repository.profile.EmployeeProfileRepository;
-import com.se.skill4hire.repository.profile.CandidateProfileRepository;
-import com.se.skill4hire.repository.job.JobPostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
+import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
+import com.se.skill4hire.entity.EmployeeProfile;
+import com.se.skill4hire.entity.auth.Employee;
+import com.se.skill4hire.entity.job.JobPost;
+import com.se.skill4hire.repository.auth.EmployeeRepository;
+import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.repository.profile.CandidateProfileRepository;
+import com.se.skill4hire.repository.profile.EmployeeProfileRepository;
 
 @Service
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
@@ -37,7 +38,10 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
     @Autowired
     private JobPostRepository jobPostRepository;
 
-    private static final String UPLOAD_DIR = "uploads/";
+    private static final String UPLOAD_DIR = "uploads";
+    private static final String PUBLIC_UPLOAD_PREFIX = "/uploads/";
+    private static final String PROFILE_PICTURES_DIR = "profile-pictures";
+    private static final String URL_PATH_DELIMITER = "/";
 
     @Override
     public EmployeeProfileDTO getProfile(String employeeId) {
@@ -63,7 +67,7 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         profile.setEducation(profileDTO.getEducation() != null ? profileDTO.getEducation().toString() : null);
         profile.setExperience(profileDTO.getExperience() != null ? profileDTO.getExperience().toString() : null);
         profile.setNotificationPreferences(profileDTO.getNotificationPreferences() != null ? profileDTO.getNotificationPreferences().toString() : null);
-        profile.setProfilePicturePath(profileDTO.getProfilePicturePath());
+        profile.setProfilePicturePath(normalizeProfilePicturePath(profileDTO.getProfilePicturePath()));
         profile.setProfileCompleteness(calculateCompleteness(profile));
 
         EmployeeProfile updatedProfile = employeeProfileRepository.save(profile);
@@ -86,11 +90,11 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
                 .orElseGet(() -> createNewProfile(employeeId));
 
         try {
-            String fileName = saveFile(file, "profile-pictures");
-            profile.setProfilePicturePath(fileName);
+            String publicPath = saveFile(file, PROFILE_PICTURES_DIR);
+            profile.setProfilePicturePath(publicPath);
             profile.setProfileCompleteness(calculateCompleteness(profile));
             employeeProfileRepository.save(profile);
-            return fileName;
+            return publicPath;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload profile picture", e);
         }
@@ -167,7 +171,7 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         dto.setTitle(profile.getTitle());
         dto.setHeadline(profile.getHeadline());
         dto.setSkills(profile.getSkills());
-        dto.setProfilePicturePath(profile.getProfilePicturePath());
+        dto.setProfilePicturePath(normalizeProfilePicturePath(profile.getProfilePicturePath()));
         dto.setProfileCompleteness(profile.getProfileCompleteness());
         dto.setCreatedAt(profile.getCreatedAt());
         dto.setUpdatedAt(profile.getUpdatedAt());
@@ -204,18 +208,65 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
 
     private String saveFile(MultipartFile file, String subdirectory) throws IOException {
         String originalFileName = file.getOriginalFilename();
-        String fileExtension = originalFileName != null ?
-                originalFileName.substring(originalFileName.lastIndexOf(".")) : "";
+        String fileExtension = "";
+        if (originalFileName != null && originalFileName.lastIndexOf('.') >= 0) {
+            fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+        }
         String fileName = UUID.randomUUID().toString() + fileExtension;
 
-        Path uploadPath = Paths.get(UPLOAD_DIR + subdirectory);
+        Path uploadPath = Paths.get(UPLOAD_DIR, subdirectory);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
         Path filePath = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), filePath);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        return fileName;
+        return buildPublicPath(subdirectory, fileName);
+    }
+
+    private String buildPublicPath(String subdirectory, String fileName) {
+        String sanitizedSubDir = subdirectory == null ? "" : subdirectory.replace("\\", "/");
+        sanitizedSubDir = sanitizedSubDir.replaceAll("^/+", "");
+        sanitizedSubDir = sanitizedSubDir.replaceAll("/+$", "");
+
+        String sanitizedFile = fileName == null ? "" : fileName.replace("\\", "/");
+        sanitizedFile = sanitizedFile.replaceAll("^/+", "");
+
+        String relativePath = sanitizedSubDir.isEmpty()
+                ? sanitizedFile
+                : String.join(URL_PATH_DELIMITER, sanitizedSubDir, sanitizedFile);
+        if (relativePath.isBlank()) {
+            return null;
+        }
+        return PUBLIC_UPLOAD_PREFIX + relativePath;
+    }
+
+    private String normalizeProfilePicturePath(String rawPath) {
+        if (rawPath == null || rawPath.isBlank()) {
+            return null;
+        }
+
+        String sanitized = rawPath.trim().replace("\\", "/");
+
+        if (sanitized.startsWith("http://") || sanitized.startsWith("https://")) {
+            return sanitized;
+        }
+
+        if (sanitized.startsWith(PUBLIC_UPLOAD_PREFIX)) {
+            return sanitized;
+        }
+
+        sanitized = sanitized.replaceAll("^/+", "");
+
+        if (sanitized.startsWith("uploads/")) {
+            sanitized = sanitized.substring("uploads/".length());
+        }
+
+        if (!sanitized.startsWith(PROFILE_PICTURES_DIR + URL_PATH_DELIMITER)) {
+            sanitized = PROFILE_PICTURES_DIR + URL_PATH_DELIMITER + sanitized;
+        }
+
+        return PUBLIC_UPLOAD_PREFIX + sanitized;
     }
 }

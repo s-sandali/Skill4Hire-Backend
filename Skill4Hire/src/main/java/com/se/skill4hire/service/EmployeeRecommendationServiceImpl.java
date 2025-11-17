@@ -27,6 +27,7 @@ import com.se.skill4hire.repository.profile.CandidateProfileRepository;
 import com.se.skill4hire.service.notification.CompanyNotificationService;
 import com.se.skill4hire.service.notification.NotificationService;
 import com.se.skill4hire.dto.candidate.CandidateBasicView;
+import com.se.skill4hire.dto.recommendation.RecommendationView;
 import com.se.skill4hire.repository.CandidateCvRepository;
 
 @Service
@@ -239,5 +240,68 @@ public class EmployeeRecommendationServiceImpl implements EmployeeRecommendation
         long total = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Recommendation.class);
 
         return new PageImpl<>(recommendations, pageable, total);
+    }
+
+    // New: Enriched view mappers
+    private RecommendationView toView(Recommendation rec) {
+        RecommendationView v = new RecommendationView();
+        v.setId(rec.getId());
+        v.setEmployeeId(rec.getEmployeeId());
+        v.setCandidateId(rec.getCandidateId());
+        v.setJobId(rec.getJobId());
+        v.setNote(rec.getNote());
+        v.setStatus(rec.getStatus());
+        v.setCreatedAt(rec.getCreatedAt());
+        v.setUpdatedAt(rec.getUpdatedAt());
+
+        // Enrich candidate
+        try {
+            candidateProfileRepository.findByUserId(rec.getCandidateId()).ifPresent(p -> {
+                v.setCandidateName(p.getName());
+                v.setCandidateTitle(p.getTitle());
+                v.setCandidateLocation(p.getLocation());
+                v.setCandidateProfilePicturePath(p.getProfilePicturePath());
+                if (p.getProfilePicturePath() != null && !p.getProfilePicturePath().isBlank()) {
+                    v.setCandidateProfilePictureUrl("/uploads/profile-pictures/" + p.getProfilePicturePath());
+                }
+            });
+        } catch (Exception e) {
+            log.warn("Failed to enrich candidate for recommendation {}: {}", rec.getId(), e.getMessage());
+        }
+
+        // Enrich job
+        try {
+            jobPostRepository.findById(rec.getJobId()).ifPresent(job -> {
+                v.setJobTitle(job.getTitle());
+                if (job.getCompanyId() != null) {
+                    companyAuthRepository.findById(job.getCompanyId()).ifPresent(c -> v.setJobCompanyName(c.getName()));
+                }
+            });
+        } catch (Exception e) {
+            log.warn("Failed to enrich job for recommendation {}: {}", rec.getId(), e.getMessage());
+        }
+
+        return v;
+    }
+
+    @Override
+    public Page<RecommendationView> getEmployeeRecommendationViews(String employeeId, Pageable pageable) {
+        Page<Recommendation> raw = getEmployeeRecommendations(employeeId, pageable);
+        List<RecommendationView> mapped = raw.getContent().stream().map(this::toView).collect(Collectors.toList());
+        return new PageImpl<>(mapped, pageable, raw.getTotalElements());
+    }
+
+    @Override
+    public Page<RecommendationView> getJobRecommendationViews(String jobId, Pageable pageable) {
+        Page<Recommendation> raw = getJobRecommendations(jobId, pageable);
+        List<RecommendationView> mapped = raw.getContent().stream().map(this::toView).collect(Collectors.toList());
+        return new PageImpl<>(mapped, pageable, raw.getTotalElements());
+    }
+
+    @Override
+    public Page<RecommendationView> getCompanyRecommendationViews(String companyId, Pageable pageable) {
+        Page<Recommendation> raw = getCompanyRecommendations(companyId, pageable);
+        List<RecommendationView> mapped = raw.getContent().stream().map(this::toView).collect(Collectors.toList());
+        return new PageImpl<>(mapped, pageable, raw.getTotalElements());
     }
 }

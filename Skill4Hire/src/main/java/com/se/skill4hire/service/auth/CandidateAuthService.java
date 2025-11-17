@@ -3,8 +3,8 @@ package com.se.skill4hire.service.auth;
 import com.se.skill4hire.dto.auth.*;
 import com.se.skill4hire.entity.auth.Candidate;
 import com.se.skill4hire.repository.auth.CandidateAuthRepository;
+import com.se.skill4hire.service.notification.EmployeeNotificationService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,15 @@ import org.springframework.stereotype.Service;
 public class CandidateAuthService implements BaseAuthService {
 
     private final CandidateAuthRepository candidateRepository;
-
     private final PasswordEncoder passwordEncoder;
+    private final EmployeeNotificationService employeeNotificationService;
 
     public CandidateAuthService(CandidateAuthRepository candidateRepository,
-                                PasswordEncoder passwordEncoder) {
+                                PasswordEncoder passwordEncoder,
+                                EmployeeNotificationService employeeNotificationService) {
         this.candidateRepository = candidateRepository;
         this.passwordEncoder = passwordEncoder;
+        this.employeeNotificationService = employeeNotificationService;
     }
 
     @Override
@@ -50,6 +52,9 @@ public class CandidateAuthService implements BaseAuthService {
         candidate.setRole("CANDIDATE"); // Force set to CANDIDATE
 
         candidateRepository.save(candidate);
+
+        // Notify employees of new candidate registration
+        try { employeeNotificationService.notifyCandidateRegistered(candidate.getId()); } catch (Exception ignored) {}
 
         return new AuthResponse(
                 "Candidate registered successfully",

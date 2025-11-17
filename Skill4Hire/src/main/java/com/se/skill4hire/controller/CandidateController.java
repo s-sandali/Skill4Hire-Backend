@@ -132,10 +132,12 @@ public class CandidateController {
     public ResponseEntity<Map<String, String>> uploadResume(@RequestParam("resume") MultipartFile file,
                                                             HttpSession session) {
         String candidateId = (String) session.getAttribute("userId");
-        String fileName = candidateService.uploadResume(candidateId, file);
+        String publicPath = candidateService.uploadResume(candidateId, file);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Resume uploaded successfully");
-        response.put("fileName", fileName);
+        response.put("fileName", publicPath);
+        response.put("url", publicPath);
+        response.put("downloadUrl", publicPath);
         return ResponseEntity.ok(response);
     }
 
@@ -144,10 +146,13 @@ public class CandidateController {
     public ResponseEntity<Map<String, String>> uploadProfilePicture(@RequestParam("profilePicture") MultipartFile file,
                                                                     HttpSession session) {
         String candidateId = (String) session.getAttribute("userId");
-        String fileName = candidateService.uploadProfilePicture(candidateId, file);
+        String publicPath = candidateService.uploadProfilePicture(candidateId, file);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Profile picture uploaded successfully");
-        response.put("fileName", fileName);
+        response.put("fileName", publicPath);
+        response.put("url", publicPath);
+        response.put("imageUrl", publicPath);
+        response.put("profilePictureUrl", publicPath);
         return ResponseEntity.ok(response);
     }
 
