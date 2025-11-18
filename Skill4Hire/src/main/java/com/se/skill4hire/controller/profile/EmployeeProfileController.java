@@ -84,7 +84,7 @@ public class EmployeeProfileController {
     }
 
     @PutMapping("/applications/{applicationId}/status")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<ApplicationDTO> updateApplicationStatus(@PathVariable String applicationId,
                                                                   @Valid @RequestBody ApplicationStatusUpdateRequest request,
                                                                   HttpSession session) {

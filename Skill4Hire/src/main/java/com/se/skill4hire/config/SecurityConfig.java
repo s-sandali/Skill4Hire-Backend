@@ -85,8 +85,6 @@ public class SecurityConfig {
                                 "/api/companies/auth/login",
                                 "/api/employees/auth/register",
                                 "/api/employees/auth/login",
-                                "/api/admin/auth/login",
-                                "/api/admin/auth/register",
                                 "/api/auth/login",
                                 "/api/auth/logout",
                                 "/api/uploads/**",
@@ -117,7 +115,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/candidates/**").hasAuthority("CANDIDATE")
                         .requestMatchers("/api/companies/**").hasAuthority("COMPANY")
                         .requestMatchers("/api/employees/**").hasAuthority("EMPLOYEE")
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
 
                         // Everything else requires authentication
                         .anyRequest().authenticated()
