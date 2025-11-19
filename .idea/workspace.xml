@@ -7,10 +7,6 @@
     <list default="true" id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <changelist_data name="sasindibandara" email="sasindi.bandara2003@gmail.com" automatic="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/controller/CandidateController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/java/com/se/skill4hire/service/auth/CandidateAuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Skill4Hire/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Skill4Hire/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +38,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/s-sandali/Skill4Hire-Backend.git&quot;,
-    &quot;accountId&quot;: &quot;b88f44bb-ebff-41af-8d48-2e871031c556&quot;
+    &quot;accountId&quot;: &quot;ee48f1f4-e9d6-44bb-ac5f-35b2b250368b&quot;
   },
   &quot;editorReviewEnabled&quot;: false
 }</component>
@@ -58,30 +54,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Skill4HireApplication.executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.Skill4HireApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#46 on SCRUM-99-Backend-API-to-get-all-a…idate&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Skill4Hire-Backend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Skill4HireApplication.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "Database detector",
+    "Notification.DoNotAsk-Database detector": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.Skill4HireApplication.executor": "Run",
+    "git-widget-placeholder": "SCRUM-174-deploy-the-backend",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/sanda/Documents/Skill4Hire",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Application.Skill4HireApplication">
+}]]></component>
+  <component name="RunManager" selected="Spring Boot.Skill4HireApplication">
     <configuration name="Skill4HireApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.se.skill4hire.Skill4HireApplication" />
       <module name="skill4hire" />
@@ -109,7 +107,18 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="StructureViewState">
+    <option name="selectedTab" value="Logical" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="2d09c892-f693-4e16-9f96-d4e0c1f9cc9f" name="Changes" comment="" />
@@ -119,6 +128,13 @@
       <updated>1757915169376</updated>
       <workItem from="1758488905044" duration="1175000" />
       <workItem from="1758597285455" duration="19486000" />
+      <workItem from="1761063949943" duration="35000" />
+      <workItem from="1761367993008" duration="6504000" />
+      <workItem from="1761386308937" duration="701000" />
+      <workItem from="1761409242308" duration="2445000" />
+      <workItem from="1761461775737" duration="13120000" />
+      <workItem from="1761551846999" duration="610000" />
+      <workItem from="1761632642845" duration="2342000" />
     </task>
     <task id="LOCAL-00001" summary="Backend API for registration/login (/api/admins/register, /api/admins/login)">
       <option name="closed" value="true" />

@@ -3,6 +3,7 @@ package com.se.skill4hire.service.auth;
 import com.se.skill4hire.dto.auth.*;
 import com.se.skill4hire.entity.auth.Company;
 import com.se.skill4hire.repository.auth.CompanyAuthRepository;
+import com.se.skill4hire.service.notification.EmployeeNotificationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,12 +14,15 @@ public class CompanyAuthService {
 
     private final CompanyAuthRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmployeeNotificationService employeeNotificationService;
 
     @Autowired
     public CompanyAuthService(CompanyAuthRepository companyRepository,
-                              PasswordEncoder passwordEncoder) {
+                              PasswordEncoder passwordEncoder,
+                              EmployeeNotificationService employeeNotificationService) {
         this.companyRepository = companyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.employeeNotificationService = employeeNotificationService;
     }
 
     // Register
@@ -34,6 +38,9 @@ public class CompanyAuthService {
         company.setRole("COMPANY");
 
         companyRepository.save(company);
+
+        // Notify employees of new company registration
+        try { employeeNotificationService.notifyCompanyRegistered(company.getId()); } catch (Exception ignored) {}
 
         return new AuthResponse(
                 "Company registered successfully",

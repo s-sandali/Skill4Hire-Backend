@@ -132,10 +132,12 @@ public class CandidateController {
     public ResponseEntity<Map<String, String>> uploadResume(@RequestParam("resume") MultipartFile file,
                                                             HttpSession session) {
         String candidateId = (String) session.getAttribute("userId");
-        String fileName = candidateService.uploadResume(candidateId, file);
+        String publicPath = candidateService.uploadResume(candidateId, file);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Resume uploaded successfully");
-        response.put("fileName", fileName);
+        response.put("fileName", publicPath);
+        response.put("url", publicPath);
+        response.put("downloadUrl", publicPath);
         return ResponseEntity.ok(response);
     }
 
@@ -144,10 +146,13 @@ public class CandidateController {
     public ResponseEntity<Map<String, String>> uploadProfilePicture(@RequestParam("profilePicture") MultipartFile file,
                                                                     HttpSession session) {
         String candidateId = (String) session.getAttribute("userId");
-        String fileName = candidateService.uploadProfilePicture(candidateId, file);
+        String publicPath = candidateService.uploadProfilePicture(candidateId, file);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Profile picture uploaded successfully");
-        response.put("fileName", fileName);
+        response.put("fileName", publicPath);
+        response.put("url", publicPath);
+        response.put("imageUrl", publicPath);
+        response.put("profilePictureUrl", publicPath);
         return ResponseEntity.ok(response);
     }
 
@@ -352,5 +357,32 @@ public class CandidateController {
         public static CandidateCvResponse from(CandidateCv cv) {
             return new CandidateCvResponse(cv.getId(), cv.getCandidateId(), cv.getFilename(), cv.getContentType());
         }
+    }
+
+    // ======================== Applications ========================
+
+    // Candidate clicks Apply to a job
+    @PostMapping("/applications")
+    @PreAuthorize("hasAuthority('CANDIDATE')")
+    public ResponseEntity<ApplicationDTO> applyToJob(@RequestBody ApplyRequest request, HttpSession session) {
+        if (request == null || request.jobPostId == null || request.jobPostId.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        String candidateId = (String) session.getAttribute("userId");
+        try {
+            ApplicationDTO dto = applicationService.createForJob(candidateId, request.jobPostId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        } catch (com.se.skill4hire.service.exception.JobNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalStateException ex) {
+            // Already applied
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    public static class ApplyRequest {
+        public String jobPostId;
+        public String getJobPostId() { return jobPostId; }
+        public void setJobPostId(String jobPostId) { this.jobPostId = jobPostId; }
     }
 }

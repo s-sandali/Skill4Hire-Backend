@@ -28,7 +28,11 @@ public class CandidateServiceImpl implements CandidateService {
     private CandidateProfileRepository candidateProfileRepository;
 
     private final CandidateAuthRepository candidateAuthRepository;
-    private static final String UPLOAD_DIR = "uploads/";
+
+    // Store files under local uploads folder and expose them via /uploads/**
+    private static final String UPLOAD_DIR = "uploads";
+    private static final String PUBLIC_UPLOAD_PREFIX = "/uploads/";
+    private static final String URL_PATH_DELIMITER = "/";
 
     public CandidateServiceImpl(CandidateAuthRepository candidateAuthRepository) {
         this.candidateAuthRepository = candidateAuthRepository;
@@ -128,11 +132,11 @@ public class CandidateServiceImpl implements CandidateService {
                 .orElseGet(() -> createNewProfile(candidateId));
 
         try {
-            String fileName = saveFile(file, "resumes");
-            profile.setResumePath(fileName);
+            String publicPath = saveFile(file, "resumes");
+            profile.setResumePath(publicPath);
             profile.setProfileCompleteness(calculateCompleteness(profile));
             candidateProfileRepository.save(profile);
-            return fileName;
+            return publicPath;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload resume", e);
         }
@@ -144,11 +148,11 @@ public class CandidateServiceImpl implements CandidateService {
                 .orElseGet(() -> createNewProfile(candidateId));
 
         try {
-            String fileName = saveFile(file, "profile-pictures");
-            profile.setProfilePicturePath(fileName);
+            String publicPath = saveFile(file, "profile-pictures");
+            profile.setProfilePicturePath(publicPath);
             profile.setProfileCompleteness(calculateCompleteness(profile));
             candidateProfileRepository.save(profile);
-            return fileName;
+            return publicPath;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload profile picture", e);
         }
@@ -295,11 +299,12 @@ public class CandidateServiceImpl implements CandidateService {
 
     private String saveFile(MultipartFile file, String subdirectory) throws IOException {
         String originalFileName = file.getOriginalFilename();
-        String fileExtension = originalFileName != null ?
-                originalFileName.substring(originalFileName.lastIndexOf(".")) : "";
+        String fileExtension = originalFileName != null && originalFileName.lastIndexOf('.') >= 0
+                ? originalFileName.substring(originalFileName.lastIndexOf('.'))
+                : "";
         String fileName = UUID.randomUUID().toString() + fileExtension;
 
-        Path uploadPath = Paths.get(UPLOAD_DIR + subdirectory);
+        Path uploadPath = Paths.get(UPLOAD_DIR, subdirectory);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
@@ -307,6 +312,23 @@ public class CandidateServiceImpl implements CandidateService {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath);
 
-        return fileName;
+        return buildPublicPath(subdirectory, fileName);
+    }
+
+    private String buildPublicPath(String subdirectory, String fileName) {
+        String sanitizedSubDir = subdirectory == null ? "" : subdirectory.replace("\\", "/");
+        sanitizedSubDir = sanitizedSubDir.replaceAll("^/+", "");
+        sanitizedSubDir = sanitizedSubDir.replaceAll("/+$$", "");
+
+        String sanitizedFile = fileName == null ? "" : fileName.replace("\\", "/");
+        sanitizedFile = sanitizedFile.replaceAll("^/+", "");
+
+        String relativePath = sanitizedSubDir.isEmpty()
+                ? sanitizedFile
+                : String.join(URL_PATH_DELIMITER, sanitizedSubDir, sanitizedFile);
+        if (relativePath.isBlank()) {
+            return null;
+        }
+        return PUBLIC_UPLOAD_PREFIX + relativePath;
     }
 }

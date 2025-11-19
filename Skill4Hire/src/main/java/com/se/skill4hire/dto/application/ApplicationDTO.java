@@ -5,6 +5,11 @@ import java.time.LocalDateTime;
 public class ApplicationDTO {
     private String id;
     private String candidateId;
+    private String candidateName;
+    private String candidateEmail;
+    private String candidateTitle;
+    private String candidateProfilePicturePath;
+    private String candidateProfilePictureUrl;
     private String companyId;
     private String companyName;
     private String status;
@@ -19,10 +24,18 @@ public class ApplicationDTO {
     private Double salary;
     private Integer experienceRequired;
     private LocalDateTime jobDeadline;
-    
+
+    // Tag if candidate was recommended by a Skill4Hire employee for this job
+    private boolean recommendedBySkill4Hire;
+
     // Explicit setters for required fields
     public void setId(String id) { this.id = id; }
     public void setCandidateId(String candidateId) { this.candidateId = candidateId; }
+    public void setCandidateName(String candidateName) { this.candidateName = candidateName; }
+    public void setCandidateEmail(String candidateEmail) { this.candidateEmail = candidateEmail; }
+    public void setCandidateTitle(String candidateTitle) { this.candidateTitle = candidateTitle; }
+    public void setCandidateProfilePicturePath(String candidateProfilePicturePath) { this.candidateProfilePicturePath = candidateProfilePicturePath; }
+    public void setCandidateProfilePictureUrl(String candidateProfilePictureUrl) { this.candidateProfilePictureUrl = candidateProfilePictureUrl; }
     public void setCompanyId(String companyId) { this.companyId = companyId; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
     public void setStatus(String status) { this.status = status; }
@@ -35,10 +48,16 @@ public class ApplicationDTO {
     public void setSalary(Double salary) { this.salary = salary; }
     public void setExperienceRequired(Integer experienceRequired) { this.experienceRequired = experienceRequired; }
     public void setJobDeadline(LocalDateTime jobDeadline) { this.jobDeadline = jobDeadline; }
-    
+    public void setRecommendedBySkill4Hire(boolean recommendedBySkill4Hire) { this.recommendedBySkill4Hire = recommendedBySkill4Hire; }
+
     // Getters
     public String getId() { return id; }
     public String getCandidateId() { return candidateId; }
+    public String getCandidateName() { return candidateName; }
+    public String getCandidateEmail() { return candidateEmail; }
+    public String getCandidateTitle() { return candidateTitle; }
+    public String getCandidateProfilePicturePath() { return candidateProfilePicturePath; }
+    public String getCandidateProfilePictureUrl() { return candidateProfilePictureUrl; }
     public String getCompanyId() { return companyId; }
     public String getCompanyName() { return companyName; }
     public String getStatus() { return status; }
@@ -51,4 +70,5 @@ public class ApplicationDTO {
     public Double getSalary() { return salary; }
     public Integer getExperienceRequired() { return experienceRequired; }
     public LocalDateTime getJobDeadline() { return jobDeadline; }
+    public boolean isRecommendedBySkill4Hire() { return recommendedBySkill4Hire; }
 }

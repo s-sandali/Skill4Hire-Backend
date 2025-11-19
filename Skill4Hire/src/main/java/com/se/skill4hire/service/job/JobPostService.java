@@ -2,6 +2,7 @@ package com.se.skill4hire.service.job;
 
 import com.se.skill4hire.entity.job.JobPost;
 import com.se.skill4hire.repository.job.JobPostRepository;
+import com.se.skill4hire.service.notification.EmployeeNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +17,18 @@ public class JobPostService {
     @Autowired
     private JobPostRepository jobPostRepository;
 
+    @Autowired
+    private EmployeeNotificationService employeeNotificationService;
+
     // Create a new job post for a specific company
     public JobPost createJobPost(JobPost jobPost) {
-        return jobPostRepository.save(jobPost);
+        JobPost saved = jobPostRepository.save(jobPost);
+        try {
+            if (saved != null && saved.getId() != null && saved.getCompanyId() != null) {
+                employeeNotificationService.notifyJobPostCreated(saved.getId(), saved.getCompanyId());
+            }
+        } catch (Exception ignored) {}
+        return saved;
     }
 
     // Get job post by ID (with company check for owners, without for candidates)
@@ -99,22 +109,31 @@ public class JobPostService {
     }
 
     // Search helper used by controller and JobSearchService
-    public List<JobPost> searchJobs(String keyword, String type, String location, Double minSalary, Integer maxExperience) {
+    public List<JobPost> searchJobs(String keyword, String type, String location, Double minSalary, Double maxSalary, Integer maxExperience, String skill) {
         // Start from active jobs to limit results
         List<JobPost> jobs = jobPostRepository.findByStatus(JobPost.JobStatus.ACTIVE);
 
         return jobs.stream()
                 .filter(j -> {
                     if (keyword != null && !keyword.isBlank()) {
-                        String text = (j.getTitle() + " " + j.getDescription()).toLowerCase();
+                        String text = (safe(j.getTitle()) + " " + safe(j.getDescription())).toLowerCase();
                         if (!text.contains(keyword.toLowerCase())) return false;
                     }
                     if (type != null && !type.isBlank() && (j.getType() == null || !j.getType().equalsIgnoreCase(type))) return false;
                     if (location != null && !location.isBlank() && (j.getLocation() == null || !j.getLocation().equalsIgnoreCase(location))) return false;
                     if (minSalary != null && (j.getSalary() == null || j.getSalary() < minSalary)) return false;
+                    if (maxSalary != null && (j.getSalary() == null || j.getSalary() > maxSalary)) return false;
                     if (maxExperience != null && (j.getExperience() == null || j.getExperience() > maxExperience)) return false;
+                    if (skill != null && !skill.isBlank()) {
+                        String s = skill.toLowerCase();
+                        boolean inList = j.getSkills() != null && j.getSkills().stream().anyMatch(x -> x != null && x.toLowerCase().contains(s));
+                        boolean inText = (safe(j.getTitle()) + " " + safe(j.getDescription())).toLowerCase().contains(s);
+                        if (!(inList || inText)) return false;
+                    }
                     return true;
                 })
                 .toList();
     }
+
+    private String safe(String s) { return s == null ? "" : s; }
 }

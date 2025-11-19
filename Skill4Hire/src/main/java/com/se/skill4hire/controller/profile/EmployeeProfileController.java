@@ -1,5 +1,22 @@
 package com.se.skill4hire.controller.profile;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.se.skill4hire.dto.application.ApplicationDTO;
 import com.se.skill4hire.dto.application.ApplicationStatusUpdateRequest;
 import com.se.skill4hire.dto.profile.EmployeeProfileDTO;
@@ -7,17 +24,9 @@ import com.se.skill4hire.dto.profile.ProfileCompletenessDTO;
 import com.se.skill4hire.entity.Application;
 import com.se.skill4hire.service.application.ApplicationService;
 import com.se.skill4hire.service.profile.EmployeeProfileService;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -64,17 +73,18 @@ public class EmployeeProfileController {
             @RequestParam("profilePicture") MultipartFile file,
             HttpSession session) {
         String employeeId = (String) session.getAttribute("userId");
-        String fileName = employeeProfileService.uploadProfilePicture(employeeId, file);
+        String publicPath = employeeProfileService.uploadProfilePicture(employeeId, file);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Profile picture uploaded successfully");
-        response.put("fileName", fileName);
+        response.put("profilePicturePath", publicPath);
+        response.put("profilePictureUrl", publicPath);
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/applications/{applicationId}/status")
-    @PreAuthorize("hasAnyAuthority('EMPLOYEE', 'ADMIN')")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<ApplicationDTO> updateApplicationStatus(@PathVariable String applicationId,
                                                                   @Valid @RequestBody ApplicationStatusUpdateRequest request,
                                                                   HttpSession session) {
@@ -115,6 +125,30 @@ public class EmployeeProfileController {
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage(), ex);
         }
+    }
+
+    @GetMapping("/metrics")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<Map<String, Object>> getDashboardMetrics(HttpSession session) {
+        String employeeId = (String) session.getAttribute("userId");
+        Map<String, Object> metrics = new HashMap<>();
+        try {
+            long totalCandidates = employeeProfileService.getTotalCandidatesCount();
+            long activeJobs = employeeProfileService.getActiveJobsCount();
+            long upcomingInterviews = employeeProfileService.getUpcomingInterviewsCount(employeeId);
+            long newApplications = employeeProfileService.getNewApplicationsCount();
+
+            metrics.put("totalCandidates", totalCandidates);
+            metrics.put("activeJobs", activeJobs);
+            metrics.put("upcomingInterviews", upcomingInterviews);
+            metrics.put("newApplications", newApplications);
+        } catch (Exception e) {
+            metrics.put("totalCandidates", 0);
+            metrics.put("activeJobs", 0);
+            metrics.put("upcomingInterviews", 0);
+            metrics.put("newApplications", 0);
+        }
+        return ResponseEntity.ok(metrics);
     }
 
     // Inline request payload to avoid extra small files
